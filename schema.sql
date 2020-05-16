@@ -1,0 +1,21 @@
+DROP TABLE IF EXISTS user;
+DROP TABLE IF EXISTS comic;
+
+CREATE TABLE user (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL,
+    full_name TEXT NOT NULL,
+    join_date DATE,
+    email TEXT,
+    social_media TEXT,
+);
+
+CREATE TABLE comic (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    author_id INTEGER NOT NULL,
+    posted TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    title TEXT NOT NULL,
+    body TEXT NOT NULL,
+    draft TINYINT(1) DEFAULT 0,
+);

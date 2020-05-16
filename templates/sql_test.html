@@ -1,0 +1,8 @@
+<! doctype html>
+<ul>
+    {% for beeper in beepers %}
+    <li>
+        <strong>{{ beeper['name'] }}</strong> - {{ beeper['feet'] }}
+    </li>
+    {% endfor %}
+</ul>

@@ -1,0 +1,5 @@
+SECRET_KEY='dev'
+MYSQL_HOST = 'localhost'
+MYSQL_USER = 'ivy'
+MYSQL_PASSWORD = ''
+MYSQL_DB = 'lucaflect01'

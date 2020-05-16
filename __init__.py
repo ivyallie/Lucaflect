@@ -6,6 +6,7 @@ def create_app(test_config=None):
     app.config.from_pyfile('config.py')
 
     from . import db
+    db.init_app(app)
 
     @app.route('/beepers')
     def sql_test():

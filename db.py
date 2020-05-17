@@ -7,6 +7,7 @@ import click
 mysql = MySQL()
 
 def query(query_text):
+    mysql = MySQL()
     mysql.init_app(current_app)
     cur = mysql.connection.cursor(DictCursor)
     cur.execute(query_text)

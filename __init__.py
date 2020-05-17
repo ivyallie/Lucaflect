@@ -1,19 +1,36 @@
 from flask import Flask, render_template
-import os
+import pymysql
 
-def create_app(test_config=None):
-    app = Flask(__name__, instance_relative_config=True)
-    app.config.from_pyfile('config.py')
+from flask_mysqldb import MySQL
+from MySQLdb.cursors import DictCursor
 
-    from . import db
-    db.init_app(app)
+app = Flask(__name__)
 
-    @app.route('/beepers')
-    def sql_test():
-        sql_query = """SELECT * FROM example"""
-        beepers = db.query(sql_query)
-        for beeper in beepers:
-            print(beeper)
-        return render_template('sql_test.html', beepers=beepers)
+class Database:
+    def __init__(self):
+        host = 'localhost'
+        user = 'ivy'
+        password = ''
+        db = 'lucaflect01'
 
-    return app
+        self.con = pymysql.connect(host=host, user=user, password=password, db=db, cursorclass=pymysql.cursors.
+                                   DictCursor)
+        self.cur = self.con.cursor()
+
+    def query(self, querytext):
+        self.cur.execute(querytext)
+        result = self.cur.fetchall()
+
+        return result
+
+@app.route('/beepers/')
+def sql_test():
+    def db_query():
+        db = Database()
+        query = """SELECT * FROM example"""
+        bips = db.query(query)
+        return bips
+
+    the_beepers = db_query()
+
+    return render_template('sql_test.html', beepers=the_beepers)

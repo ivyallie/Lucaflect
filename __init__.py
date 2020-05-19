@@ -9,13 +9,6 @@ app = Flask(__name__)
 from . import db
 database = db.Database()
 
-@app.route('/beepers/')
-def sql_test():
-    def db_query():
-        sqlquery = """SELECT * FROM example"""
-        bips = database.query(sqlquery)
-        return bips
+from . import routes
+app.register_blueprint(routes.bp)
 
-    the_beepers = db_query()
-
-    return render_template('sql_test.html', beepers=the_beepers)

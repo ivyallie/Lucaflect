@@ -1,7 +1,6 @@
 from flask import render_template, Blueprint, current_app, app
-from lucaflect.db import query
 
-bp = Blueprint('lucaflect', __name__)
+bp = Blueprint('routes', __name__)
 from . import db
 database = db.Database()
 
@@ -10,7 +9,8 @@ def index():
     pageheader="Index"
     return render_template('basis.html')
 
-@app.route('/beepers/')
+
+@bp.route('/beepers/')
 def sql_test():
     def db_query():
         sqlquery = """SELECT * FROM example"""

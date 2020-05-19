@@ -1,4 +1,7 @@
-<! doctype html>
+{%  extends 'basis.html' %}
+{% block title %}SQL Test{% endblock %}
+{% block pageheader %}SQL Test{% endblock %}
+{% block content %}
 <ul>
     {% for beeper in beepers %}
     <li>
@@ -6,3 +9,4 @@
     </li>
     {% endfor %}
 </ul>
+{% endblock %}

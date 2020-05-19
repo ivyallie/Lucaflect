@@ -1,8 +1,8 @@
 <!doctype html>
-<title>{% block title %}{% endblock %} {{ g.sitename }}</title>
+<title>{% block title %}{% endblock %} - {{ config.SITENAME }}</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
 <div>
-    <div><h1>{{ sitename }}</h1></div>
+    <div><h1>{{ config.SITENAME }}</h1></div>
     <nav>
         <ul>
             {% for link in navlinks %}
@@ -14,7 +14,9 @@
 <div class="maincontainer">
 <section class="content">
     <h2>
-        {{ pageheader }}
+        {% block pageheader %}{% endblock %}
     </h2>
+{%  block content %}
+{% endblock %}
 </section>
     </div>

@@ -14,3 +14,6 @@ with app.app_context():
     from . import routes
     app.register_blueprint(routes.bp)
 
+    from . import auth
+    app.register_blueprint(auth.bp)
+

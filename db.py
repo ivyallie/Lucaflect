@@ -18,3 +18,11 @@ class Database:
 
         return result
 
+    def write(self, querybase,values):
+        print("Write called")
+        self.cur.execute(querybase,values)
+        self.con.commit()
+
+        return True
+
+

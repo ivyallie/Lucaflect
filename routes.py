@@ -9,10 +9,6 @@ def index():
     pageheader="Index"
     return render_template('basis.html')
 
-@bp.route('/register')
-def register():
-    return render_template('register.html')
-
 
 @bp.route('/beepers/')
 def sql_test():

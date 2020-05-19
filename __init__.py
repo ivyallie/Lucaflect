@@ -6,29 +6,14 @@ from MySQLdb.cursors import DictCursor
 
 app = Flask(__name__)
 
-class Database:
-    def __init__(self):
-        host = 'localhost'
-        user = 'ivy'
-        password = ''
-        db = 'lucaflect01'
-
-        self.con = pymysql.connect(host=host, user=user, password=password, db=db, cursorclass=pymysql.cursors.
-                                   DictCursor)
-        self.cur = self.con.cursor()
-
-    def query(self, querytext):
-        self.cur.execute(querytext)
-        result = self.cur.fetchall()
-
-        return result
+from . import db
+database = db.Database()
 
 @app.route('/beepers/')
 def sql_test():
     def db_query():
-        db = Database()
-        query = """SELECT * FROM example"""
-        bips = db.query(query)
+        sqlquery = """SELECT * FROM example"""
+        bips = database.query(sqlquery)
         return bips
 
     the_beepers = db_query()

@@ -5,10 +5,12 @@ from flask_mysqldb import MySQL
 from MySQLdb.cursors import DictCursor
 
 app = Flask(__name__)
+app.config.from_pyfile('config.py', silent=True)
 
-from . import db
-database = db.Database()
+with app.app_context():
+    from . import db
+    database = db.Database()
 
-from . import routes
-app.register_blueprint(routes.bp)
+    from . import routes
+    app.register_blueprint(routes.bp)
 

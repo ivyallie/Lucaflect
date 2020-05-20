@@ -1,0 +1,5 @@
+{% extends 'basis.html' %}
+{% block content %}
+    <div class="message">{{ message }}</div>
+    <a href="{{ url_for('routes.index') }}">Back to homepage</a>
+{% endblock %}

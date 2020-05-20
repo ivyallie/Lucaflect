@@ -2,6 +2,10 @@ html {
     font-family: sans-serif;
 }
 
+.message {
+    text-align:center;
+}
+
 .warn {
     border:1px solid red;
     color: red;

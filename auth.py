@@ -34,7 +34,7 @@ def register():
                     database.write(
                         '''INSERT INTO user (username,password,full_name,join_date) VALUES (%s,%s,%s,CURRENT_DATE())''',
                         (username, generate_password_hash(password), fullname))
-                    print('Wrote new user')
+                    return render_template('message.html', message="Account created for "+username)
                 else:
                     flash('The email you provided, ' + username + ', is already associated with an account.', 'error')
 

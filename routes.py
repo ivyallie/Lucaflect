@@ -1,4 +1,4 @@
-from flask import render_template, Blueprint, current_app, app
+from flask import render_template, Blueprint
 
 bp = Blueprint('routes', __name__)
 from . import db
@@ -6,8 +6,7 @@ database = db.Database()
 
 @bp.route('/')
 def index():
-    pageheader="Index"
-    return render_template('basis.html')
+    return render_template('index.html')
 
 
 @bp.route('/beepers/')

@@ -1,14 +1,35 @@
-{%  extends 'basis.html' %}
+<!-- Use JS at a later date to validate email address and prevent incomplete form submission -->
+{% extends 'basis.html' %}
 {% block title %}Register{% endblock %}
 {% block pageheader %}Register{% endblock %}
 {% block content %}
+
+    {% with errors = get_flashed_messages(category_filter=["error"]) %}
+        {% if errors %}
+            <div class="warn">
+            <h3>Signup failed, because:</h3>
+            <ul>
+                {% for error in errors %}
+                    <li>
+                        {{ error }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+</div>
     <form method="post">
-    <label for="fullname">First Name</label>
+        <label for="email">Email</label>
+        <input name="email" id="email">
+        <label for="fullname">Full name</label>
         <input name="fullname" id="fullname" required>
-    <label for="username">Username</label>
-    <input name="username" id="username">
-    <label for="password">Password</label>
-    <input type="password" name="password" id="password">
-    <input type="submit" value="Register">
+
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password">
+        {%  if config.REGISTRATION_KEY %}
+        <label for="key">Registration key:</label>
+        <input name="key" id="key"/>
+        {% endif %}
+        <input type="submit" value="Register">
     </form>
 {% endblock %}

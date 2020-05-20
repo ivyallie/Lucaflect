@@ -6,4 +6,4 @@ MYSQL_DB = 'lucaflect01'
 SITENAME = 'Lucaflect Dev'
 
 ALLOW_REGISTRATION = True
-REGISTRATION_KEY = 'beeper'
+REGISTRATION_KEY = ''

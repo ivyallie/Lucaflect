@@ -18,6 +18,16 @@ class Database:
 
         return result
 
+    def query_user(self,email):
+        user_query = '''SELECT * FROM user WHERE username="''' + email + '";'
+        self.cur.execute(user_query)
+        return self.cur.fetchone()
+
+    def query_user_id(self,id):
+        user_query = '''SELECT * FROM user where user_id="''' + str(id) + '";'
+        self.cur.execute(user_query)
+        return self.cur.fetchone()
+
     def write(self, querybase,values):
         print("Write called")
         self.cur.execute(querybase,values)

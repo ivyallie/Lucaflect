@@ -1,4 +1,4 @@
-from flask import Blueprint, flash, g, redirect, request, render_template, current_app
+from flask import Blueprint, flash, g, redirect, request, render_template, current_app, session
 from werkzeug.security import check_password_hash, generate_password_hash
 from . import db
 
@@ -44,4 +44,40 @@ def register():
     else:
         return render_template('403.html'), 403
 
+@bp.route('/login', methods=('GET','POST'))
+def login():
+    if request.method == 'POST':
+        email=request.form['email']
+        password=request.form['password']
+        error=None
+        user=database.query_user(email)
 
+        if not user:
+            flash('There is no account registered to '+email, 'error')
+            error='NoUser'
+        elif not check_password_hash(user['password'], password):
+            flash('Invalid password.', 'error')
+            error='BadPassword'
+
+        if error is None:
+            session.clear()
+            session['user_id'] = user['user_id']
+            load_logged_in_user()
+            return render_template('message.html', message='Welcome, '+user['full_name']+'! You are now logged in.')
+
+    return render_template('login.html')
+
+@bp.before_app_request
+def load_logged_in_user():
+    user_id = session.get('user_id')
+
+    if user_id is None:
+        g.user = None
+    else:
+        g.user = database.query_user_id(user_id)
+
+@bp.route('/logout')
+def logout():
+    session.clear()
+    load_logged_in_user()
+    return render_template('message.html', message='You have been successfully logged out.')

@@ -8,6 +8,11 @@
             {% for link in navlinks %}
             <li><a href="/">{{ link }}</a></li>
             {% endfor %}
+        {% if g.user %}
+        <li>{{ g.user['full_name'] }} - <a href="{{ url_for('auth.logout') }}">Log out</a></li>
+        {% else %}
+        <li><a href="{{ url_for('auth.login') }}">Log in</a></li>
+        {% endif %}
         </ul>
     </nav>
 </div>

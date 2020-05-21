@@ -17,3 +17,5 @@ with app.app_context():
     from . import auth
     app.register_blueprint(auth.bp)
 
+    from . import content
+    app.register_blueprint(content.bp)

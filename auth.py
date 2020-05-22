@@ -6,6 +6,15 @@ import functools
 database = db.Database()
 bp = Blueprint('auth', __name__)
 
+def login_required(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if g.user is None:
+            return redirect(url_for('auth.login'))
+
+        return view(**kwargs)
+    return wrapped_view
+
 
 @bp.route('/register', methods=('GET', 'POST'))
 def register():
@@ -68,6 +77,8 @@ def login():
 
     return render_template('login.html')
 
+
+
 @bp.before_app_request
 def load_logged_in_user():
     user_id = session.get('user_id')
@@ -83,11 +94,22 @@ def logout():
     load_logged_in_user()
     return render_template('message.html', message='You have been successfully logged out.')
 
-def login_required(view):
-    @functools.wraps(view)
-    def wrapped_view(**kwargs):
-        if g.user is None:
-            return redirect(url_for('auth.login'))
+@bp.route('/edit_profile', methods=('GET','POST'))
+@login_required
+def edit_logged_in_user():
+    user = {
+        'name': g.user['full_name'],
+        'email': g.user['username']
+    }
 
-        return view(**kwargs)
-    return wrapped_view
+    if request.method=='POST':
+        email = request.form['email']
+        name = request.form['name']
+        query = '''UPDATE user SET full_name = %s WHERE user_id='''+str(g.user['user_id'])+";"
+        database.write(query,name)
+        return render_template('message.html', message="Your profile has been amended.")
+
+    return render_template('user_editor.html', user=user)
+
+
+

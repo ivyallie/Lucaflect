@@ -1,0 +1,17 @@
+{% extends 'basis.html' %}
+{% block title %}Edit Profile: {{ user['name'] }}{% endblock %}
+{% block pageheader %}Edit Profile: {{ user['name'] }}{% endblock %}
+{% block content %}
+<form method="post">
+<label for="name">Name</label>
+    <input id="name" name="name" required="True" value="{{ user['name'] }}"/>
+    <label for="email">Email</label>
+    <input id="email" name="email" type="email" value="{{ user['email'] }}"/>
+    <h4>Change Password</h4>
+    <label for="current_password">Current Password</label>
+    <input id="current_password" name="current_password" type="password"/>
+    <label for="new_password">New Password</label>
+    <input id="new_password" name="new_password" type="password">
+<input type="submit" value="Post"/>
+</form>
+{% endblock %}

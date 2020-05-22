@@ -1,6 +1,7 @@
-from flask import Blueprint, flash, g, redirect, request, render_template, current_app, session
+from flask import Blueprint, flash, g, redirect, request, render_template, current_app, session, url_for
 from werkzeug.security import check_password_hash, generate_password_hash
 from . import db
+import functools
 
 database = db.Database()
 bp = Blueprint('auth', __name__)
@@ -81,3 +82,12 @@ def logout():
     session.clear()
     load_logged_in_user()
     return render_template('message.html', message='You have been successfully logged out.')
+
+def login_required(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if g.user is None:
+            return redirect(url_for('auth.login'))
+
+        return view(**kwargs)
+    return wrapped_view

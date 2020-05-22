@@ -3,11 +3,13 @@ from werkzeug.exceptions import abort
 from . import db
 import json
 from re import sub
+from lucaflect.auth import login_required
 
 bp = Blueprint('content', __name__)
 database=db.Database()
 
 @bp.route('/new', methods=('GET', 'POST'))
+@login_required
 def new():
     if request.method == 'POST':
         title=request.form['title']

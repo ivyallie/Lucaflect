@@ -8,17 +8,17 @@ database = db.Database()
 
 @bp.route('/')
 def index():
-    comics_raw = database.query("""SELECT * FROM comic;""")
-    print(comics_raw)
+    comics_raw = database.query('''SELECT * FROM comic;''')
+    # print(comics_raw)
     comics=[]
     for comic in comics_raw:
-        body_raw=str(comic['body']).replace('\'', '\"')
-        body=loads(body_raw)
+        body_rawstr = comic['body']
+        body=loads(body_rawstr)
         tags = body['tags']
         d = {
-            'title':comic['title'],
-            'body':body['body_text'],
-            'tags':tags
+            'title': body['true_title'],
+            'body': body['body_text'],
+            'tags': tags
         }
         comics.append(d)
     return render_template('index.html', comics=comics)

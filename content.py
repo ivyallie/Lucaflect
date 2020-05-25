@@ -1,9 +1,12 @@
-from flask import (Blueprint,  g, redirect, render_template, request, url_for, session)
+from flask import (Blueprint,  g, redirect, render_template, request, url_for, session, flash, current_app)
 from werkzeug.exceptions import abort
 from . import db
 import json
 from re import sub
 from lucaflect.auth import login_required
+from os.path import join, splitext, isdir
+from os import makedirs
+import datetime
 
 bp = Blueprint('content', __name__)
 database=db.Database()
@@ -39,5 +42,34 @@ def new():
             user_id=session['user_id']
             to_write='''INSERT INTO comic (author_id,title,body,posted) VALUES (%s, QUOTE(%s), %s, CURRENT_TIMESTAMP())'''
             database.write(to_write,(user_id,clean_title,json_obj))
-            return render_template('message.html',message="Post '"+title+"' created!")
+            return render_template('message.html', message="Post '"+title+"' created!")
     return render_template('comic_editor.html')
+
+
+def validate_destination_dir(path):
+    if isdir(path):
+        return path
+    else:
+        try:
+            makedirs(path)
+        except OSError:
+            return False
+
+
+@bp.route('/upload/', methods=['GET', 'POST'])
+@login_required
+def upload_image():
+    if request.method=='POST':
+        if request.files:
+            image=request.files["file"]
+            file_extension = splitext(image.filename)[1].lower()
+            now = datetime.datetime.now()
+            destination = join(current_app.config["UPLOAD_FOLDER"],str(now.year),str(now.month))
+            filename = secure_filename(image.filename)
+            if file_extension in current_app.config["IMGTYPES"]:
+                if validate_destination_dir(destination):
+                    image.save(join(destination,filename))
+            else:
+                print("Invalid filetype")
+            return redirect(request.url)
+    return render_template('upload_image.html')

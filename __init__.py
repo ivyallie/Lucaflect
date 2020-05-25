@@ -1,4 +1,6 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, current_app
+from os.path import isdir
+from os import makedirs
 import pymysql
 
 from flask_mysqldb import MySQL
@@ -8,6 +10,13 @@ app = Flask(__name__)
 app.config.from_pyfile('config.py', silent=True)
 
 with app.app_context():
+
+    if not isdir(current_app.config['UPLOAD_FOLDER']):
+        try:
+            makedirs(current_app.config['UPLOAD_FOLDER'])
+        except OSError:
+            print('Failed to create upload directory')
+
     from . import db
     database = db.Database()
 

@@ -1,0 +1,10 @@
+{% extends 'basis.html' %}
+{% block title %}Uploader{% endblock %}
+{% block pageheader %}Uploader{% endblock %}
+{% block content %}
+<form action="/upload/" method="post" enctype="multipart/form-data">
+<label for="file">File:</label>
+<input type="file" name="file" id="file"/>
+<button type="submit">Upload</button>
+</form>
+{% endblock %}

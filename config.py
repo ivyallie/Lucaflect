@@ -7,3 +7,7 @@ SITENAME = 'Lucaflect Dev'
 
 ALLOW_REGISTRATION = True
 REGISTRATION_KEY = ''
+
+UPLOAD_FOLDER='./temp/luca_uploads/'
+MAX_CONTENT_LENGTH= 5 * 1024 * 1024
+IMGTYPES=['.gif','.png','.jpg','.jpeg']

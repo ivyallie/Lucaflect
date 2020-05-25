@@ -24,6 +24,8 @@ def index():
     return render_template('index.html', comics=comics)
 
 
+
+
 @bp.route('/beepers/')
 def sql_test():
 

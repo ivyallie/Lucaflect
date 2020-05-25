@@ -8,9 +8,11 @@ from lucaflect.auth import login_required
 from os.path import join, splitext, isdir
 from os import makedirs
 import datetime
+from flask_dropzone import Dropzone
 
 bp = Blueprint('content', __name__)
 database=db.Database()
+dropzone=Dropzone(current_app)
 
 @bp.route('/new', methods=('GET', 'POST'))
 @login_required
@@ -56,10 +58,23 @@ def validate_destination_dir(path):
         except OSError:
             return False
 
+def upload_image(file):
+    file_extension = splitext(file.filename)[1].lower()
+    now = datetime.datetime.now()
+    destination = join(current_app.config["UPLOAD_FOLDER"], str(now.year), str(now.month))
+    filename = secure_filename(file.filename)
+    if file_extension in current_app.config["IMGTYPES"]:
+        if validate_destination_dir(destination):
+            path = join(destination, filename)
+            file.save(path)
+            return path
+    else:
+        return False
 
-@bp.route('/upload/', methods=['GET', 'POST'])
+
+@bp.route('/upload_basic/', methods=['GET', 'POST'])
 @login_required
-def upload_image():
+def upload_basic():
     if request.method=='POST':
         if request.files:
             files=[]
@@ -79,3 +94,11 @@ def upload_image():
             print(files)
         return redirect(request.url)
     return render_template('upload_image.html')
+
+@bp.route('/upload/', methods=['GET', 'POST'])
+@login_required
+def upload():
+    if request.method=='POST':
+        f = request.files.get('file')
+        upload_image(f)
+    return redirect(request.url)

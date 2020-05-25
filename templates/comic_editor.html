@@ -1,4 +1,5 @@
 {% extends 'basis.html' %}
+
 {% block title %}Comic Editor{% endblock %}
 {% block pageheader %}Comic Editor{% endblock %}
 {% block content %}
@@ -10,5 +11,15 @@
 <label for="tags">Tags:</label>
 <input name="tags" id="tags"/>
 <input type="submit" value="Post"/>
+
 </form>
+
+    {{ dropzone.load_css() }}
+    {{ dropzone.load_js() }}
+    {{ dropzone.create(action=url_for('content.upload')) }}
+
+
+{% endblock %}
+{% block scripts %}
+
 {% endblock %}

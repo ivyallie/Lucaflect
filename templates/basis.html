@@ -1,6 +1,11 @@
 <!doctype html>
+<head>
 <title>{% block title %}{% endblock %} - {{ config.SITENAME }}</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+{% block scripts %}
+{% endblock %}
+</head>
+<body>
 <div>
     <div><h1>{{ config.SITENAME }}</h1></div>
     <nav>
@@ -25,3 +30,5 @@
 {% endblock %}
 </section>
     </div>
+</body>
+

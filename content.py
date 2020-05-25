@@ -1,5 +1,6 @@
 from flask import (Blueprint,  g, redirect, render_template, request, url_for, session, flash, current_app)
 from werkzeug.exceptions import abort
+from werkzeug.utils import secure_filename
 from . import db
 import json
 from re import sub
@@ -61,15 +62,20 @@ def validate_destination_dir(path):
 def upload_image():
     if request.method=='POST':
         if request.files:
-            image=request.files["file"]
-            file_extension = splitext(image.filename)[1].lower()
-            now = datetime.datetime.now()
-            destination = join(current_app.config["UPLOAD_FOLDER"],str(now.year),str(now.month))
-            filename = secure_filename(image.filename)
-            if file_extension in current_app.config["IMGTYPES"]:
-                if validate_destination_dir(destination):
-                    image.save(join(destination,filename))
-            else:
-                print("Invalid filetype")
-            return redirect(request.url)
+            files=[]
+            upload_files = request.files.getlist("file")
+            for file in upload_files:
+                file_extension = splitext(file.filename)[1].lower()
+                now = datetime.datetime.now()
+                destination = join(current_app.config["UPLOAD_FOLDER"],str(now.year),str(now.month))
+                filename = secure_filename(file.filename)
+                if file_extension in current_app.config["IMGTYPES"]:
+                    if validate_destination_dir(destination):
+                        path=join(destination,filename)
+                        file.save(path)
+                        files.append(path)
+                else:
+                    print("Invalid filetype")
+            print(files)
+        return redirect(request.url)
     return render_template('upload_image.html')

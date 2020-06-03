@@ -3,21 +3,49 @@
 {% block title %}Comic Editor{% endblock %}
 {% block pageheader %}Comic Editor{% endblock %}
 {% block content %}
-<form method="post">
+    <div class="editor_section">
+    <h3>Meta</h3>
+    <form method="post">
 <label for="title">Title</label>
 <input id="title" name="title"/>
 <label for="body">Body:</label>
 <textarea name="body" id="body"></textarea>
 <label for="tags">Tags:</label>
 <input name="tags" id="tags"/>
+<div>
+    <span>Comic type: </span>
+    <input type="radio" id="pageturns" name="comictype" value="pageturns" checked>
+        <label for="pageturns">Page Turns</label>
+        <input type="radio" id="infinitecanvas" name="comictype" value="infinitecanvas">
+        <label for="infinitecanvas">Infinite Canvas</label>
+</div>
+
+
 <input type="submit" value="Post"/>
 
 </form>
+    </div>
 
-    {{ dropzone.load_css() }}
-    {{ dropzone.load_js() }}
-    {{ dropzone.create(action=url_for('content.upload')) }}
+    <div class="pages_editor">
+    <h3>Pages</h3>
+        <input type="file" id="files"  multiple style="display: none;">
+    <button type="button" id="add-images">Add images</button>
+<ul id="file_list" class="js-sortable">
+</div>
 
+</ul>
+    <template id="listed_file_template">
+ <li draggable="true" data-imgurl="" ><span class="display_text"></span><button onclick="remove_from_list(this)">&times;</button> </li>
+</template>
+    <script src="{{ url_for('static', filename='html5sortable.js') }}" ></script>
+<script>
+sortable('.js-sortable', {
+        forcePlaceholderSize: true,
+        placeholderClass: 'sort_placeholder',
+        hoverClass: 'sort_hover',
+    });
+</script>
+    <script src="{{ url_for('static', filename='image_upload.js') }}" ></script>
 
 {% endblock %}
 {% block scripts %}

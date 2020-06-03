@@ -1,0 +1,23 @@
+{% extends 'basis.html' %}
+
+{% block title %}Debug Uploader{% endblock %}
+{% block pageheader %}Debug Uploader{% endblock %}
+{% block content %}
+
+    {{ dropzone.load_css() }}
+    {{ dropzone.load_js() }}
+    {{ dropzone.create(action=url_for('content.simple_upload')) }}
+
+    {% if session['file_urls'] %}
+    <ul>
+        {% for f in session['file_urls'] %}
+            <li>f</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+
+{% endblock %}
+{% block scripts %}
+
+{% endblock %}

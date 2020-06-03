@@ -10,3 +10,22 @@ html {
     border:1px solid red;
     color: red;
 }
+
+.upload_pending {
+    color:red;
+}
+
+#file_list li {
+    list-style: none;
+    display:flex;
+    justify-content: space-between;
+    width:80%;
+    border:1px solid #aaa;
+    padding: 10pt;
+    margin-bottom: 5pt;
+    cursor: move;
+}
+
+#file_list li.sort_placeholder {
+    border:1px dashed #ddd;
+}

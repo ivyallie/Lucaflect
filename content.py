@@ -1,4 +1,4 @@
-from flask import (Blueprint,  g, redirect, render_template, request, url_for, session, flash, current_app)
+from flask import (Blueprint,  g, redirect, render_template, request, url_for, session, flash, current_app, make_response, jsonify)
 from werkzeug.exceptions import abort
 from werkzeug.utils import secure_filename
 from . import db
@@ -17,6 +17,9 @@ dropzone=Dropzone(current_app)
 @bp.route('/new', methods=('GET', 'POST'))
 @login_required
 def new():
+    if 'uploaded_images' not in session:
+        session['uploaded_images'] = []
+
     if request.method == 'POST':
         title=request.form['title']
         body=request.form['body']
@@ -95,10 +98,53 @@ def upload_basic():
         return redirect(request.url)
     return render_template('upload_image.html')
 
-@bp.route('/upload/', methods=['GET', 'POST'])
+@bp.route('/upload', methods=['PUT'])
 @login_required
+#Need to implement allowed image extensions
 def upload():
-    if request.method=='POST':
-        f = request.files.get('file')
-        upload_image(f)
-    return redirect(request.url)
+    f = request.files['file']
+    now = datetime.datetime.now()
+    destination = join(current_app.config["UPLOAD_FOLDER"], str(now.year), str(now.month))
+    if not isdir(destination):
+        makedirs(destination)
+    filename = secure_filename(f.filename)
+    path = join(destination, filename)
+    f.save(path)
+    response_data = jsonify({'path': path, 'filename':filename})
+    resp = make_response(response_data, 201)
+    return resp
+
+
+@bp.route('/simple_uploader/', methods=['GET', 'POST'])
+def simple_upload():
+    # set session for image results
+    if "file_urls" not in session:
+        session['file_urls'] = []
+    # list to hold our uploaded image urls
+    file_urls = session['file_urls']
+    # handle image upload from Dropzone
+    if request.method == 'POST':
+        file_obj = request.files
+        for f in file_obj:
+            file = request.files.get(f)
+            now = datetime.datetime.now()
+            destination = join(current_app.config["UPLOAD_FOLDER"], str(now.year), str(now.month))
+            filename = secure_filename(file.filename)
+            path = join(destination, filename)
+            file.save(path)
+            '''
+            # save the file with to our photos folder
+            filename = photos.save(
+                file,
+                name=file.filename
+            )
+            # append image urls
+            '''
+            file_urls.append(path)
+
+        session['file_urls'] = file_urls
+        print(file_urls)
+        print(session['file_urls'])
+        return redirect()
+    # return dropzone template on GET request
+    return render_template('basic_uploader.html')

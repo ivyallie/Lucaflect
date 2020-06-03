@@ -6,6 +6,7 @@ import functools
 database = db.Database()
 bp = Blueprint('auth', __name__)
 
+
 def login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):

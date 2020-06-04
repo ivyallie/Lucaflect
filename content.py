@@ -62,43 +62,6 @@ def validate_destination_dir(path):
         except OSError:
             return False
 
-def upload_image(file):
-    file_extension = splitext(file.filename)[1].lower()
-    now = datetime.datetime.now()
-    destination = join(current_app.config["UPLOAD_FOLDER"], str(now.year), str(now.month))
-    filename = secure_filename(file.filename)
-    if file_extension in current_app.config["IMGTYPES"]:
-        if validate_destination_dir(destination):
-            path = join(destination, filename)
-            file.save(path)
-            return path
-    else:
-        return False
-
-
-@bp.route('/upload_basic/', methods=['GET', 'POST'])
-@login_required
-def upload_basic():
-    if request.method=='POST':
-        if request.files:
-            files=[]
-            upload_files = request.files.getlist("file")
-            for file in upload_files:
-                file_extension = splitext(file.filename)[1].lower()
-                now = datetime.datetime.now()
-                destination = join(current_app.config["UPLOAD_FOLDER"],str(now.year),str(now.month))
-                filename = secure_filename(file.filename)
-                if file_extension in current_app.config["IMGTYPES"]:
-                    if validate_destination_dir(destination):
-                        path=join(destination,filename)
-                        file.save(path)
-                        files.append(path)
-                else:
-                    print("Invalid filetype")
-            print(files)
-        return redirect(request.url)
-    return render_template('upload_image.html')
-
 
 def get_unique_filename(filename):
     now = datetime.datetime.now()
@@ -126,38 +89,3 @@ def upload():
         fail_response = jsonify('Unsupported filetype.')
         resp = make_response(fail_response, 415)
     return resp
-
-
-@bp.route('/simple_uploader/', methods=['GET', 'POST'])
-def simple_upload():
-    # set session for image results
-    if "file_urls" not in session:
-        session['file_urls'] = []
-    # list to hold our uploaded image urls
-    file_urls = session['file_urls']
-    # handle image upload from Dropzone
-    if request.method == 'POST':
-        file_obj = request.files
-        for f in file_obj:
-            file = request.files.get(f)
-            now = datetime.datetime.now()
-            destination = join(current_app.config["UPLOAD_FOLDER"], str(now.year), str(now.month))
-            filename = secure_filename(file.filename)
-            path = join(destination, filename)
-            file.save(path)
-            '''
-            # save the file with to our photos folder
-            filename = photos.save(
-                file,
-                name=file.filename
-            )
-            # append image urls
-            '''
-            file_urls.append(path)
-
-        session['file_urls'] = file_urls
-        print(file_urls)
-        print(session['file_urls'])
-        return redirect()
-    # return dropzone template on GET request
-    return render_template('basic_uploader.html')

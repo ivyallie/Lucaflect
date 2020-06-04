@@ -21,7 +21,7 @@
 </div>
 
 
-<input type="submit" value="Post"/>
+<input value="Post" type="button" onclick="postComic()" id="post-button"/>
 
 </form>
     </div>
@@ -46,6 +46,7 @@ sortable('.js-sortable', {
     });
 </script>
     <script src="{{ url_for('static', filename='image_upload.js') }}" ></script>
+    <script src="{{ url_for('static', filename='post_comic.js') }}"></script>
 
 {% endblock %}
 {% block scripts %}

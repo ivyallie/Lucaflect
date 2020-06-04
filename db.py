@@ -28,11 +28,11 @@ class Database:
         self.cur.execute(user_query)
         return self.cur.fetchone()
 
-    def write(self, querybase,values):
+    def write(self, querybase, values):
         print("Write called")
-        self.cur.execute(querybase,values)
+        self.cur.execute(querybase, values)
         self.con.commit()
-
+        print("Write finished")
         return True
 
 

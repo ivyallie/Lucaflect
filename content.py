@@ -89,3 +89,23 @@ def upload():
         fail_response = jsonify('Unsupported filetype.')
         resp = make_response(fail_response, 415)
     return resp
+
+@bp.route('/post_comic', methods=['POST'])
+@login_required
+def post_comic():
+    post = request.get_json()
+    title = post['title']
+    post_content = {
+        'true_title': title,
+        'body': post['bodytext'],
+        'tags': post['tags'],
+        'imagelist': post['image_list']
+    }
+    clean_title = sub('[^A-Za-z0-9 ]+', '', title)
+    user_id = session['user_id']
+    post_json = json.dumps(post_content)
+    to_write = '''INSERT INTO comic (author_id,title,body,posted) VALUES (%s, QUOTE(%s), %s, CURRENT_TIMESTAMP())'''
+    database.write(to_write, (user_id, clean_title, post_json))
+    response_text = jsonify('Success')
+    resp = make_response(response_text, 200)
+    return resp

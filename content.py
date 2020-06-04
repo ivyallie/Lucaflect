@@ -5,9 +5,10 @@ from . import db
 import json
 from re import sub
 from lucaflect.auth import login_required
-from os.path import join, splitext, isdir
+from os.path import join, splitext, isdir, isfile, split
 from os import makedirs
 import datetime
+import time
 from flask_dropzone import Dropzone
 
 bp = Blueprint('content', __name__)
@@ -98,20 +99,32 @@ def upload_basic():
         return redirect(request.url)
     return render_template('upload_image.html')
 
+
+def get_unique_filename(filename):
+    now = datetime.datetime.now()
+    user = g.user['full_name'].replace(" ", "").lower()
+    main_path = join(current_app.config["UPLOAD_FOLDER"], user, str(now.year)+"_"+str(now.month))
+    unixtime = str(int(time.time()))
+    new_filename = user+"_"+unixtime+"_"+filename
+    full_path=join(main_path, new_filename)
+    validate_destination_dir(main_path)
+    return full_path
+
+
 @bp.route('/upload', methods=['PUT'])
 @login_required
-#Need to implement allowed image extensions
 def upload():
     f = request.files['file']
-    now = datetime.datetime.now()
-    destination = join(current_app.config["UPLOAD_FOLDER"], str(now.year), str(now.month))
-    if not isdir(destination):
-        makedirs(destination)
-    filename = secure_filename(f.filename)
-    path = join(destination, filename)
-    f.save(path)
-    response_data = jsonify({'path': path, 'filename':filename})
-    resp = make_response(response_data, 201)
+    file_extension = splitext(f.filename)[1].lower()
+    if file_extension in current_app.config["IMGTYPES"]:
+        securename = secure_filename(f.filename)
+        path = get_unique_filename(securename)
+        f.save(path)
+        response_data = jsonify({'path': path, 'filename': f.filename})
+        resp = make_response(response_data, 201)
+    else:
+        fail_response = jsonify('Unsupported filetype.')
+        resp = make_response(fail_response, 415)
     return resp
 
 

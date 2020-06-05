@@ -95,11 +95,13 @@ def upload():
 def post_comic():
     post = request.get_json()
     title = post['title']
+    print('Format:', post['format']),
     post_content = {
         'true_title': title,
-        'body': post['bodytext'],
+        'body_text': post['body_text'],
         'tags': post['tags'],
-        'imagelist': post['image_list']
+        'imagelist': post['image_list'],
+        'format': post['format']
     }
     clean_title = sub('[^A-Za-z0-9 ]+', '', title)
     user_id = session['user_id']

@@ -3,11 +3,17 @@ let postComic = function () {
     let bodytext = document.getElementById('body').value;
     let tags = document.getElementById('tags').value;
     let image_list = getImageList();
+    let page_turns = document.getElementById('pageturns');
+    let format = 'default';
+    if (page_turns.checked) {
+        format = 'page_turns'
+    } else { format='infinite_canvas' }
     let post = {
         'title' : title,
-        'bodytext' : bodytext,
+        'body_text' : bodytext,
         'tags' : tags.split(','),
-        'image_list' : image_list
+        'image_list' : image_list,
+        'format' : format
     };
     let post_json = JSON.stringify(post);
     fetch('/post_comic', {
@@ -21,8 +27,8 @@ let postComic = function () {
             }
             return response.json();
         })
-        .then(data => alert('Success.'))
-        .catch((error) => { alert('Fail.');})
+        .then(data => console.log('Post submitted successfully.'))
+        .catch((error) => { alert('Post failed.');})
 };
 
 let getImageList = function () {

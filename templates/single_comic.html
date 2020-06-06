@@ -1,0 +1,9 @@
+{% extends 'basis.html' %}
+{% block title %}{{ content['title'] }}{% endblock %}
+{% block pageheader %}{{ content['title'] }}{% endblock %}
+{% block content %}
+{{ content['body'] }}
+    {% for i in content['imagelist'] %}
+    <img src="/uploads/{{ i }}" alt="{{ content['title'] }}" />
+    {% endfor %}
+{% endblock %}

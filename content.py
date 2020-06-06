@@ -5,7 +5,7 @@ from . import db
 import json
 from re import sub
 from lucaflect.auth import login_required
-from os.path import join, splitext, isdir, isfile, split
+from os.path import join, splitext, isdir, isfile, split, dirname, abspath
 from os import makedirs
 import datetime
 import time
@@ -55,23 +55,50 @@ def new():
 
 def validate_destination_dir(path):
     if isdir(path):
+        print('Path Exists')
         return path
     else:
+        print('Path exists not.')
+        makedirs(path)
+        return path
+        '''
         try:
             makedirs(path)
+            return path
         except OSError:
+            print('OSError occurred!')
             return False
+        '''
 
 
 def get_unique_filename(filename):
+    APP_ROOT = dirname(abspath(__file__))
     now = datetime.datetime.now()
     user = g.user['full_name'].replace(" ", "").lower()
-    main_path = join(current_app.config["UPLOAD_FOLDER"], user, str(now.year)+"_"+str(now.month))
+    #main_path = join(current_app.config["UPLOAD_FOLDER"], user, str(now.year)+"_"+str(now.month))
     unixtime = str(int(time.time()))
     new_filename = user+"_"+unixtime+"_"+filename
-    full_path=join(main_path, new_filename)
-    validate_destination_dir(main_path)
-    return full_path
+    path = join(APP_ROOT,current_app.config['UPLOAD_FOLDER'],new_filename)
+    #full_path=join(main_path, new_filename)
+    #validate_destination_dir(main_path)
+    return path
+
+def get_unique_title(user_title):
+    title_stripped = sub('[^A-Za-z0-9 ]+', '', user_title)
+    title = sub(' ', '_', title_stripped)
+    if not database.does_title_exist(title):
+        print('Title is unique.')
+        return title
+    else:
+        print('Title must be numbered')
+        title_blocked = True
+        number = 1
+        while title_blocked:
+            title_with_number = title+"_"+str(number)
+            if database.does_title_exist(title_with_number):
+                number += 1
+            else:
+                return title_with_number
 
 
 @bp.route('/upload', methods=['PUT'])
@@ -103,7 +130,7 @@ def post_comic():
         'imagelist': post['image_list'],
         'format': post['format']
     }
-    clean_title = sub('[^A-Za-z0-9 ]+', '', title)
+    clean_title = get_unique_title(title)
     user_id = session['user_id']
     post_json = json.dumps(post_content)
     to_write = '''INSERT INTO comic (author_id,title,body,posted) VALUES (%s, QUOTE(%s), %s, CURRENT_TIMESTAMP())'''
@@ -111,3 +138,4 @@ def post_comic():
     response_text = jsonify('Success')
     resp = make_response(response_text, 200)
     return resp
+

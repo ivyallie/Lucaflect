@@ -72,7 +72,9 @@ def login():
 
         if error is None:
             session.clear()
+            session['user'] = user
             session['user_id'] = user['user_id']
+            session['user_name'] = user['full_name']
             load_logged_in_user()
             return render_template('message.html', message='Welcome, '+user['full_name']+'! You are now logged in.')
 
@@ -87,7 +89,7 @@ def load_logged_in_user():
     if user_id is None:
         g.user = None
     else:
-        g.user = database.query_user_id(user_id)
+        g.user = session['user']
 
 @bp.route('/logout')
 def logout():

@@ -28,6 +28,11 @@ class Database:
         self.cur.execute(user_query)
         return self.cur.fetchone()
 
+    def does_title_exist(self,title):
+        title_query = "SELECT * FROM comic WHERE title='''" + title + "''';"
+        self.cur.execute(title_query)
+        return self.cur.fetchone()
+
     def write(self, querybase, values):
         print("Write called")
         self.cur.execute(querybase, values)

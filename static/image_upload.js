@@ -69,6 +69,7 @@ let user_files = document.getElementById('files');
              .then(result => {
               // console.log('Success:', result['path']);
               remove_from_upload_queue(file);
+              console.log(result['path']);
               update_file_list(result['filename'], result['path'])
              })
              .catch(error => {

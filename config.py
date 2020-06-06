@@ -9,6 +9,6 @@ ALLOW_REGISTRATION = True
 REGISTRATION_KEY = ''
 TEMPLATES_AUTO_RELOAD = True
 
-UPLOAD_FOLDER='./temp/luca_uploads/'
+UPLOAD_FOLDER='uploads'
 MAX_CONTENT_LENGTH= 5 * 1024 * 1024
 IMGTYPES=['.gif','.png','.jpg','.jpeg']

@@ -7,7 +7,7 @@
     <h3>Meta</h3>
     <form method="post">
 <label for="title">Title</label>
-<input id="title" name="title"/>
+<input id="title" name="title" value=""/>
 <label for="body">Body:</label>
 <textarea name="body" id="body"></textarea>
 <label for="tags">Tags:</label>
@@ -21,7 +21,7 @@
 </div>
 
 
-<input value="Post" type="button" onclick="postComic()" id="post-button"/>
+<input value="Post" type="button" onclick="postComic()" id="post-button" data-id=""/>
 
 </form>
     </div>
@@ -37,6 +37,12 @@
     <template id="listed_file_template">
  <li draggable="true" data-imgurl="" ><span class="display_text"></span><button onclick="remove_from_list(this)">&times;</button> </li>
 </template>
+    {%  if content %}
+    <script src="{{ url_for('static', filename='initialize_editor.js') }}"></script>
+    <script>
+        let content_json = JSON.parse('{{ content | tojson | safe }}');
+        initialize_editor(content_json)</script>
+    {% endif %}
     <script src="{{ url_for('static', filename='html5sortable.js') }}" ></script>
 <script>
 sortable('.js-sortable', {

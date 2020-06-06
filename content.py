@@ -2,6 +2,7 @@ from flask import (Blueprint,  g, redirect, render_template, request, url_for, s
 from werkzeug.exceptions import abort
 from werkzeug.utils import secure_filename
 from . import db
+from . import routes
 import json
 from re import sub
 from lucaflect.auth import login_required
@@ -50,6 +51,7 @@ def new():
             to_write='''INSERT INTO comic (author_id,title,body,posted) VALUES (%s, QUOTE(%s), %s, CURRENT_TIMESTAMP())'''
             database.write(to_write,(user_id,clean_title,json_obj))
             return render_template('message.html', message="Post '"+title+"' created!")
+
     return render_template('comic_editor.html')
 
 
@@ -135,7 +137,7 @@ def post_comic():
     post_json = json.dumps(post_content)
     to_write = '''INSERT INTO comic (author_id,title,body,posted) VALUES (%s, QUOTE(%s), %s, CURRENT_TIMESTAMP())'''
     database.write(to_write, (user_id, clean_title, post_json))
-    response_text = jsonify('Success')
+    response_text = jsonify({'redirect': url_for('routes.open_comic_editor', title=clean_title)})
     resp = make_response(response_text, 200)
     return resp
 

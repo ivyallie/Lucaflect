@@ -1,5 +1,5 @@
 let initialize_editor = function(content) {
-    console.log('Initializing editor');
+    //console.log('Initializing editor');
     let title = document.getElementById('title');
     let body = document.getElementById('body');
     let tags = document.getElementById('tags');
@@ -11,7 +11,7 @@ let initialize_editor = function(content) {
     tags.value = content['tags'].toString();
     let format = content['format'];
     if (format === 'infinite_canvas') {
-        infinitecanvas.checked()
+        infinitecanvas.checked = true;
     }
     for (i=0; i<content['imagelist'].length; i++) {
         let image = content['imagelist'][i];
@@ -21,13 +21,13 @@ let initialize_editor = function(content) {
     }
 
     let id = content['id'].toString();
-    console.log('Comic id:',id);
+    //console.log('Comic id:',id);
     post_button.setAttribute('data-id',id);
     post_button.value = 'Update';
 };
 
 let populate_file_list = function(display_name,real_name) {
-    console.log(real_name);
+    //console.log(real_name);
     let file_list = document.getElementById('file_list');
     let file_template = document.getElementById('listed_file_template');
       let clone = file_template.content.cloneNode(true);

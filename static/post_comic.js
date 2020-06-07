@@ -37,13 +37,30 @@ let postComic = function () {
         .catch((error) => { alert('Post failed.');})
     } else {
         //We are in EDIT POST mode
-        console.log('Edit post')
+        console.log('Submitting post edits');
+        let comic_id = post_button.getAttribute('data-id');
+        fetch('/modify_comic/'+comic_id.toString(), {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: post_json,
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('A problem!');
+                }
+                return response.json();
+            })
+            .then(result => {
+                console.log('Post modified success')
+            })
+            .catch((error) => {console.log('Modification failed.')})
+        ;
     }
 
 };
 
 let getImageList = function () {
-    console.log('Image list');
+    //console.log('Image list');
     let file_list = document.getElementById('file_list');
     let list_elements = file_list.querySelectorAll('li');
     let image_list = [];

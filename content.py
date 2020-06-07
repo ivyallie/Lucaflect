@@ -54,6 +54,32 @@ def new():
 
     return render_template('comic_editor.html')
 
+@bp.route('/edit/<string:title>', methods=['GET'])
+@login_required
+def open_comic_editor(title):
+    comic = database.does_title_exist(title)
+
+    if comic:
+        comic_id = comic['comic_id']
+        user_id = session['user_id']
+        if database.user_and_post_match(user_id,comic_id):
+            body = json.loads(comic['body'])
+            content = {
+                'id': comic['comic_id'],
+                'title': body['true_title'],
+                'body': body['body_text'],
+                'imagelist': body['imagelist'],
+                'tags': body['tags'],
+                'format': body['format']
+            }
+            return render_template('comic_editor.html', content=content)
+        else:
+            return render_template('403.html'), 403
+    else:
+        return render_template('404.html'), 4040
+
+
+
 
 def validate_destination_dir(path):
     if isdir(path):
@@ -106,6 +132,7 @@ def get_unique_title(user_title):
 @bp.route('/upload', methods=['PUT'])
 @login_required
 def upload():
+    # This is the saint whose technique I finally got to work: https://github.com/ibrahimokdadov/upload_file_python/blob/master/src/app_display_image.py
     f = request.files['file']
     file_extension = splitext(f.filename)[1].lower()
     if file_extension in current_app.config["IMGTYPES"]:
@@ -119,25 +146,45 @@ def upload():
         resp = make_response(fail_response, 415)
     return resp
 
-@bp.route('/post_comic', methods=['POST'])
-@login_required
-def post_comic():
-    post = request.get_json()
-    title = post['title']
-    print('Format:', post['format']),
+def process_post_content(post):
     post_content = {
-        'true_title': title,
+        'true_title': post['title'],
         'body_text': post['body_text'],
         'tags': post['tags'],
         'imagelist': post['image_list'],
         'format': post['format']
     }
+    return json.dumps(post_content)
+
+@bp.route('/post_comic', methods=['POST'])
+@login_required
+def post_comic():
+    post = request.get_json()
+    title = post['title']
+    #print('Format:', post['format']),
     clean_title = get_unique_title(title)
     user_id = session['user_id']
-    post_json = json.dumps(post_content)
+    post_json = process_post_content(post)
     to_write = '''INSERT INTO comic (author_id,title,body,posted) VALUES (%s, QUOTE(%s), %s, CURRENT_TIMESTAMP())'''
     database.write(to_write, (user_id, clean_title, post_json))
-    response_text = jsonify({'redirect': url_for('routes.open_comic_editor', title=clean_title)})
+    response_text = jsonify({'redirect': url_for('content.open_comic_editor', title=clean_title)})
     resp = make_response(response_text, 200)
+    return resp
+
+@bp.route('/modify_comic/<int:id>', methods=['POST'])
+@login_required
+def modify_comic(id):
+    print('Modify comic!')
+    post = request.get_json()
+    post_json = process_post_content(post)
+    if database.user_and_post_match(session['user_id'],id):
+        #print(post_json)
+        modification = '''UPDATE comic SET body=%s WHERE comic_id=%s'''
+        database.write(modification, (post_json, id))
+        response_text = jsonify('Modification successful')
+        resp = make_response(response_text, 200)
+    else:
+        response_text = jsonify('You are not authorized to modify this post.')
+        resp = make_response(response_text, 403)
     return resp
 

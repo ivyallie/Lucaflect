@@ -43,21 +43,7 @@ def get_single_comic(title):
         }
     return render_template('single_comic.html', content=content)
 
-@bp.route('/edit/<string:title>', methods=['GET'])
-def open_comic_editor(title):
-    comic = database.does_title_exist(title)
-    if comic:
-        body = loads(comic['body'])
-        content = {
-            'id': comic['comic_id'],
-            'title': body['true_title'],
-            'body': body['body_text'],
-            'imagelist': body['imagelist'],
-            'tags': body['tags'],
-            'format': body['format']
-        }
-        content_json = jsonify(content)
-    return render_template('comic_editor.html', content=content)
+
 
 @bp.route('/uploads/<filename>')
 def uploaded_file(filename):

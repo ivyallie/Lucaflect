@@ -13,10 +13,12 @@ def index():
     # print(comics_raw)
     comics=[]
     for comic in comics_raw:
+        internal_title = comic['title'].replace("'", "")
         body_rawstr = comic['body']
         body=loads(body_rawstr)
         tags = body['tags']
         d = {
+            'internal_title': internal_title,
             'title': body['true_title'],
             'body': body['body_text'],
             'tags': tags

@@ -5,7 +5,7 @@
     {% if comics %}
         {% for comic in comics %}
             <section>
-                <h3>{{ comic['title'] }}</h3>
+                <h3><a href="{{ url_for('routes.get_single_comic', title=comic['internal_title']) }}">{{ comic['title'] }}</a></h3>
                 <p>{{ comic['body'] }}</p>
                 <ul>
                     {% for tag in comic['tags'] %}

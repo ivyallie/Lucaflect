@@ -2,8 +2,23 @@
 {% block title %}{{ content['title'] }}{% endblock %}
 {% block pageheader %}{{ content['title'] }}{% endblock %}
 {% block content %}
-{{ content['body'] }}
+    {%  if (content['show_tools']) %}
+        <div id="post-tools">
+        <a href="{{ url_for('content.open_comic_editor', title=content['internal_title']) }}">
+        Edit this</a> &bullet; <a href="">Delete this</a>
+        </div>
+    {% endif %}
+    <section>
+    <span>By {{ content['author'] }}, time {{ content['time'] }}</span>
+        <div>{{ content['body'] }}</div>
+
+    </section>
+
+    <section id="infinite_canvas">
     {% for i in content['imagelist'] %}
+
     <img src="/uploads/{{ i }}" alt="{{ content['title'] }}" />
     {% endfor %}
+    </section>
+
 {% endblock %}

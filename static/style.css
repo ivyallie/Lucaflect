@@ -29,3 +29,7 @@ html {
 #file_list li.sort_placeholder {
     border:1px dashed #ddd;
 }
+
+#infinite_canvas img {
+    max-width: 100%;
+}

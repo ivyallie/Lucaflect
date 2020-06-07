@@ -51,7 +51,7 @@ let postComic = function () {
                 return response.json();
             })
             .then(result => {
-                console.log('Post modified success')
+                alert("Comic modified successfully.")
             })
             .catch((error) => {console.log('Modification failed.')})
         ;

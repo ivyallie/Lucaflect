@@ -40,11 +40,13 @@ def get_single_comic(title):
 
     if comic:
         body = loads(comic['body'])
+
         images = []
         for image in body['imagelist']:
             src = image["file_path"]
             filename = basename(src)
             images.append(filename)
+
         internal_title = comic['title'].replace("'", "")
         author = database.query_user_id(comic['author_id'])
         author_name = author['full_name']
@@ -60,6 +62,7 @@ def get_single_comic(title):
             'show_tools': show_tools,
             'author': author_name,
             'time': time,
+            'format': body['format']
         }
     return render_template('single_comic.html', content=content)
 

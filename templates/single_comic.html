@@ -13,12 +13,66 @@
         <div>{{ content['body'] }}</div>
 
     </section>
-
+{% if (content['format'] == 'infinite_canvas') %}
     <section id="infinite_canvas">
     {% for i in content['imagelist'] %}
 
     <img src="/uploads/{{ i }}" alt="{{ content['title'] }}" />
+
     {% endfor %}
     </section>
+    {% else %}
+    <p>Page turns time!</p>
+{% endif %}
+    <section id="turnable_page">
+    <img src="" id="page_display" onclick="nextPage()" />
+    <img src="" id="next_page" style="display: none;"/>
+    </section>
+    <!-- <script src="{{ url_for('static', filename='page_turns.js') }}"></script> -->
+    <script>
+    let image_list = {{ content.imagelist | safe }};
+    let page_display = document.getElementById('page_display');
+    let next_page = document.getElementById('next_page');
 
+    let showPage = function(page) {
+        let file = image_list[page];
+        let next_page_number = parseInt(page)+1;
+        if (!(next_page_number>image_list.length)) {
+            let next_file = image_list[next_page_number];
+            next_page.setAttribute('src', '/uploads/' + next_file);
+        }
+        page_display.setAttribute('src', '/uploads/'+file);
+    };
+
+    let getPageFromURL = function () {
+        let url = window.location.search;
+        let url_parameters = new URLSearchParams(url);
+        let page = parseInt(url_parameters.get('page')) ;
+        if (page>0) {
+            return page
+        } else {
+            return 0
+        }
+    };
+
+    let nextPage = function() {
+      let current_page = getPageFromURL();
+      if ((current_page+1)<image_list.length) {
+          showPage(current_page+1);
+          let url = new URL(window.location);
+          url.searchParams.set('page',current_page+1);
+          window.history.pushState('','',url);
+      }
+    };
+
+    let initialize = function() {
+        let page = getPageFromURL();
+        showPage(page)
+    };
+
+
+    window.onload = function() {
+        initialize();
+    }
+    </script>
 {% endblock %}

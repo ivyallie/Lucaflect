@@ -33,3 +33,7 @@ html {
 #infinite_canvas img {
     max-width: 100%;
 }
+
+.interact {
+    cursor:pointer;
+}

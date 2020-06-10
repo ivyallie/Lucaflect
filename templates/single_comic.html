@@ -22,17 +22,23 @@
     {% endfor %}
     </section>
     {% else %}
-    <p>Page turns time!</p>
-{% endif %}
     <section id="turnable_page">
-    <img src="" id="page_display" onclick="nextPage()" />
+    <img src="" id="page_display" class='interact' onclick="nextPage()" />
     <img src="" id="next_page" style="display: none;"/>
+    <div>
+        <button type="button" id="back-button" onclick="previousPage()">Back</button>
+        <button type="button" id="next-button" onclick="nextPage()">Next</button>
+    </div>
     </section>
+{% endif %}
+
     <!-- <script src="{{ url_for('static', filename='page_turns.js') }}"></script> -->
     <script>
     let image_list = {{ content.imagelist | safe }};
     let page_display = document.getElementById('page_display');
     let next_page = document.getElementById('next_page');
+    let next_button = document.getElementById('next-button');
+    let previous_button = document.getElementById('back-button');
 
     let showPage = function(page) {
         let file = image_list[page];
@@ -42,6 +48,7 @@
             next_page.setAttribute('src', '/uploads/' + next_file);
         }
         page_display.setAttribute('src', '/uploads/'+file);
+        setControlContext(page);
     };
 
     let getPageFromURL = function () {
@@ -65,6 +72,33 @@
       }
     };
 
+    let previousPage = function() {
+        let current_page = getPageFromURL();
+        if ((current_page-1)>-1) {
+            showPage(current_page-1);
+            let url = new URL(window.location);
+            url.searchParams.set('page',current_page-1);
+            window.history.pushState('','',url);
+        }
+    };
+
+    let setControlContext = function(page) {
+        let highest_index = image_list.length - 1;
+        if (page === highest_index) {
+        next_button.disabled = true;
+        previous_button.disabled = false;
+        page_display.classList.remove('interact');
+        } else if ((0 < page) && (page < highest_index)) {
+            next_button.disabled = false;
+            previous_button.disabled = false;
+            page_display.classList.add('interact');
+        } else if (page === 0) {
+            next_button.disabled = false;
+            previous_button.disabled = true;
+            page_display.classList.add('interact');
+        }
+    };
+
     let initialize = function() {
         let page = getPageFromURL();
         showPage(page)
@@ -73,6 +107,15 @@
 
     window.onload = function() {
         initialize();
-    }
+    };
+
+    window.addEventListener('popstate', function() {
+        //fetch correct comic when reached by back/forward browser navigation
+        console.log('pop!');
+        let page=getPageFromURL();
+        showPage(page);
+    })
+
+
     </script>
 {% endblock %}

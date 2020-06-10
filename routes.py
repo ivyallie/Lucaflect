@@ -10,7 +10,6 @@ bp = Blueprint('routes', __name__)
 def index():
     database = db.Database()
     comics_raw = database.query('''SELECT * FROM comic;''')
-    # print(comics_raw)
     comics=[]
     for comic in comics_raw:
         internal_title = comic['title'].replace("'", "")

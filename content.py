@@ -188,3 +188,19 @@ def modify_comic(id):
         resp = make_response(response_text, 403)
     return resp
 
+@bp.route('/delete/<string:title>', methods=['GET', 'POST'])
+@login_required
+def delete_comic(title):
+    database = db.Database()
+    comic = database.does_title_exist(title)
+    id = comic['comic_id']
+    if database.user_and_post_match(session['user_id'], id):
+        if request.method == 'POST':
+            database.delete_comic(id)
+            return redirect(url_for('routes.index'))
+        comic_body = json.loads(comic['body'])
+        display_title = comic_body['true_title']
+        return render_template('delete_confirm.html', title=title, display_title=display_title)
+    else:
+        return render_template('403.html')
+

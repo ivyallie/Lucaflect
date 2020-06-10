@@ -41,6 +41,13 @@ class Database:
         print("Write finished")
         return True
 
+    def delete_comic(self,id):
+        query = '''DELETE FROM comic WHERE comic_id="'''+str(id)+'''";'''
+        self.cur.execute(query)
+        self.con.commit()
+        print('Deleted comic')
+        return True
+
     def user_and_post_match(self, user_id, comic_id):
         post_query = '''SELECT * FROM comic WHERE comic_id="''' + str(comic_id) + '''";'''
         self.cur.execute(post_query)

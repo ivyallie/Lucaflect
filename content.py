@@ -174,7 +174,6 @@ def post_comic():
 @bp.route('/modify_comic/<int:id>', methods=['POST'])
 @login_required
 def modify_comic(id):
-    print('Modify comic!')
     post = request.get_json()
     post_json = process_post_content(post)
     if database.user_and_post_match(session['user_id'],id):

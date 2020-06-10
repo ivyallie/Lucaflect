@@ -1,17 +1,40 @@
 {% extends 'basis.html' %}
-{% block title %}Edit Profile: {{ user['name'] }}{% endblock %}
-{% block pageheader %}Edit Profile: {{ user['name'] }}{% endblock %}
+{% block title %}Edit Profile: {{ user['full_name'] }}{% endblock %}
+{% block pageheader %}Edit Profile: {{ user['full_name'] }}{% endblock %}
 {% block content %}
 <form method="post">
 <label for="name">Name</label>
-    <input id="name" name="name" required="True" value="{{ user['name'] }}"/>
+    <input id="name" name="name" required="True" value="{{ user['full_name'] }}"/>
     <label for="email">Email</label>
     <input id="email" name="email" type="email" value="{{ user['email'] }}"/>
-    <h4>Change Password</h4>
-    <label for="current_password">Current Password</label>
-    <input id="current_password" name="current_password" type="password"/>
-    <label for="new_password">New Password</label>
-    <input id="new_password" name="new_password" type="password">
-<input type="submit" value="Post"/>
+    <label for="bio">Bio</label>
+    <textarea id="bio">{{ bio }}</textarea>
+
+    <div id="web_presence_editor">
+        <h4>Web Presence Links</h4>
+        <ul id="web_presence_list" class="js-sortable">
+        </ul>
+
+
+
+    <button type="button" onclick="add_web_presence()">+ Add link</button>
+    </div>
+
+<button type="button" onclick="applyChanges({{ user.user_id }})">Apply changes</button>
 </form>
+   
+        <template id="web_presence_entry">
+ <li draggable="true" data-imgurl="" ><input class="wp_title" required="true" placeholder="Example"/><input required='true' class="wp_url" placeholder="example.com/you"/><button type="button" onclick="remove_from_list(this)">&times;</button> </li>
+</template>
+    <script src="{{ url_for('static', filename='user_editor.js') }}"></script>
+        <script src="{{ url_for('static', filename='html5sortable.js') }}" ></script>
+<script>
+sortable('.js-sortable', {
+        forcePlaceholderSize: true,
+        placeholderClass: 'sort_placeholder',
+        hoverClass: 'sort_hover',
+    });
+
+document.addEventListener("load", populateLinks({{ web_links | safe }}))
+</script>
 {% endblock %}

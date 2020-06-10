@@ -1,7 +1,8 @@
-from flask import Blueprint, flash, g, redirect, request, render_template, current_app, session, url_for
+from flask import Blueprint, flash, g, redirect, request, render_template, current_app, session, url_for, jsonify, make_response
 from werkzeug.security import check_password_hash, generate_password_hash
 from . import db
 import functools
+from json import dumps, loads
 
 database = db.Database()
 bp = Blueprint('auth', __name__)
@@ -97,13 +98,13 @@ def logout():
     load_logged_in_user()
     return render_template('message.html', message='You have been successfully logged out.')
 
-@bp.route('/edit_profile', methods=('GET','POST'))
+@bp.route('/edit_profile', methods=['GET'])
 @login_required
 def edit_logged_in_user():
-    user = {
-        'name': g.user['full_name'],
-        'email': g.user['username']
-    }
+    user = database.query_user_id(g.user['user_id'])
+    user_meta = loads(user['meta'])
+    bio = user_meta['bio']
+    web_links = user_meta['web_links']
 
     if request.method=='POST':
         email = request.form['email']
@@ -112,7 +113,31 @@ def edit_logged_in_user():
         database.write(query,name)
         return render_template('message.html', message="Your profile has been amended.")
 
-    return render_template('user_editor.html', user=user)
+    return render_template('user_editor.html', user=user, bio=bio, web_links=web_links)
 
+@bp.route('/update_user/<int:id>', methods=['POST'])
+@login_required
+def update_user(id):
+    if g.user['user_id'] == id:
+        post=request.get_json()
+        user = {
+            'name': post['name'],
+            'email': post['email'],
+
+        }
+        print(user['name'])
+        print(user['email'])
+        user_meta = {
+            'bio': post['bio'],
+            'web_links': post['web_links']
+        }
+        user_meta_json = dumps(user_meta)
+        query = '''UPDATE user SET full_name=%s, email=%s, meta=%s WHERE user_id="'''+str(id)+'''";'''
+        database.write(query, (user['name'], user['email'], user_meta_json))
+        response_text = jsonify('Modification successful')
+        resp = make_response(response_text, 200)
+        return resp
+    else:
+        return render_template('403.html')
 
 

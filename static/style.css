@@ -30,6 +30,21 @@ html {
     border:1px dashed #ddd;
 }
 
+#web_presence_list li {
+    list-style: none;
+    display:flex;
+    justify-content: space-between;
+    width:40%;
+    border:1px solid #aaa;
+    padding: 10pt;
+    margin-bottom: 5pt;
+    cursor: move;
+}
+
+#web_presence_list li.sort_placeholder {
+    border:1px dashed #ddd;
+}
+
 #infinite_canvas img {
     max-width: 100%;
 }

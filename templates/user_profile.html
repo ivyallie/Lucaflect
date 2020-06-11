@@ -1,0 +1,15 @@
+{% extends 'basis.html' %}
+{% block title %}{{ user['full_name'] }}{% endblock %}
+{% block pageheader %}{{ user['full_name'] }}{% endblock %}
+{% block content %}
+<p>{{ meta['bio'] }}</p>
+    <ul>
+    {% for link in meta['web_links'] %}
+    <li><a href="{{ link['link_url'] }}">{{ link['link_name'] }}</a></li>
+    {% endfor %}
+    </ul>
+
+    {% if g.user['user_id'] == user['user_id'] %}
+    <span><a href="{{ url_for('auth.edit_logged_in_user') }}">Edit profile</a></span>
+    {% endif %}
+{% endblock %}

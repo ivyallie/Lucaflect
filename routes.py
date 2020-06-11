@@ -75,6 +75,22 @@ def uploaded_file(filename):
     upload_dir = current_app.config['UPLOAD_FOLDER']
     return send_from_directory(upload_dir, filename)
 
+@bp.route('/profile/<string:username>')
+def user_profile(username):
+    database = db.Database()
+    user = database.query_user(username)
+    meta = loads(user['meta'])
+    for link in meta['web_links']:
+        url = str(link['link_url'])
+        if not url.startswith('http://'):
+            new_url = "http://"+url
+            link['link_url'] = new_url
+    if user:
+        return render_template('user_profile.html', user=user, meta=meta)
+    else:
+        return 404
+
+
 
 
 

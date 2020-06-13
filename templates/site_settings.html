@@ -1,0 +1,34 @@
+{% extends 'basis.html' %}
+{% block title %}Site Settings{% endblock %}
+{% block pageheader %}Site Settings{% endblock %}
+{% block content %}
+<form method="post">
+<section>
+<div>
+    <label for="site_name">Site name:</label>
+<input id="site_name" name="site_name" value="{{ settings['name'] }}"/>
+</div>
+<div>
+      <label for="site_description">Description</label>
+    <textarea id="site_description" name="site_description">{% if settings['description']!="None" %}{{ settings['description'] }}{% endif %}</textarea>
+
+</div>
+</section>
+   <section>
+        <h3>Registration options</h3>
+<div>
+<input type="checkbox" id="allow_reg" name="allow_reg" {% if settings['registration'] %}checked{% endif %}/>
+    <label for="allow_reg">Allow registrations</label>
+</div>
+    <div>
+<input type="checkbox" id="use_key" name="use_key" {% if settings['use_key'] %}checked{% endif %}/>
+    <label for="use_key">Use key</label>
+    </div><div>
+        <label for="set_key">Set key</label>
+        <input id="set_key" name="set_key"/>
+        <p>The key will be stored encrypted and cannot be retrieved, only changed.</p>
+        </div>
+        </section>
+<button type="submit">Apply changes</button>
+</form>
+{% endblock %}

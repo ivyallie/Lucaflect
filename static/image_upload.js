@@ -85,5 +85,6 @@ let user_files = document.getElementById('files');
         };
     };
 
+
     user_files.addEventListener("change", send_files_to_list);
     document.getElementById('add-images').addEventListener("click", invoke_file_picker);

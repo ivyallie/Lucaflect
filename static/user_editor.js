@@ -12,6 +12,9 @@ let make_user = function () {
     let web_presence_list = document.getElementById('web_presence_list');
     let web_presence_links = [];
     let wp_li_elements = web_presence_list.querySelectorAll('li');
+    let portrait = document.getElementById('portrait');
+    let portrait_filepath = portrait.getAttribute('src');
+    let portrait_filename = portrait_filepath.replace(/^.*[\\\/]/, '');
     for (i=0; i<wp_li_elements.length; i++) {
         let li = wp_li_elements[i];
         let link_name = li.querySelector('.wp_title');
@@ -26,7 +29,8 @@ let make_user = function () {
         'name' : name.value,
         'email' : email.value,
         'bio' : bio.value,
-        'web_links' : web_presence_links
+        'web_links' : web_presence_links,
+        'portrait': portrait_filename
     };
 
     return user

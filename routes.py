@@ -1,7 +1,9 @@
-from flask import render_template, Blueprint, session, url_for, jsonify, current_app, send_from_directory, redirect
+from flask import render_template, Blueprint, session, request, current_app, send_from_directory
 from . import db
-from json import loads
+from . import auth
+from json import loads, dumps
 from os.path import join, basename
+from werkzeug.security import generate_password_hash
 
 bp = Blueprint('routes', __name__)
 
@@ -66,7 +68,6 @@ def get_single_comic(title):
     return render_template('single_comic.html', content=content)
 
 
-
 @bp.route('/uploads/<filename>')
 def uploaded_file(filename):
     print('Getting uploaded file...')
@@ -75,20 +76,68 @@ def uploaded_file(filename):
     upload_dir = current_app.config['UPLOAD_FOLDER']
     return send_from_directory(upload_dir, filename)
 
+
 @bp.route('/profile/<string:username>')
 def user_profile(username):
     database = db.Database()
     user = database.query_user(username)
-    meta = loads(user['meta'])
-    for link in meta['web_links']:
-        url = str(link['link_url'])
-        if not url.startswith('http://'):
-            new_url = "http://"+url
-            link['link_url'] = new_url
+
     if user:
+        meta = loads(user['meta'])
+        for link in meta['web_links']:
+            url = str(link['link_url'])
+            if not url.startswith('http://'):
+                new_url = "http://" + url
+                link['link_url'] = new_url
         return render_template('user_profile.html', user=user, meta=meta)
     else:
-        return 404
+        return render_template('404.html'), 404
+
+
+@bp.route('/settings', methods=['GET', 'POST'])
+def site_settings():
+    if auth.check_admin():
+        database = db.Database()
+        if request.method == 'POST':
+                print('Applying settings')
+                if request.form['set_key']:
+                    key=generate_password_hash(request.form['set_key'])
+                else:
+                    key="";
+                form = {
+                    'name': request.form['site_name'],
+                    'description': request.form['site_description'],
+                    'registration': request.form.get('allow_reg') != None,
+                    'use_key': request.form.get('use_key') != None,
+                    'key': key
+                }
+                for item in form.items():
+                    name = item[0]
+                    value = str(item[1])
+                    if value:
+                        if database.existSetting(name):
+                            if len(value) > 20:
+                                longvalue = dumps(value)
+                                query = '''UPDATE lucaflect SET shortvalue=NULL, longvalue=%s WHERE name=%s'''
+                                database.write(query, (longvalue, name))
+                            else:
+                                query = '''UPDATE lucaflect SET shortvalue=%s, longvalue=NULL WHERE name=%s'''
+                                database.write(query, (value, name))
+                    else:
+                        print(name, 'is null!')
+
+
+        settings = {
+            'name': database.getSetting('name'),
+            'registration': database.getSetting('registration'),
+            'use_key': database.getSetting('use_key'),
+            'description': database.getSetting('description')
+        }
+        return render_template('site_settings.html', settings=settings)
+    else:
+        return render_template('403.html'), 403
+
+
 
 
 

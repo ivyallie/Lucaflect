@@ -2,6 +2,8 @@
 {% block title %}{{ user['full_name'] }}{% endblock %}
 {% block pageheader %}{{ user['full_name'] }}{% endblock %}
 {% block content %}
+    <div id="user_profile">
+    <img src="/uploads/{{ meta['portrait'] }}" class="portrait"/>
 <p>{{ meta['bio'] }}</p>
     <ul>
     {% for link in meta['web_links'] %}
@@ -12,4 +14,5 @@
     {% if g.user['user_id'] == user['user_id'] %}
     <span><a href="{{ url_for('auth.edit_logged_in_user') }}">Edit profile</a></span>
     {% endif %}
+    </div>
 {% endblock %}

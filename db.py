@@ -1,5 +1,6 @@
 from flask import current_app
 import pymysql
+from json import loads
 
 class Database:
     def __init__(self):
@@ -55,6 +56,38 @@ class Database:
         post_author = post['author_id']
         if int(post_author) == int(user_id):
             return True
+        else:
+            return False
+
+    def existSetting(self,settingname):
+        setting_query = '''SELECT * FROM lucaflect WHERE name=%s;'''
+        self.cur.execute(setting_query,settingname)
+        if self.cur.fetchone():
+            return True
+        else:
+            new_setting = '''INSERT INTO lucaflect (name) VALUE (%s)'''
+            self.cur.execute(new_setting,settingname)
+            self.con.commit()
+            return True
+
+    def getSetting(self,settingname):
+        setting_query = '''SELECT * FROM lucaflect WHERE name=%s;'''
+        self.cur.execute(setting_query, settingname)
+        setting = self.cur.fetchone()
+        if setting:
+            short = str(setting['shortvalue'])
+            long = str(setting['longvalue'])
+            if short!='None':
+                if short == 'True':
+                    return True
+                elif short == 'False':
+                    return False
+                else:
+                    return short
+            elif long!='None':
+                return loads(long)
+            else:
+                return False
         else:
             return False
 

@@ -52,3 +52,13 @@ html {
 .interact {
     cursor:pointer;
 }
+
+#user_profile img.portrait {
+    max-width:250px;
+    display: block;
+    margin:auto;
+}
+
+#portrait_editor img {
+    max-width:250px;
+}

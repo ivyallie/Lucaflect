@@ -3,8 +3,16 @@
 {% block pageheader %}Edit Profile: {{ user['full_name'] }}{% endblock %}
 {% block content %}
 <form method="post">
+
+<div id="portrait_editor">
+    <img src="/uploads/{{ portrait }}" id="portrait"/>
+     <button type="button" id="portrait_button" onclick="chooseNewPortrait()">Upload portrait</button>
+    <input type="file" id="portrait_filepicker" style="display: none;">
+</div>
+
 <label for="name">Name</label>
     <input id="name" name="name" required="True" value="{{ user['full_name'] }}"/>
+
     <label for="email">Email</label>
     <input id="email" name="email" type="email" value="{{ user['email'] }}"/>
     <label for="bio">Bio</label>
@@ -37,4 +45,5 @@ sortable('.js-sortable', {
 
 document.addEventListener("load", populateLinks({{ web_links | safe }}))
 </script>
+        <script src="{{ url_for('static', filename='upload_portrait.js') }}" ></script>
 {% endblock %}

@@ -76,7 +76,7 @@ def open_comic_editor(title):
         else:
             return render_template('403.html'), 403
     else:
-        return render_template('404.html'), 4040
+        return render_template('404.html'), 404
 
 
 
@@ -100,15 +100,14 @@ def validate_destination_dir(path):
 
 
 def get_unique_filename(filename):
-    APP_ROOT = dirname(abspath(__file__))
-    now = datetime.datetime.now()
     user = g.user['full_name'].replace(" ", "").lower()
-    #main_path = join(current_app.config["UPLOAD_FOLDER"], user, str(now.year)+"_"+str(now.month))
     unixtime = str(int(time.time()))
     new_filename = user+"_"+unixtime+"_"+filename
-    path = join(APP_ROOT,current_app.config['UPLOAD_FOLDER'],new_filename)
-    #full_path=join(main_path, new_filename)
-    #validate_destination_dir(main_path)
+    return new_filename
+
+def get_path(filename):
+    APP_ROOT = dirname(abspath(__file__))
+    path = join(APP_ROOT, current_app.config['UPLOAD_FOLDER'], filename)
     return path
 
 def get_unique_title(user_title):
@@ -137,9 +136,10 @@ def upload():
     file_extension = splitext(f.filename)[1].lower()
     if file_extension in current_app.config["IMGTYPES"]:
         securename = secure_filename(f.filename)
-        path = get_unique_filename(securename)
+        internal_filename = get_unique_filename(securename)
+        path = get_path(internal_filename)
         f.save(path)
-        response_data = jsonify({'path': path, 'filename': f.filename})
+        response_data = jsonify({'path': path, 'filename': f.filename, 'internal_filename': internal_filename})
         resp = make_response(response_data, 201)
     else:
         fail_response = jsonify('Unsupported filetype.')

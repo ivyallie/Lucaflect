@@ -105,6 +105,7 @@ def edit_logged_in_user():
     user_meta = loads(user['meta'])
     bio = user_meta['bio']
     web_links = user_meta['web_links']
+    portrait = user_meta['portrait']
 
     if request.method=='POST':
         email = request.form['email']
@@ -113,7 +114,7 @@ def edit_logged_in_user():
         database.write(query,name)
         return render_template('message.html', message="Your profile has been amended.")
 
-    return render_template('user_editor.html', user=user, bio=bio, web_links=web_links)
+    return render_template('user_editor.html', user=user, bio=bio, web_links=web_links, portrait=portrait)
 
 @bp.route('/update_user/<int:id>', methods=['POST'])
 @login_required
@@ -129,7 +130,8 @@ def update_user(id):
         print(user['email'])
         user_meta = {
             'bio': post['bio'],
-            'web_links': post['web_links']
+            'web_links': post['web_links'],
+            'portrait': post['portrait']
         }
         user_meta_json = dumps(user_meta)
         query = '''UPDATE user SET full_name=%s, email=%s, meta=%s WHERE user_id="'''+str(id)+'''";'''
@@ -141,3 +143,10 @@ def update_user(id):
         return render_template('403.html')
 
 
+def check_admin():
+    try:
+        user_id = g.user['user_id']
+    except TypeError:
+        return False
+    user_record = database.query_user_id(user_id)
+    return user_record['group'] == 'admin'

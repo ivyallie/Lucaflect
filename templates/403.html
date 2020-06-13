@@ -1,6 +1,7 @@
 {% extends 'basis.html' %}
-{% block title %}404{% endblock %}
+{% block title %}403{% endblock %}
 {% block pageheader %}403 - Forbidden{% endblock %}
 {% block content %}
-You are not authorized to access this content.
+    <img src="{{ url_for('static', filename='ignatz.jpg') }}"/>
+    <p>You are not authorized to access this content.</p>
 {% endblock %}

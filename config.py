@@ -3,10 +3,7 @@ MYSQL_HOST = 'localhost'
 MYSQL_USER = 'ivy'
 MYSQL_PASSWORD = ''
 MYSQL_DB = 'lucaflect01'
-SITENAME = 'Lucaflect Dev'
 
-ALLOW_REGISTRATION = True
-REGISTRATION_KEY = ''
 TEMPLATES_AUTO_RELOAD = True
 
 UPLOAD_FOLDER='uploads'

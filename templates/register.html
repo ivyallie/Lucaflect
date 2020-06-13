@@ -18,17 +18,29 @@
         {% endif %}
     {% endwith %}
 </div>
-    <form method="post">
-        <label for="email">Email</label>
-        <input name="email" id="email" type="email">
+    <form method="post" id="registration">
+    <div>
+        <label for="username">Username</label>
+        <input name="username" id="username">
+        <p>This is the name you will use to log in, and will appear in URLs related to your work.</p>
+    </div>
+        <div>
         <label for="fullname">Full name</label>
         <input name="fullname" id="fullname" required>
+            <p>Your name as it will be displayed on the site.</p>
+        </div>
 
+<div>
         <label for="password">Password</label>
-        <input type="password" name="password" id="password">
-        {%  if config.REGISTRATION_KEY %}
+    <input type="password" name="password" id="password">
+</div>
+
+        {%  if config['USE_REG_KEY'] %}
+            <div>
         <label for="key">Registration key:</label>
         <input name="key" id="key" type="password"/>
+            <p>Enter the registration key given to you by the site administrator.</p>
+            </div>
         {% endif %}
         <input type="submit" value="Register">
     </form>

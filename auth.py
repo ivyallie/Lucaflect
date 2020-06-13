@@ -20,6 +20,7 @@ def login_required(view):
 
 @bp.route('/register', methods=('GET', 'POST'))
 def register():
+    database = db.Database()
     if current_app.config['ALLOW_REGISTRATION']:
         if request.method == 'POST':
             username = request.form['email']
@@ -34,10 +35,14 @@ def register():
             elif not fullname:
                 error = 'Full name is required.'
 
-            if current_app.config['REGISTRATION_KEY']:
-                key = request.form['key']
-                if key != current_app.config['REGISTRATION_KEY']:
+            if current_app.config['USE_REG_KEY']:
+                user_key = request.form['key']
+                key_hash = database.getSetting('key')
+                print(key_hash)
+
+                if not check_password_hash(key_hash, user_key):
                     flash('You provided the incorrect signup key. Please double-check your invitation.', 'error')
+                    error='Wrong key.'
 
             if error is None:
                 user_query = '''SELECT * FROM user WHERE username="''' + username + '";'
@@ -102,10 +107,15 @@ def logout():
 @login_required
 def edit_logged_in_user():
     user = database.query_user_id(g.user['user_id'])
-    user_meta = loads(user['meta'])
-    bio = user_meta['bio']
-    web_links = user_meta['web_links']
-    portrait = user_meta['portrait']
+    try:
+        user_meta = loads(user['meta'])
+        bio = user_meta['bio']
+        web_links = user_meta['web_links']
+        portrait = user_meta['portrait']
+    except TypeError:
+        bio=""
+        web_links=""
+        portrait=False
 
     if request.method=='POST':
         email = request.form['email']

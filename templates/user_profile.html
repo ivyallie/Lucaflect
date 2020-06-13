@@ -3,7 +3,13 @@
 {% block pageheader %}{{ user['full_name'] }}{% endblock %}
 {% block content %}
     <div id="user_profile">
-    <img src="/uploads/{{ meta['portrait'] }}" class="portrait"/>
+    <img
+    {% if meta['portrait'] %}
+src="{{ url_for('routes.uploaded_file', filename=meta['portrait'])  }}"
+{% else %}
+src="{{ url_for('static', filename='nize_baby.jpg') }}"
+    {% endif %}
+id="portrait" class="portrait"/>
 <p>{{ meta['bio'] }}</p>
     <ul>
     {% for link in meta['web_links'] %}

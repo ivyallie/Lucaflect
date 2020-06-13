@@ -17,6 +17,9 @@
         <li><a href="{{ url_for('routes.user_profile', username=g.user['username']) }}" >{{ g.user['full_name'] }}</a> - <a href="{{ url_for('auth.logout') }}">Log out</a></li>
         {% else %}
         <li><a href="{{ url_for('auth.login') }}">Log in</a></li>
+            {% if config['ALLOW_REGISTRATION'] %}
+                <li><a href="{{ url_for('auth.register') }}">Register</a></li>
+                {% endif %}
         {% endif %}
         </ul>
     </nav>

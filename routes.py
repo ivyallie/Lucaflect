@@ -83,12 +83,15 @@ def user_profile(username):
     user = database.query_user(username)
 
     if user:
-        meta = loads(user['meta'])
-        for link in meta['web_links']:
-            url = str(link['link_url'])
-            if not url.startswith('http://'):
-                new_url = "http://" + url
-                link['link_url'] = new_url
+        try:
+            meta = loads(user['meta'])
+            for link in meta['web_links']:
+                url = str(link['link_url'])
+                if not url.startswith('http://'):
+                    new_url = "http://" + url
+                    link['link_url'] = new_url
+        except TypeError:
+            meta=""
         return render_template('user_profile.html', user=user, meta=meta)
     else:
         return render_template('404.html'), 404
@@ -125,6 +128,9 @@ def site_settings():
                                 database.write(query, (value, name))
                     else:
                         print(name, 'is null!')
+                current_app.config['SITENAME'] = database.getSetting('name')
+                current_app.config['ALLOW_REGISTRATION'] = database.getSetting('registration')
+                current_app.config['USE_REG_KEY'] = database.getSetting('use_key')
 
 
         settings = {

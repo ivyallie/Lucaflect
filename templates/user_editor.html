@@ -5,7 +5,13 @@
 <form method="post">
 
 <div id="portrait_editor">
-    <img src="/uploads/{{ portrait }}" id="portrait"/>
+    <img
+{% if portrait %}
+src="{{ url_for('routes.uploaded_file', filename=portrait)  }}"
+{% else %}
+src="{{ url_for('static', filename='nize_baby.jpg') }}"
+    {% endif %}
+id="portrait"/>
      <button type="button" id="portrait_button" onclick="chooseNewPortrait()">Upload portrait</button>
     <input type="file" id="portrait_filepicker" style="display: none;">
 </div>

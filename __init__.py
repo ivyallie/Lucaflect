@@ -9,6 +9,7 @@ from MySQLdb.cursors import DictCursor
 app = Flask(__name__)
 app.config.from_pyfile('config.py', silent=True)
 
+
 with app.app_context():
 
     if not isdir(current_app.config['UPLOAD_FOLDER']):
@@ -28,3 +29,7 @@ with app.app_context():
 
     from . import content
     app.register_blueprint(content.bp)
+
+    app.config['SITENAME'] = database.getSetting('name')
+    app.config['ALLOW_REGISTRATION'] = database.getSetting('registration')
+    app.config['USE_REG_KEY'] = database.getSetting('use_key')

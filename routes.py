@@ -10,8 +10,10 @@ bp = Blueprint('routes', __name__)
 
 @bp.route('/')
 def index():
-    database = db.Database()
-    comics_raw = database.query('''SELECT * FROM comic;''')
+    #database = db.Database()
+    comics=get_comics()
+    '''
+    comics_raw = database.query("SELECT * FROM comic;")
     comics=[]
     for comic in comics_raw:
         internal_title = comic['title'].replace("'", "")
@@ -19,12 +21,13 @@ def index():
         body=loads(body_rawstr)
         tags = body['tags']
         d = {
-            'internal_title': internal_title,
+            'internal_title': comic['title'],
             'title': body['true_title'],
             'body': body['body_text'],
             'tags': tags
         }
         comics.append(d)
+    '''
     return render_template('index.html', comics=comics)
 
 
@@ -54,7 +57,7 @@ def get_single_comic(title):
         show_tools = showTools()
         time = str(comic['posted'])
         content = {
-            'internal_title': internal_title,
+            'internal_title': comic['title'],
             'comic_id': comic['comic_id'],
             'title': body['true_title'],
             'body': body['body_text'],
@@ -76,6 +79,28 @@ def uploaded_file(filename):
     upload_dir = current_app.config['UPLOAD_FOLDER']
     return send_from_directory(upload_dir, filename)
 
+def get_comics(id="", howmany=0):
+    database = db.Database()
+    if id:
+        query = '''SELECT * FROM comic WHERE author_id='''+str(id)+''';'''
+    else:
+        query = '''SELECT * FROM comic;'''
+    comics = database.query(query)
+    processed_comics = []
+    for comic in comics:
+        internal_title = comic['title']
+        body_rawstr = comic['body']
+        body = loads(body_rawstr)
+        tags = body['tags']
+        d = {
+            'internal_title': internal_title,
+            'title': body['true_title'],
+            'body': body['body_text'],
+            'tags': tags
+        }
+        processed_comics.append(d)
+    return processed_comics
+
 
 @bp.route('/profile/<string:username>')
 def user_profile(username):
@@ -83,6 +108,7 @@ def user_profile(username):
     user = database.query_user(username)
 
     if user:
+        comics = get_comics(id=user['user_id'])
         try:
             meta = loads(user['meta'])
             for link in meta['web_links']:
@@ -92,7 +118,7 @@ def user_profile(username):
                     link['link_url'] = new_url
         except TypeError:
             meta=""
-        return render_template('user_profile.html', user=user, meta=meta)
+        return render_template('user_profile.html', user=user, meta=meta, comics=comics)
     else:
         return render_template('404.html'), 404
 

@@ -161,11 +161,10 @@ def process_post_content(post):
 def post_comic():
     post = request.get_json()
     title = post['title']
-    #print('Format:', post['format']),
     clean_title = get_unique_title(title)
     user_id = session['user_id']
     post_json = process_post_content(post)
-    to_write = '''INSERT INTO comic (author_id,title,body,posted) VALUES (%s, QUOTE(%s), %s, CURRENT_TIMESTAMP())'''
+    to_write = '''INSERT INTO comic (author_id,title,body,posted) VALUES (%s, %s, %s, CURRENT_TIMESTAMP())'''
     database.write(to_write, (user_id, clean_title, post_json))
     response_text = jsonify({'redirect': url_for('content.open_comic_editor', title=clean_title)})
     resp = make_response(response_text, 200)

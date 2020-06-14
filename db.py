@@ -30,7 +30,7 @@ class Database:
         return self.cur.fetchone()
 
     def does_title_exist(self,title):
-        title_query = "SELECT * FROM comic WHERE title='''" + title + "''';"
+        title_query = '''SELECT * FROM comic WHERE title="''' + title + '''";'''
         self.cur.execute(title_query)
         return self.cur.fetchone()
 

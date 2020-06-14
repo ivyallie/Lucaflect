@@ -3,7 +3,8 @@
 {% block pageheader %}{{ user['full_name'] }}{% endblock %}
 {% block content %}
     <div id="user_profile">
-    <img
+    <section>
+        <img
     {% if meta['portrait'] %}
 src="{{ url_for('routes.uploaded_file', filename=meta['portrait'])  }}"
 {% else %}
@@ -20,5 +21,19 @@ id="portrait" class="portrait"/>
     {% if g.user['user_id'] == user['user_id'] %}
     <span><a href="{{ url_for('auth.edit_logged_in_user') }}">Edit profile</a></span>
     {% endif %}
+    </section>
+    <section>
+        {% if comics %}
+        <h3>Comics by {{ user['full_name'] }}</h3>
+        <ul>
+            {% for comic in comics %}
+            <li><a href="{{ url_for('routes.get_single_comic', title=comic['internal_title']) }}">{{ comic['title'] }}</a></li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+
+    </section>
+
     </div>
 {% endblock %}

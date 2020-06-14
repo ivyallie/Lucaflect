@@ -1,4 +1,4 @@
-from flask import render_template, Blueprint, session, request, current_app, send_from_directory
+from flask import render_template, Blueprint, session, request, current_app, send_from_directory, g
 from . import db
 from . import auth
 from json import loads, dumps
@@ -82,9 +82,9 @@ def uploaded_file(filename):
 def get_comics(id="", howmany=0):
     database = db.Database()
     if id:
-        query = '''SELECT * FROM comic WHERE author_id='''+str(id)+''';'''
+        query = '''SELECT * FROM comic WHERE author_id='''+str(id)+''' ORDER BY posted DESC;'''
     else:
-        query = '''SELECT * FROM comic;'''
+        query = '''SELECT * FROM comic ORDER BY posted DESC;'''
     comics = database.query(query)
     processed_comics = []
     for comic in comics:
@@ -93,6 +93,7 @@ def get_comics(id="", howmany=0):
         body = loads(body_rawstr)
         tags = body['tags']
         d = {
+            'comic_id': comic['comic_id'],
             'internal_title': internal_title,
             'title': body['true_title'],
             'body': body['body_text'],
@@ -124,6 +125,7 @@ def user_profile(username):
 
 
 @bp.route('/settings', methods=['GET', 'POST'])
+@auth.login_required
 def site_settings():
     if auth.check_admin():
         database = db.Database()
@@ -169,7 +171,12 @@ def site_settings():
     else:
         return render_template('403.html'), 403
 
-
+@bp.route('/workspace')
+@auth.login_required
+def workspace():
+    user=g.user
+    comics = get_comics(id=user['user_id'])
+    return render_template('workspace.html', comics=comics)
 
 
 

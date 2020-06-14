@@ -6,7 +6,7 @@
     <ul class="workspace_links">
 <li><a href="/new">New Comic</a></li>
 <li><a href="{{ url_for('auth.edit_logged_in_user') }}">Edit profile</a></li>
-{% if g.user['group']=='admin' %}
+{% if g.user['user_group']=='admin' %}
     <li><a href="{{ url_for('routes.site_settings') }}">Site administration</a></li>
 {% endif %}
 </ul>

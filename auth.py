@@ -107,6 +107,7 @@ def logout():
 @bp.route('/edit_profile', methods=['GET'])
 @login_required
 def edit_logged_in_user():
+    # DEPRECATED
     user = database.query_user_id(g.user['user_id'])
     try:
         user_meta = loads(user['meta'])
@@ -127,26 +128,54 @@ def edit_logged_in_user():
 
     return render_template('user_editor.html', user=user, bio=bio, web_links=web_links, portrait=portrait)
 
+@bp.route('/profile/<string:username>/edit', methods=['GET'])
+@login_required
+def edit_user(username):
+    database = db.Database()
+    affect_user = database.query_user(username)
+    if g.user['user_group']=='admin' or g.user['user_id']==affect_user['user_id']:
+        try:
+            user_meta = loads(affect_user['meta'])
+            bio = user_meta['bio']
+            web_links = user_meta['web_links']
+            portrait = user_meta['portrait']
+            group = affect_user['user_group']
+        except TypeError:
+            bio = ""
+            web_links = ""
+            portrait = False
+
+        return render_template('user_editor.html', user=affect_user, bio=bio, web_links=web_links, portrait=portrait, group=group)
+    else:
+        return render_template('403.html'), 403
+
 @bp.route('/update_user/<int:id>', methods=['POST'])
 @login_required
 def update_user(id):
-    if g.user['user_id'] == id:
+    if g.user['user_id'] == id or g.user['user_group']=='admin':
         post=request.get_json()
         user = {
             'name': post['name'],
             'email': post['email'],
-
         }
-        print(user['name'])
-        print(user['email'])
         user_meta = {
             'bio': post['bio'],
             'web_links': post['web_links'],
             'portrait': post['portrait']
         }
+
+        if post['group']:
+            if g.user['user_group']=='admin' and g.user['user_id']!=id:
+                group = post['group']
+
         user_meta_json = dumps(user_meta)
-        query = '''UPDATE user SET full_name=%s, email=%s, meta=%s WHERE user_id="'''+str(id)+'''";'''
-        database.write(query, (user['name'], user['email'], user_meta_json))
+
+        if not group:
+            query = '''UPDATE user SET full_name=%s, email=%s, meta=%s WHERE user_id="'''+str(id)+'''";'''
+            database.write(query, (user['name'], user['email'], user_meta_json))
+        else:
+            query = '''UPDATE user SET full_name=%s, email=%s, user_group=%s, meta=%s  WHERE user_id="'''+str(id)+'''";'''
+            database.write(query, (user['name'], user['email'], group, user_meta_json))
         response_text = jsonify('Modification successful')
         resp = make_response(response_text, 200)
         return resp
@@ -160,4 +189,4 @@ def check_admin():
     except TypeError:
         return False
     user_record = database.query_user_id(user_id)
-    return user_record['group'] == 'admin'
+    return user_record['user_group'] == 'admin'

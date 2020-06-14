@@ -6,10 +6,10 @@
 
 <div id="portrait_editor">
     <img
-{% if portrait %}
-src="{{ url_for('routes.uploaded_file', filename=portrait)  }}"
-{% else %}
-src="{{ url_for('static', filename='nize_baby.jpg') }}"
+{% if not portrait or portrait=='default_portrait.jpg' %}
+        src="{{ url_for('static', filename='default_portrait.jpg') }}"
+    {% else %}
+        src="{{ url_for('routes.uploaded_file', filename=portrait )  }}"
     {% endif %}
 id="portrait"/>
      <button type="button" id="portrait_button" onclick="chooseNewPortrait()">Upload portrait</button>
@@ -29,6 +29,8 @@ id="portrait"/>
     <label for="bio">Bio</label>
     <textarea id="bio">{{ bio }}</textarea>
 
+
+
     <div id="web_presence_editor">
         <h4>Web Presence Links</h4>
         <ul id="web_presence_list" class="js-sortable">
@@ -38,6 +40,24 @@ id="portrait"/>
 
     <button type="button" onclick="add_web_presence()">+ Add link</button>
     </div>
+
+
+
+    {% if g.user['user_group']=='admin' and g.user['user_id'] != user['user_id'] %}
+        <div>
+            <h3>Group</h3>
+            <label for="group_user">User</label>
+            <input id="group_user" type="radio" name="group" {% if group=='user' %}checked{% endif %}>
+            <label for="admin_user">Admin</label>
+            <input id="admin_user" type="radio" name="group" {% if group=='admin' %}checked{% endif %}>
+        </div>
+    {% elif g.user['user_group']=='admin' and g.user['user_id']==user['user_id'] %}
+        <div>
+        <h3>Group</h3>
+        <p>You cannot modify your own admin status. Ask another administrator to do so.</p>
+        </div>
+    {% endif %}
+
 
 <button type="button" onclick="applyChanges({{ user.user_id }})">Apply changes</button>
 </form>

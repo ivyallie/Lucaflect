@@ -5,10 +5,10 @@
     <div id="user_profile">
     <section>
         <img
-    {% if meta['portrait'] %}
-src="{{ url_for('routes.uploaded_file', filename=meta['portrait'])  }}"
-{% else %}
-src="{{ url_for('static', filename='nize_baby.jpg') }}"
+    {% if not meta['portrait'] or meta['portrait']=='default_portrait.jpg' %}
+        src="{{ url_for('static', filename='default_portrait.jpg') }}"
+    {% else %}
+        src="{{ url_for('routes.uploaded_file', filename=meta['portrait'])  }}"
     {% endif %}
 id="portrait" class="portrait"/>
 <p>{{ meta['bio'] }}</p>
@@ -18,8 +18,8 @@ id="portrait" class="portrait"/>
     {% endfor %}
     </ul>
 
-    {% if g.user['user_id'] == user['user_id'] %}
-    <span><a href="{{ url_for('auth.edit_logged_in_user') }}">Edit profile</a></span>
+    {% if g.user['user_id'] == user['user_id'] or g.user['user_group']=='admin' %}
+    <span><a href="{{ url_for('auth.edit_user', username=user['username']) }}">Edit profile</a></span>
     {% endif %}
     </section>
     <section>

@@ -15,6 +15,13 @@ let make_user = function () {
     let portrait = document.getElementById('portrait');
     let portrait_filepath = portrait.getAttribute('src');
     let portrait_filename = portrait_filepath.replace(/^.*[\\\/]/, '');
+    let admin = document.getElementById('admin_user');
+    let group = '';
+    if (admin) {
+        if (admin.checked) {
+            group='admin'
+        } else { group='user'}};
+
     for (i=0; i<wp_li_elements.length; i++) {
         let li = wp_li_elements[i];
         let link_name = li.querySelector('.wp_title');
@@ -30,7 +37,8 @@ let make_user = function () {
         'email' : email.value,
         'bio' : bio.value,
         'web_links' : web_presence_links,
-        'portrait': portrait_filename
+        'portrait': portrait_filename,
+        'group': group
     };
 
     return user
@@ -51,13 +59,13 @@ let applyChanges = function (name) {
             return response.json();
         })
         .then(result => {
-            console.log('User updated successfully.')})
-        .catch((error) => { alert('Update failed.');})
+            alert('User updated successfully.')})
+        .catch((error) => { alert(error);})
 
 };
 
 let populateLinks = function (links) {
-    console.log(links)
+    //console.log(links)
      let web_presence_list = document.getElementById('web_presence_list');
      let template = document.getElementById('web_presence_entry');
     for (i=0; i<links.length; i++) {

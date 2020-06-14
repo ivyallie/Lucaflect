@@ -23,13 +23,13 @@ def register():
     database = db.Database()
     if current_app.config['ALLOW_REGISTRATION']:
         if request.method == 'POST':
-            username = request.form['email']
+            username = request.form['username']
             password = request.form['password']
             fullname = request.form['fullname']
             error = None
 
             if not username:
-                error = 'Email is required.'
+                error = 'Username is required.'
             elif not password:
                 error = 'Password is required.'
             elif not fullname:
@@ -53,7 +53,7 @@ def register():
                         (username, generate_password_hash(password), fullname))
                     return render_template('message.html', message="Account created for "+username)
                 else:
-                    flash('The email you provided, ' + username + ', is already associated with an account.', 'error')
+                    flash('The name ' + username + ' is already associated with an account.', 'error')
 
             print(error)
 
@@ -63,14 +63,15 @@ def register():
 
 @bp.route('/login', methods=('GET','POST'))
 def login():
+    database = db.Database()
     if request.method == 'POST':
-        email=request.form['email']
+        username=request.form['username']
         password=request.form['password']
         error=None
-        user=database.query_user(email)
+        user=database.query_user(username)
 
         if not user:
-            flash('There is no account registered to '+email, 'error')
+            flash('There is no account registered to '+username, 'error')
             error='NoUser'
         elif not check_password_hash(user['password'], password):
             flash('Invalid password.', 'error')

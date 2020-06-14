@@ -19,8 +19,8 @@ class Database:
 
         return result
 
-    def query_user(self,email):
-        user_query = '''SELECT * FROM user WHERE username="''' + email + '";'
+    def query_user(self,name):
+        user_query = '''SELECT * FROM user WHERE username="''' + name + '";'
         self.cur.execute(user_query)
         return self.cur.fetchone()
 

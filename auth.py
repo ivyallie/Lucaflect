@@ -183,10 +183,9 @@ def update_user(id):
         return render_template('403.html')
 
 
-def check_admin():
+def is_admin():
+    user=g.user
     try:
-        user_id = g.user['user_id']
+        return user['user_group'] == 'admin'
     except TypeError:
         return False
-    user_record = database.query_user_id(user_id)
-    return user_record['user_group'] == 'admin'

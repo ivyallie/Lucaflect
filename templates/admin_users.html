@@ -1,0 +1,16 @@
+{% extends 'basis.html' %}
+{% block title %}User Admin{% endblock %}
+{% block pageheader %}User Admin{% endblock %}
+{% block content %}
+<ul>
+
+        {% for user in users %}
+            <li>
+            <div class="username">{{ user['username'] }}</div>
+            <div class="full_name">{{ user['full_name'] }}</div>
+            <div><a href="{{ url_for('auth.edit_user', username=user['username']) }}">Edit</a></div>
+            </li>
+        {% endfor %}
+</ul>
+
+{% endblock %}

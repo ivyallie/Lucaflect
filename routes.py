@@ -38,9 +38,10 @@ def get_single_comic(title):
 
     def showTools():
         try:
-            return database.user_and_post_match(session['user_id'],comic['comic_id'])
+            match = database.user_and_post_match(session['user_id'],comic['comic_id'])
         except KeyError:
-            return False
+            match = False
+        return match or auth.is_admin()
 
     if comic:
         body = loads(comic['body'])
@@ -92,12 +93,14 @@ def get_comics(id="", howmany=0):
         body_rawstr = comic['body']
         body = loads(body_rawstr)
         tags = body['tags']
+        author = database.query_user_id(comic['author_id'])
         d = {
             'comic_id': comic['comic_id'],
             'internal_title': internal_title,
             'title': body['true_title'],
             'body': body['body_text'],
-            'tags': tags
+            'tags': tags,
+            'author': author['full_name']
         }
         processed_comics.append(d)
     return processed_comics
@@ -124,10 +127,10 @@ def user_profile(username):
         return render_template('404.html'), 404
 
 
-@bp.route('/settings', methods=['GET', 'POST'])
+@bp.route('/admin', methods=['GET', 'POST'])
 @auth.login_required
 def site_settings():
-    if auth.check_admin():
+    if auth.is_admin():
         database = db.Database()
         if request.method == 'POST':
                 print('Applying settings')
@@ -168,6 +171,33 @@ def site_settings():
             'description': database.getSetting('description')
         }
         return render_template('site_settings.html', settings=settings)
+    else:
+        return render_template('403.html'), 403
+
+@bp.route('/admin/users', methods=['GET'])
+@auth.login_required
+def admin_users():
+    if auth.is_admin():
+        database = db.Database()
+        query = '''SELECT * FROM user;'''
+        users_raw = database.query(query)
+        users = []
+        for user in users_raw:
+            u = {
+                'username': user['username'],
+                'full_name': user['full_name']
+            }
+            users.append(u)
+        return render_template('admin_users.html',users=users)
+    else:
+        return render_template('403.html'), 403
+
+@bp.route('/admin/comics', methods=['GET'])
+@auth.login_required
+def admin_comics():
+    if auth.is_admin():
+        comics=get_comics()
+        return render_template('admin_comics.html', comics=comics)
     else:
         return render_template('403.html'), 403
 

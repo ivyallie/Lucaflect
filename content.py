@@ -5,7 +5,7 @@ from . import db
 from . import routes
 import json
 from re import sub
-from lucaflect.auth import login_required
+from lucaflect.auth import login_required, is_admin
 from os.path import join, splitext, isdir, isfile, split, dirname, abspath
 from os import makedirs
 import datetime
@@ -62,7 +62,7 @@ def open_comic_editor(title):
     if comic:
         comic_id = comic['comic_id']
         user_id = session['user_id']
-        if database.user_and_post_match(user_id,comic_id):
+        if database.user_and_post_match(user_id,comic_id) or is_admin():
             body = json.loads(comic['body'])
             content = {
                 'id': comic['comic_id'],
@@ -175,7 +175,7 @@ def post_comic():
 def modify_comic(id):
     post = request.get_json()
     post_json = process_post_content(post)
-    if database.user_and_post_match(session['user_id'],id):
+    if database.user_and_post_match(session['user_id'],id) or is_admin():
         #print(post_json)
         modification = '''UPDATE comic SET body=%s WHERE comic_id=%s'''
         database.write(modification, (post_json, id))
@@ -192,7 +192,7 @@ def delete_comic(title):
     database = db.Database()
     comic = database.does_title_exist(title)
     id = comic['comic_id']
-    if database.user_and_post_match(session['user_id'], id):
+    if database.user_and_post_match(session['user_id'], id) or is_admin():
         if request.method == 'POST':
             database.delete_comic(id)
             return redirect(url_for('routes.index'))

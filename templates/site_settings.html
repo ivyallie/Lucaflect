@@ -4,6 +4,12 @@
 {% block content %}
 <form method="post">
 <section>
+    <ul>
+        <li><a href="{{ url_for('routes.admin_users') }}">User administration</a></li>
+        <li><a href="{{ url_for('routes.admin_comics') }}">Comics administration</a></li>
+    </ul>
+</section>
+<section>
 <div>
     <label for="site_name">Site name:</label>
 <input id="site_name" name="site_name" value="{{ settings['name'] }}"/>

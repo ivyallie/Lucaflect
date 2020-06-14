@@ -1,0 +1,21 @@
+{% extends 'basis.html' %}
+{% block title %}Comic Administration{% endblock %}
+{% block pageheader %}Comic Admin{% endblock %}
+{% block content %}
+<ul>
+
+        {% for comic in comics %}
+            <li>
+            <div class="internal_title">{{ comic['internal_title'] }}</div>
+            <div class="title">{{ comic['title'] }} by {{ comic['author'] }}</div>
+            <div><ul>
+                <li><a href="{{ url_for('content.open_comic_editor', title=comic['internal_title']) }}">Edit</a></li>
+                <li><a href="{{ url_for('content.delete_comic', title=comic['internal_title']) }}">Delete</a></li>
+            </ul>
+
+            </div>
+            </li>
+        {% endfor %}
+</ul>
+
+{% endblock %}

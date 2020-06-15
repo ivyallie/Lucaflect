@@ -23,12 +23,23 @@
     </section>
     {% else %}
     <section id="turnable_page">
-    <img src="" id="page_display" class='interact' onclick="nextPage()" />
+
+        {% if content['imagelist'] | length > 1 %}
+            <img src="" id="page_display" class='interact' onclick="nextPage()" />
     <img src="" id="next_page" style="display: none;"/>
     <div>
         <button type="button" id="back-button" onclick="previousPage()">Back</button>
         <button type="button" id="next-button" onclick="nextPage()">Next</button>
     </div>
+            {% else %}
+             <img src="" id="page_display" />
+    <img src="" id="next_page" style="display: none;"/>
+    <div style="display: none;">
+        <button type="button" id="back-button" onclick="previousPage()">Back</button>
+        <button type="button" id="next-button" onclick="nextPage()">Next</button>
+    </div>
+
+            {% endif %}
     </section>
 {% endif %}
 
@@ -43,7 +54,7 @@
     let showPage = function(page) {
         let file = image_list[page];
         let next_page_number = parseInt(page)+1;
-        if (!(next_page_number>image_list.length)) {
+        if (!(next_page_number>=image_list.length)) {
             let next_file = image_list[next_page_number];
             next_page.setAttribute('src', '/uploads/' + next_file);
         }

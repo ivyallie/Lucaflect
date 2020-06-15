@@ -68,3 +68,7 @@ html {
     font-size:10pt;
     color:#888;
 }
+
+#turnable_page #page_display {
+    width:100%;
+}

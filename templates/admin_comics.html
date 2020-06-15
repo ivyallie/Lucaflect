@@ -7,7 +7,7 @@
         {% for comic in comics %}
             <li>
             <div class="internal_title">{{ comic['internal_title'] }}</div>
-            <div class="title">{{ comic['title'] }} by {{ comic['author'] }}</div>
+                <div class="title"><a href="{{ url_for('routes.get_single_comic', title=comic['internal_title']) }}">{{ comic['title'] }}</a> by {{ comic['author'] }}</div>
             <div><ul>
                 <li><a href="{{ url_for('content.open_comic_editor', title=comic['internal_title']) }}">Edit</a></li>
                 <li><a href="{{ url_for('content.delete_comic', title=comic['internal_title']) }}">Delete</a></li>

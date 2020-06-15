@@ -196,12 +196,8 @@ def delete_comic(title):
     if request.method=='GET':
         request_url=urlparse(request.referrer).path
         session['delete_redirect'] = request_url
-        print(session.get('delete_redirect'))
         if session.get('delete_redirect') == url_for('routes.get_single_comic', title=title):
-            print('The same:',session.get('delete_redirect'), url_for('routes.get_single_comic', title=title))
             session['delete_redirect'] = url_for('routes.workspace')
-        else:
-            print('Not the same:', session.get('delete_redirect'), url_for('routes.get_single_comic', title=title))
     if database.user_and_post_match(session['user_id'], id) or is_admin():
         if request.method == 'POST':
             database.delete_comic(id)

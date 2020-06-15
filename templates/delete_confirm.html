@@ -4,5 +4,5 @@
 {% block content %}
     <p>Are you sure you want to delete <strong>{{ display_title }}</strong>? This cannot be undone.</p>
     <form action="" method="post"><button type="submit">Yes, delete "{{ display_title }}"</button></form>
-    <p><a href="{{ url_for('routes.get_single_comic', title=title) }}">Nevermind.</a></p>
+    <p><a href="{{ refer_url }}">Nevermind.</a></p>
 {% endblock %}

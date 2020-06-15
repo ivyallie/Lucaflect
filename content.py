@@ -11,6 +11,7 @@ from os import makedirs
 import datetime
 import time
 from flask_dropzone import Dropzone
+from urllib.parse import urlparse
 
 bp = Blueprint('content', __name__)
 database=db.Database()
@@ -192,13 +193,22 @@ def delete_comic(title):
     database = db.Database()
     comic = database.does_title_exist(title)
     id = comic['comic_id']
+    if request.method=='GET':
+        request_url=urlparse(request.referrer).path
+        session['delete_redirect'] = request_url
+        print(session.get('delete_redirect'))
+        if session.get('delete_redirect') == url_for('routes.get_single_comic', title=title):
+            print('The same:',session.get('delete_redirect'), url_for('routes.get_single_comic', title=title))
+            session['delete_redirect'] = url_for('routes.workspace')
+        else:
+            print('Not the same:', session.get('delete_redirect'), url_for('routes.get_single_comic', title=title))
     if database.user_and_post_match(session['user_id'], id) or is_admin():
         if request.method == 'POST':
             database.delete_comic(id)
-            return redirect(url_for('routes.index'))
+            return redirect(session.get('delete_redirect'))
         comic_body = json.loads(comic['body'])
         display_title = comic_body['true_title']
-        return render_template('delete_confirm.html', title=title, display_title=display_title)
+        return render_template('delete_confirm.html', title=title, display_title=display_title, refer_url=request.referrer)
     else:
         return render_template('403.html')
 

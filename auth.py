@@ -139,11 +139,12 @@ def edit_user(username):
             bio = user_meta['bio']
             web_links = user_meta['web_links']
             portrait = user_meta['portrait']
-            group = affect_user['user_group']
         except TypeError:
             bio = ""
             web_links = ""
             portrait = False
+
+        group = affect_user['user_group']
 
         return render_template('user_editor.html', user=affect_user, bio=bio, web_links=web_links, portrait=portrait, group=group)
     else:

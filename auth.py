@@ -107,30 +107,6 @@ def logout():
     flash('You have been successfully logged out.','success')
     return redirect(url_for('routes.index'))
 
-@bp.route('/edit_profile', methods=['GET'])
-@login_required
-def edit_logged_in_user():
-    # DEPRECATED
-    user = database.query_user_id(g.user['user_id'])
-    try:
-        user_meta = loads(user['meta'])
-        bio = user_meta['bio']
-        web_links = user_meta['web_links']
-        portrait = user_meta['portrait']
-    except TypeError:
-        bio=""
-        web_links=""
-        portrait=False
-
-    if request.method=='POST':
-        email = request.form['email']
-        name = request.form['name']
-        query = '''UPDATE user SET full_name = %s WHERE user_id='''+str(g.user['user_id'])+";"
-        database.write(query,name)
-        return render_template('message.html', message="Your profile has been amended.")
-
-    return render_template('user_editor.html', user=user, bio=bio, web_links=web_links, portrait=portrait)
-
 @bp.route('/profile/<string:username>/edit', methods=['GET'])
 @login_required
 def edit_user(username):

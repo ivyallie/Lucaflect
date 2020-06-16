@@ -2,13 +2,20 @@
 {% block title %}User Admin{% endblock %}
 {% block pageheader %}User Admin{% endblock %}
 {% block content %}
+
 <ul>
 
         {% for user in users %}
             <li>
             <div class="username">{{ user['username'] }}</div>
             <div class="full_name"><a href="{{ url_for('routes.user_profile', username=user['username']) }}">{{ user['full_name'] }}</a></div>
-            <div><a href="{{ url_for('auth.edit_user', username=user['username']) }}">Edit</a></div>
+            <div>
+                <ul>
+                    <li><a href="{{ url_for('auth.edit_user', username=user['username']) }}">Edit</a></li>
+                    <li><a href="{{ url_for('auth.delete_user', username=user['username']) }}">Delete</a> </li>
+                </ul>
+
+            </div>
             </li>
         {% endfor %}
 </ul>

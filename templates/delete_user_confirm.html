@@ -1,0 +1,32 @@
+{% extends 'basis.html' %}
+{% block title %}Deleting {{ user['username'] }}{% endblock %}
+{% block pageheader %}Deleting {{ user['username'] }}{% endblock %}
+{% block content %}
+    <img
+    {% if not meta['portrait'] or meta['portrait']=='default_portrait.jpg' %}
+        src="{{ url_for('static', filename='default_portrait.jpg') }}"
+    {% else %}
+        src="{{ url_for('routes.uploaded_file', filename=meta['portrait'])  }}"
+    {% endif %}
+id="portrait" class="portrait"/>
+    <p>Are you sure you want to delete <strong>{{ user['username'] }}</strong>?</p>
+
+        {% if comics|length > 0 %}
+    <div>
+    <p>This will also delete all the comics that they have posted here, namely these:</p>
+        <ul>
+            {% for comic in comics %}
+            <li>{{ comic['title'] }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+
+
+
+    </div>
+    <p><strong>This cannot be undone.</strong></p>
+    <form action="" method="post"><button type="submit">Yes, delete "{{ user['username'] }}"</button></form>
+    <p><a href="{{ url_for('routes.admin_users') }}">Nevermind.</a></p>
+{% endblock %}

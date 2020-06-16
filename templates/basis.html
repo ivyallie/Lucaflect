@@ -27,6 +27,18 @@
     </nav>
 </div>
 <div class="maincontainer">
+
+    {% with messages=get_flashed_messages() %}
+        {% if messages %}
+            <ul class="flash">
+            {% for message in messages %}
+        <li>{{ message }}</li>
+            {% endfor %}
+            </ul>
+
+        {% endif %}
+    {% endwith %}
+
 <section class="content">
     <h2>
         {% block pageheader %}{% endblock %}

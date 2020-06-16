@@ -3,20 +3,6 @@
 {% block title %}Register{% endblock %}
 {% block pageheader %}Register{% endblock %}
 {% block content %}
-
-    {% with errors = get_flashed_messages(category_filter=["error"]) %}
-        {% if errors %}
-            <div class="warn">
-            <h3>Signup failed, because:</h3>
-            <ul>
-                {% for error in errors %}
-                    <li>
-                        {{ error }}
-                    </li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
 </div>
     <form method="post" id="registration">
     <div>

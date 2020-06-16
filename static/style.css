@@ -6,7 +6,7 @@ html {
     text-align:center;
 }
 
-.warn {
+.flash {
     border:1px solid red;
     color: red;
 }
@@ -53,7 +53,7 @@ html {
     cursor:pointer;
 }
 
-#user_profile img.portrait {
+img.portrait {
     max-width:250px;
     display: block;
     margin:auto;

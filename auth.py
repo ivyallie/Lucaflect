@@ -1,6 +1,7 @@
 from flask import Blueprint, flash, g, redirect, request, render_template, current_app, session, url_for, jsonify, make_response
 from werkzeug.security import check_password_hash, generate_password_hash
 from . import db
+from . import routes
 import functools
 from json import dumps, loads
 
@@ -83,7 +84,8 @@ def login():
             session['user_id'] = user['user_id']
             session['user_name'] = user['full_name']
             load_logged_in_user()
-            return render_template('message.html', message='Welcome, '+user['full_name']+'! You are now logged in.')
+            flash('Welcome, '+user['full_name']+'!')
+            return redirect(url_for('routes.workspace'))
 
     return render_template('login.html')
 
@@ -150,6 +152,25 @@ def edit_user(username):
     else:
         return render_template('403.html'), 403
 
+def parse_user_meta(user):
+    try:
+        user_meta = loads(user['meta'])
+        bio = user_meta['bio']
+        web_links = user_meta['web_links']
+        portrait = user_meta['portrait']
+    except TypeError:
+        bio=""
+        web_links=""
+        portrait=False
+
+    meta = {
+        'bio':bio,
+        'web_links':web_links,
+        'portrait':portrait
+    }
+
+    return meta
+
 @bp.route('/update_user/<int:id>', methods=['POST'])
 @login_required
 def update_user(id):
@@ -182,6 +203,26 @@ def update_user(id):
         return resp
     else:
         return render_template('403.html')
+
+@bp.route('/delete_user/<string:username>', methods=['GET','POST'])
+@login_required
+def delete_user(username):
+    if is_admin():
+        database = db.Database()
+        user = database.query_user(username)
+        user_id=user['user_id']
+        meta=parse_user_meta(user)
+        comics = routes.get_comics(user_id)
+        if request.method=='POST':
+            delete_comics = '''DELETE FROM comic WHERE author_id=%s;'''
+            delete_user = '''DELETE FROM user WHERE user_id=%s;'''
+            database.write(delete_comics,user_id)
+            database.write(delete_user,user_id)
+            flash('User '+username+" deleted.")
+            return redirect(url_for('routes.admin_users'))
+        return render_template('delete_user_confirm.html',user=user, comics=comics, meta=meta)
+    else:
+        return render_template('403.html'), 403
 
 
 def is_admin():

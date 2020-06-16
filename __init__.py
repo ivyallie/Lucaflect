@@ -33,3 +33,4 @@ with app.app_context():
     app.config['SITENAME'] = database.getSetting('name')
     app.config['ALLOW_REGISTRATION'] = database.getSetting('registration')
     app.config['USE_REG_KEY'] = database.getSetting('use_key')
+    app.config['LUCAFLECT_VERSION'] = 'Alpha 0'

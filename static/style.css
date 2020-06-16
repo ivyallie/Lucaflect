@@ -2,6 +2,31 @@ html {
     font-family: sans-serif;
 }
 
+#footer {
+    text-align: center;
+    color:#555;
+    font-size:10pt;
+    border-top:1px dotted gray;
+    margin:10pt;
+}
+
+#footer ul {
+    width: 100%;
+    text-align: center;
+    padding: 0;
+}
+
+#footer li {
+    display: inline-block;
+    padding: 2.5pt 2.5pt 2.5pt 5pt;
+    border-left: 1px solid gray;
+    text-align: center;
+}
+
+#footer li:first-of-type {
+    border-left: none;
+}
+
 .web_link {
     display: inline-block;
 }

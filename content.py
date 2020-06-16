@@ -73,7 +73,7 @@ def open_comic_editor(title):
                 'tags': body['tags'],
                 'format': body['format']
             }
-            return render_template('comic_editor.html', content=content)
+            return render_template('comic_editor.html', title=title, content=content)
         else:
             return render_template('403.html'), 403
     else:

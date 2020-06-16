@@ -4,6 +4,11 @@
 {% block pageheader %}Comic Editor{% endblock %}
 {% block content %}
     <div class="editor_section">
+    {% if title %}
+    <div>
+        <a href="{{ url_for('routes.get_single_comic', title=title) }}">View comic &raquo;</a>
+    </div>
+        {% endif %}
     <h3>Meta</h3>
     <form method="post">
 <label for="title">Title</label>

@@ -4,6 +4,7 @@ let initialize_editor = function(content) {
     let body = document.getElementById('body');
     let tags = document.getElementById('tags');
     let infinitecanvas = document.getElementById('infinitecanvas');
+    let page_turns = document.getElementById('pageturns');
     let post_button = document.getElementById('post-button');
 
     title.value = content['title'];
@@ -12,7 +13,7 @@ let initialize_editor = function(content) {
     let format = content['format'];
     if (format === 'infinite_canvas') {
         infinitecanvas.checked = true;
-    }
+    } else { page_turns.checked = true }
     for (i=0; i<content['imagelist'].length; i++) {
         let image = content['imagelist'][i];
         let image_name = image['file_shortname'];

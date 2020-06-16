@@ -6,9 +6,32 @@ html {
     text-align:center;
 }
 
-.flash {
-    border:1px solid red;
-    color: red;
+.flash li.success {
+    color:green;
+    border-color: green;
+    background-color: #CFC;
+}
+
+.flash li.error {
+    color:red;
+    border-color: red;
+    background-color: #FCC;
+}
+
+.flash li.message {
+    color:#777;
+    border-color: #777;
+    background-color: #CCC;
+}
+
+.flash li {
+    display: block;
+    padding: 10pt;
+    border:1px solid
+}
+
+.flash .error {
+    color:red;
 }
 
 .upload_pending {

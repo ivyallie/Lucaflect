@@ -84,7 +84,7 @@ def login():
             session['user_id'] = user['user_id']
             session['user_name'] = user['full_name']
             load_logged_in_user()
-            flash('Welcome, '+user['full_name']+'!')
+            flash('Welcome, '+user['full_name']+'!','success')
             return redirect(url_for('routes.workspace'))
 
     return render_template('login.html')
@@ -104,7 +104,8 @@ def load_logged_in_user():
 def logout():
     session.clear()
     load_logged_in_user()
-    return render_template('message.html', message='You have been successfully logged out.')
+    flash('You have been successfully logged out.','success')
+    return redirect(url_for('routes.index'))
 
 @bp.route('/edit_profile', methods=['GET'])
 @login_required
@@ -218,7 +219,7 @@ def delete_user(username):
             delete_user = '''DELETE FROM user WHERE user_id=%s;'''
             database.write(delete_comics,user_id)
             database.write(delete_user,user_id)
-            flash('User '+username+" deleted.")
+            flash('User '+username+" deleted.",'success')
             return redirect(url_for('routes.admin_users'))
         return render_template('delete_user_confirm.html',user=user, comics=comics, meta=meta)
     else:

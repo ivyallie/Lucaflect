@@ -169,6 +169,7 @@ def post_comic():
     database.write(to_write, (user_id, clean_title, post_json))
     response_text = jsonify({'redirect': url_for('content.open_comic_editor', title=clean_title)})
     resp = make_response(response_text, 200)
+    flash('"'+title+'" posted!','success')
     return resp
 
 @bp.route('/modify_comic/<int:id>', methods=['POST'])
@@ -199,11 +200,13 @@ def delete_comic(title):
         if session.get('delete_redirect') == url_for('routes.get_single_comic', title=title):
             session['delete_redirect'] = url_for('routes.workspace')
     if database.user_and_post_match(session['user_id'], id) or is_admin():
-        if request.method == 'POST':
-            database.delete_comic(id)
-            return redirect(session.get('delete_redirect'))
         comic_body = json.loads(comic['body'])
         display_title = comic_body['true_title']
+        if request.method == 'POST':
+            database.delete_comic(id)
+            flash('"'+display_title+'" deleted.','success')
+            return redirect(session.get('delete_redirect'))
+
         return render_template('delete_confirm.html', title=title, display_title=display_title, refer_url=request.referrer)
     else:
         return render_template('403.html')

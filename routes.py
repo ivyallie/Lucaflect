@@ -105,6 +105,13 @@ def get_comics(id="", howmany=0):
         processed_comics.append(d)
     return processed_comics
 
+def load_weblinks(raw_links):
+    for link in raw_links:
+        url = str(link['link_url'])
+        if not url.startswith('http://'):
+            new_url = "http://" + url
+            link['link_url'] = new_url
+    return raw_links
 
 @bp.route('/profile/<string:username>')
 def user_profile(username):
@@ -115,14 +122,11 @@ def user_profile(username):
         comics = get_comics(id=user['user_id'])
         try:
             meta = loads(user['meta'])
-            for link in meta['web_links']:
-                url = str(link['link_url'])
-                if not url.startswith('http://'):
-                    new_url = "http://" + url
-                    link['link_url'] = new_url
+            web_links=load_weblinks(meta['web_links'])
         except TypeError:
             meta=""
-        return render_template('user_profile.html', user=user, meta=meta, comics=comics)
+
+        return render_template('user_profile.html', user=user, meta=meta, comics=comics, web_links=web_links)
     else:
         return render_template('404.html'), 404
 
@@ -208,8 +212,23 @@ def workspace():
     comics = get_comics(id=user['user_id'])
     return render_template('workspace.html', comics=comics)
 
-
-
+@bp.route('/contributors')
+def contributors():
+    database = db.Database()
+    query = '''SELECT * FROM user;'''
+    users_raw = database.query(query)
+    users = []
+    for user in users_raw:
+        meta=auth.parse_user_meta(user)
+        u = {
+            'full_name': user['full_name'],
+            'username': user['username'],
+            'portrait': meta['portrait'],
+            'bio': meta['bio'],
+            'web_links': load_weblinks(meta['web_links'])
+        }
+        users.append(u)
+    return render_template('contributors.html',users=users)
 
 
 @bp.route('/beepers/')

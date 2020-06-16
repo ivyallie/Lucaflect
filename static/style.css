@@ -2,8 +2,23 @@ html {
     font-family: sans-serif;
 }
 
-.message {
-    text-align:center;
+.web_link {
+    display: inline-block;
+}
+
+.web_link a {
+    border:1px solid gray;
+    padding:5pt;
+    background-color: #eee;
+    color:#444;
+    text-decoration: none;
+    border-radius:3pt;
+}
+
+.web_link a:hover {
+    border-color:#990;
+    background-color: yellow;
+    color:#650;
 }
 
 .flash li.success {
@@ -36,6 +51,24 @@ html {
 
 .upload_pending {
     color:red;
+}
+
+.contributor_profile {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    border-bottom: 1px solid gray;
+    width:80%;
+    margin:auto;
+}
+
+.contributor_profile img.portrait {
+    max-width: 20%;
+    margin:10pt;
+}
+
+.contributor_profile div {
+    flex-grow: 1;
 }
 
 #file_list li {

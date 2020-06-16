@@ -1,0 +1,30 @@
+{% extends 'basis.html' %}
+{% block title %}Contributors{% endblock %}
+{% block pageheader %}Contributors{% endblock %}
+{% block content %}
+{% for user in users %}
+    <div class="contributor_profile">
+    <img
+    {% if not user['portrait'] or user['portrait']=='default_portrait.jpg' %}
+        src="{{ url_for('static', filename='default_portrait.jpg') }}"
+    {% else %}
+        src="{{ url_for('routes.uploaded_file', filename=user['portrait'])  }}"
+    {% endif %}
+id="portrait" class="portrait"/>
+    <div>
+        <h3><a href="{{ url_for('routes.user_profile', username=user['username']) }}">{{ user['full_name'] }}</a></h3>
+    <p>{{ user['bio'] }}</p>
+    {% if user['web_links'] | length > 0 %}
+    <ul>
+        {% for link in user['web_links'] %}
+            <li class="web_link">
+            <a href="{{ link['link_url'] }}">{{ link['link_name'] }}</a>
+            </li>
+
+    {% endfor %}
+    </ul>
+    {% endif %}
+    </div>
+    </div>
+{% endfor %}
+{% endblock %}

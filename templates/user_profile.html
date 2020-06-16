@@ -13,7 +13,7 @@
 id="portrait" class="portrait"/>
 <p>{{ meta['bio'] }}</p>
     <ul>
-    {% for link in meta['web_links'] %}
+    {% for link in web_links %}
     <li><a href="{{ link['link_url'] }}">{{ link['link_name'] }}</a></li>
     {% endfor %}
     </ul>

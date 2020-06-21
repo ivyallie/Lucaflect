@@ -133,6 +133,8 @@ html {
     cursor: move;
 }
 
+#comic_menu li .delete {display: none}
+
 
 
 #web_presence_list li {

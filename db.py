@@ -1,4 +1,4 @@
-from flask import current_app
+from flask import current_app, session
 import pymysql
 from json import loads
 
@@ -49,13 +49,26 @@ class Database:
         print('Deleted comic')
         return True
 
-    def user_and_post_match(self, user_id, comic_id, table):
-        id_column=table+"_id"
-        post_query = '''SELECT * FROM '''+table+''' WHERE '''+id_column+'''="''' + str(comic_id) + '''";'''
+    def user_and_post_match(self, user_id, comic_id):
+        #deprecating...
+        post_query = '''SELECT * FROM comic WHERE comic_id="''' + str(comic_id) + '''";'''
         self.cur.execute(post_query)
         post = self.cur.fetchone()
         post_author = post['author_id']
         if int(post_author) == int(user_id):
+            return True
+        else:
+            return False
+
+    def do_user_and_post_match(self,table,id):
+        if table=='comic':
+            post_query = '''SELECT * FROM comic WHERE comic_id="''' + str(id) + '''";'''
+        elif table=='collection':
+            post_query = '''SELECT * FROM collection WHERE collection_id="''' + str(id) + '''";'''
+        self.cur.execute(post_query)
+        post = self.cur.fetchone()
+        post_author = post['author_id']
+        if int(post_author)==int(session['user_id']):
             return True
         else:
             return False

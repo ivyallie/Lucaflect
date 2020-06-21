@@ -209,9 +209,16 @@ def is_admin():
     except TypeError:
         return False
 
-def is_authorized_to_edit(user,post,table='comic'):
+def is_authorized_to_edit(post):
     try:
-        match = database.user_and_post_match(session['user_id'],post,table)
+        match = database.user_and_post_match(session['user_id'],post)
     except KeyError:
+        match = False
+    return match or is_admin()
+
+def authorized(table,post_id):
+    try:
+        match = database.do_user_and_post_match(table,post_id)
+    except TypeError:
         match = False
     return match or is_admin()

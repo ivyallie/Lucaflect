@@ -3,9 +3,10 @@ from werkzeug.exceptions import abort
 from werkzeug.utils import secure_filename
 from . import db
 from . import routes
+from . import auth
 import json
 from re import sub
-from lucaflect.auth import login_required, is_admin
+from lucaflect.auth import login_required, is_admin, is_authorized_to_edit, authorized
 from os.path import join, splitext, isdir, isfile, split, dirname, abspath
 from os import makedirs
 import datetime
@@ -74,6 +75,49 @@ def open_comic_editor(title):
                 'format': body['format']
             }
             return render_template('comic_editor.html', title=title, content=content)
+        else:
+            return render_template('403.html'), 403
+    else:
+        return render_template('404.html'), 404
+
+@bp.route('/collection/edit/<string:title>', methods=['GET'])
+@login_required
+def open_collection_editor(title):
+    database = db.Database()
+    collection = database.does_title_exist(title, table='collection')
+
+    if collection:
+        collection_id=collection['collection_id']
+        user_id=session['user_id']
+        if auth.authorized('collection',collection_id):
+            internal_title = collection['title']
+            meta = json.loads(collection['meta'])
+            title = meta['title']
+            description = meta['description']
+            sequence_raw = json.loads(collection['members'])
+            sequence = []
+            for comic in sequence_raw:
+                comic_data = database.does_title_exist(comic)
+                if comic_data:
+                    content = routes.get_comic_content(comic_data)
+                    comic_listing = {
+                        'internal_title': comic,
+                        'title': content['title'],
+                        'author': content['author'],
+                    }
+                    sequence.append(comic_listing)
+
+            collection_id = collection['collection_id']
+
+            content = {
+                'collection_id':collection_id,
+                'internal_title':internal_title,
+                'title':title,
+                'description':description,
+                'sequence':json.dumps(sequence),
+            }
+
+            return render_template('collection_editor.html',content=content,authors=get_all_authors())
         else:
             return render_template('403.html'), 403
     else:
@@ -207,7 +251,7 @@ def post_collection():
     database.write(to_write,(user_id,clean_title,meta_json,sequence_json))
     response_text = 'Success'
     resp = make_response(jsonify(response_text),200)
-    flash('Collection "'+title+'" created successfully!')
+    flash('Collection "'+title+'" created successfully!','success')
     return resp
 
 
@@ -237,8 +281,11 @@ def delete_comic(title):
 @bp.route('/collection/new', methods=['GET'])
 @login_required
 def new_collection():
+    return render_template('collection_editor.html', authors=get_all_authors())
+
+def get_all_authors():
     database = db.Database()
     authors_query = '''SELECT * FROM user;'''
     authors = database.query(authors_query)
-    return render_template('collection_editor.html', authors=authors)
+    return authors
 

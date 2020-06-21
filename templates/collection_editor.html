@@ -2,12 +2,21 @@
 {% block title %}Collection Editor{% endblock %}
 {% block pageheader %}Collection Editor{% endblock %}
 {% block content %}
+    {% if content %}
+    <a href="{{ url_for('routes.display_collection',title=content['internal_title']) }}">View collection &raquo;</a>
+    {% endif %}
+    <h3>Meta</h3>
     <form>
         <label for="title">Title</label>
-        <input id="title"/>
+        <input id="title"
+         {% if content %}
+                value="{{ content['title'] }}"
+               {% endif %}
+        />
         <label for="description">Description</label>
-        <textarea id="description"></textarea>
+        <textarea id="description">{% if content %}{{ content['description'] }}{% endif %}</textarea>
     </form>
+    <h3>Sequence</h3>
     <div id="collection_sequencer">
         <ul id="authors">
             {% for author in authors %}
@@ -17,21 +26,45 @@
             {% endfor %}
         </ul>
         <ul id="comic_menu" class="sortable js-sortable-menu">
-            <li draggable="true">A</li>
-            <li draggable="true">B</li>
-            <li draggable="true">C</li>
         </ul>
         <ul id="collection_sequence" class="sortable js-sortable-sequencer">
 
         </ul>
 
     </div>
-    <button type="submit">Post Collection</button>
+    <button type="submit" onclick="postCollection()"
+    {% if content %}data-id="{{ content['collection_id'] }}"{% else %}data-id=""{% endif %}
+    >Post Collection</button>
 
     <template id="comic_menu_listing">
-        <li draggable="true"><span></span><a href="" target="_blank" rel="noopener noreferrer">View</a></li>
+        <li draggable="true"><span></span><a href="" target="_blank" rel="noopener noreferrer">View</a>
+        <button type="button" title="delete" class="delete" onclick="remove_from_list(this)">&times;</button> </li>
     </template>
 
+    {% if content %}
+    <script>
+    let initialize_editor = function () {
+        let sequence = {{ content.sequence | safe }};
+        let sequence_editor = document.getElementById('collection_sequence');
+        let listing_template = document.getElementById('comic_menu_listing');
+        console.log(sequence);
+        console.log(typeof(sequence))
+        for (i=0;i<sequence.length;i++) {
+            let clone = listing_template.content.cloneNode(deep = true,);
+            let name = clone.querySelector('span');
+            let viewlink = clone.querySelector('a');
+            name.innerHTML = sequence[i]['title'];
+            name.setAttribute('title', sequence[i]['internal_title']);
+            viewlink.setAttribute('href', '/comic/' + sequence[i]['internal_title']);
+            sequence_editor.appendChild(clone)
+        }
+
+
+    }
+    initialize_editor()
+    </script>
+    {% endif %}
+    <script src="{{ url_for('static',filename='common.js') }}"></script>
     <script src="{{ url_for('static', filename='html5sortable.js') }}"></script>
     <script>
         sortable('.js-sortable-menu', {

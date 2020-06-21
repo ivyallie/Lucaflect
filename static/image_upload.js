@@ -17,10 +17,7 @@ let user_files = document.getElementById('files');
       file_list.appendChild(clone);
     };
 
-    let remove_from_list = function (button) {
-     let parent = button.parentElement;
-     parent.remove()
-    };
+
 
     let invoke_file_picker = function () {
      user_files.click();

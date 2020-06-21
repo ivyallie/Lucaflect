@@ -38,9 +38,12 @@ def get_single_comic(title):
 
     if comic:
         content = get_comic_content(comic)
-        content['show_tools']=auth.is_authorized_to_edit(session['user_id'],comic['comic_id'])
+        content['show_tools']=auth.is_authorized_to_edit(comic['comic_id'])
 
-    return render_template('single_comic.html', content=content)
+        return render_template('single_comic.html', content=content)
+
+    else:
+        return render_template('404.html'),404
 
 def get_comic_content(comic):
     database = db.Database()
@@ -93,11 +96,12 @@ def display_collection(title):
 
         collection_data = {
             'title': meta['title'],
+            'internal_title' : title,
             'description': meta['description'],
             'sequence': sequence,
             'author': author_name,
             'time': collection['posted'],
-            'show_tools': auth.is_authorized_to_edit(session['user_id'],collection['collection_id'],table='collection')
+            'show_tools': auth.authorized('collection',collection['collection_id'])
         }
         return render_template('collection.html',collection=collection_data)
 

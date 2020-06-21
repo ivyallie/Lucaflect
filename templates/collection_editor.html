@@ -1,0 +1,137 @@
+{% extends 'basis.html' %}
+{% block title %}Collection Editor{% endblock %}
+{% block pageheader %}Collection Editor{% endblock %}
+{% block content %}
+    <form>
+        <label for="title">Title</label>
+        <input id="title"/>
+        <label for="description">Description</label>
+        <textarea id="description"></textarea>
+    </form>
+    <div id="collection_sequencer">
+        <ul id="authors">
+            {% for author in authors %}
+                <li>
+                    <button onclick="listComicsByAuthor({{ author['user_id'] }})">{{ author['full_name'] }}</button>
+                </li>
+            {% endfor %}
+        </ul>
+        <ul id="comic_menu" class="sortable js-sortable-menu">
+            <li draggable="true">A</li>
+            <li draggable="true">B</li>
+            <li draggable="true">C</li>
+        </ul>
+        <ul id="collection_sequence" class="sortable js-sortable-sequencer">
+
+        </ul>
+
+    </div>
+    <button type="submit">Post Collection</button>
+
+    <template id="comic_menu_listing">
+        <li draggable="true"><span></span><a href="" target="_blank" rel="noopener noreferrer">View</a></li>
+    </template>
+
+    <script src="{{ url_for('static', filename='html5sortable.js') }}"></script>
+    <script>
+        sortable('.js-sortable-menu', {
+            acceptFrom: false,
+            copy: true,
+            placeholderClass: 'sort_placeholder',
+            hoverClass: 'sort_hover',
+        });
+        sortable('.js-sortable-sequencer', {
+            acceptFrom: '.js-sortable-menu, .js-sortable-sequencer',
+
+            //forcePlaceholderSize: true,
+            placeholderClass: 'sort_placeholder',
+            hoverClass: 'sort_hover',
+        });
+    </script>
+
+    <script>
+        let comic_menu = document.getElementById('comic_menu');
+
+        let listComicsByAuthor = function (id) {
+
+            fetch('/getcomics/' + id, {
+                method: 'GET',
+                headers: {'Content-Type': 'application/json'},
+            })
+                .then(response => response.json())
+                .then(result => {
+                    //console.log(result['comics']);
+                    let comics = result['comics'];
+                    generateMenu(comics);
+                    console.log('Comics:', comics);
+                })
+                .catch(error => {
+                    console.log('Error:', error);
+                })
+
+        }
+
+        let generateMenu = function (comics) {
+            let listing_template = document.getElementById('comic_menu_listing');
+            comic_menu.innerHTML = '';
+            for (c = 0; c < comics.length; c++) {
+                let clone = listing_template.content.cloneNode(deep = true,);
+                let name = clone.querySelector('span');
+                let viewlink = clone.querySelector('a');
+                name.innerHTML = comics[c]['title'];
+                name.setAttribute('title', comics[c]['internal_title']);
+                viewlink.setAttribute('href', '/comic/' + comics[c]['internal_title']);
+                comic_menu.appendChild(clone)
+            }
+
+
+        }
+
+        let postCollection = function () {
+            let title = document.getElementById('title');
+            let description = document.getElementById('description');
+            let sequence = getComicSequence();
+            let collection = {
+                'title': title.value,
+                'description': description.value,
+                'sequence': sequence,
+            };
+            let collection_json = JSON.stringify(collection);
+            fetch('/collection/post', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: collection_json,
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Something went wrong');
+                    }
+                    return response.json();
+                })
+                .then(result => {
+                    //let redirect = result['redirect'];
+                    console.log(result)
+                })
+                .catch((error) => {
+                    alert('Post failed.');
+                })
+
+        }
+
+        let getComicSequence = function () {
+            //console.log('Image list');
+            let collection_sequence = document.getElementById('collection_sequence');
+            let list_elements = collection_sequence.querySelectorAll('li');
+            let comic_sequence = [];
+            for (i = 0; i < list_elements.length; i++) {
+                let title_element = list_elements[i].querySelector('span');
+                let internal_title = title_element.getAttribute('title');
+                comic_sequence.push(internal_title);
+            }
+            return comic_sequence
+        };
+
+
+    </script>
+
+{% endblock %}

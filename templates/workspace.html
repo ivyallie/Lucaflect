@@ -4,7 +4,8 @@
 {% block content %}
     <section>
     <ul class="workspace_links">
-<li><a href="/new">New Comic</a></li>
+<li><a href="{{ url_for('content.new') }}">New Comic</a></li>
+    <li><a href="{{ url_for('content.new_collection') }}">New Collection</a></li>
 <li><a href="{{ url_for('auth.edit_user', username=g.user['username']) }}">Edit profile</a></li>
 {% if g.user['user_group']=='admin' %}
     <li><a href="{{ url_for('routes.site_settings') }}">Site administration</a></li>

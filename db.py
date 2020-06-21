@@ -29,8 +29,8 @@ class Database:
         self.cur.execute(user_query)
         return self.cur.fetchone()
 
-    def does_title_exist(self,title):
-        title_query = '''SELECT * FROM comic WHERE title="''' + title + '''";'''
+    def does_title_exist(self,title,table='comic'):
+        title_query = '''SELECT * FROM '''+table+''' WHERE title="''' + title + '''";'''
         self.cur.execute(title_query)
         return self.cur.fetchone()
 
@@ -49,8 +49,9 @@ class Database:
         print('Deleted comic')
         return True
 
-    def user_and_post_match(self, user_id, comic_id):
-        post_query = '''SELECT * FROM comic WHERE comic_id="''' + str(comic_id) + '''";'''
+    def user_and_post_match(self, user_id, comic_id, table):
+        id_column=table+"_id"
+        post_query = '''SELECT * FROM '''+table+''' WHERE '''+id_column+'''="''' + str(comic_id) + '''";'''
         self.cur.execute(post_query)
         post = self.cur.fetchone()
         post_author = post['author_id']

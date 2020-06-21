@@ -111,10 +111,10 @@ def get_path(filename):
     path = join(APP_ROOT, current_app.config['UPLOAD_FOLDER'], filename)
     return path
 
-def get_unique_title(user_title):
+def get_unique_title(user_title, table='comic'):
     title_stripped = sub('[^A-Za-z0-9 ]+', '', user_title)
     title = sub(' ', '_', title_stripped)
-    if not database.does_title_exist(title):
+    if not database.does_title_exist(title,table):
         print('Title is unique.')
         return title
     else:
@@ -123,7 +123,7 @@ def get_unique_title(user_title):
         number = 1
         while title_blocked:
             title_with_number = title+"_"+str(number)
-            if database.does_title_exist(title_with_number):
+            if database.does_title_exist(title_with_number,table):
                 number += 1
             else:
                 return title_with_number
@@ -188,6 +188,29 @@ def modify_comic(id):
         resp = make_response(response_text, 403)
     return resp
 
+@bp.route('/collection/post', methods=['POST'])
+@login_required
+def post_collection():
+    post=request.get_json()
+    title=post['title']
+    clean_title = get_unique_title(title,table='collection')
+    user_id = session['user_id']
+    meta = {
+        'title':title,
+        'description':post['description']
+    }
+    sequence = post['sequence']
+    meta_json = json.dumps(meta)
+    sequence_json = json.dumps(sequence)
+    to_write = '''INSERT INTO collection (author_id,posted,title,meta,members) VALUES (%s,CURRENT_TIMESTAMP(),%s,%s,%s)'''
+    print(user_id,clean_title,meta_json,sequence_json)
+    database.write(to_write,(user_id,clean_title,meta_json,sequence_json))
+    response_text = 'Success'
+    resp = make_response(jsonify(response_text),200)
+    flash('Collection "'+title+'" created successfully!')
+    return resp
+
+
 @bp.route('/delete/<string:title>', methods=['GET', 'POST'])
 @login_required
 def delete_comic(title):
@@ -210,4 +233,12 @@ def delete_comic(title):
         return render_template('delete_confirm.html', title=title, display_title=display_title, refer_url=request.referrer)
     else:
         return render_template('403.html')
+
+@bp.route('/collection/new', methods=['GET'])
+@login_required
+def new_collection():
+    database = db.Database()
+    authors_query = '''SELECT * FROM user;'''
+    authors = database.query(authors_query)
+    return render_template('collection_editor.html', authors=authors)
 

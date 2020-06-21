@@ -96,6 +96,32 @@ html {
     flex-grow: 1;
 }
 
+#collection_sequencer ul.sortable li {
+        list-style: none;
+    display:flex;
+    justify-content: space-between;
+    border:1px solid #aaa;
+    padding: 10pt;
+    margin-bottom: 5pt;
+    cursor: move;
+}
+
+#collection_sequencer ul {
+    flex-grow:1;
+    margin:3pt;
+    padding: 0;
+}
+
+#collection_sequencer #authors {
+    flex-grow:.1;
+    text-align: right;
+}
+
+#collection_sequencer {
+    display: flex;
+    flex-direction: row;
+}
+
 #file_list li {
     list-style: none;
     display:flex;
@@ -107,9 +133,7 @@ html {
     cursor: move;
 }
 
-#file_list li.sort_placeholder {
-    border:1px dashed #ddd;
-}
+
 
 #web_presence_list li {
     list-style: none;
@@ -122,8 +146,8 @@ html {
     cursor: move;
 }
 
-#web_presence_list li.sort_placeholder {
-    border:1px dashed #ddd;
+.sort_placeholder {
+    border:1px dashed #ddd !important;
 }
 
 #infinite_canvas img {

@@ -208,3 +208,10 @@ def is_admin():
         return user['user_group'] == 'admin'
     except TypeError:
         return False
+
+def is_authorized_to_edit(user,post,table='comic'):
+    try:
+        match = database.user_and_post_match(session['user_id'],post,table)
+    except KeyError:
+        match = False
+    return match or is_admin()

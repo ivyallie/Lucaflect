@@ -1,4 +1,4 @@
-from flask import render_template, Blueprint, session, request, current_app, send_from_directory, g
+from flask import render_template, Blueprint, session, request, current_app, send_from_directory, g, make_response, jsonify
 from . import db
 from . import auth
 from json import loads, dumps
@@ -36,40 +36,72 @@ def get_single_comic(title):
     database = db.Database()
     comic = database.does_title_exist(title)
 
-    def showTools():
-        try:
-            match = database.user_and_post_match(session['user_id'],comic['comic_id'])
-        except KeyError:
-            match = False
-        return match or auth.is_admin()
-
     if comic:
-        body = loads(comic['body'])
+        content = get_comic_content(comic)
+        content['show_tools']=auth.is_authorized_to_edit(session['user_id'],comic['comic_id'])
 
-        images = []
-        for image in body['imagelist']:
-            src = image["file_path"]
-            filename = basename(src)
-            images.append(filename)
-
-        internal_title = comic['title'].replace("'", "")
-        author = database.query_user_id(comic['author_id'])
-        author_name = author['full_name']
-        show_tools = showTools()
-        time = str(comic['posted'])
-        content = {
-            'internal_title': comic['title'],
-            'comic_id': comic['comic_id'],
-            'title': body['true_title'],
-            'body': body['body_text'],
-            'imagelist': images,
-            'tags': body['tags'],
-            'show_tools': show_tools,
-            'author': author_name,
-            'time': time,
-            'format': body['format']
-        }
     return render_template('single_comic.html', content=content)
+
+def get_comic_content(comic):
+    database = db.Database()
+
+    body = loads(comic['body'])
+
+    images = []
+    for image in body['imagelist']:
+        src = image["file_path"]
+        filename = basename(src)
+        images.append(filename)
+
+    internal_title = comic['title'].replace("'", "")
+    author = database.query_user_id(comic['author_id'])
+    author_name = author['full_name']
+    time = str(comic['posted'])
+    content = {
+        'internal_title': comic['title'],
+        'comic_id': comic['comic_id'],
+        'title': body['true_title'],
+        'body': body['body_text'],
+        'imagelist': images,
+        'tags': body['tags'],
+        'author': author_name,
+        'time': time,
+        'format': body['format']
+    }
+    return content
+
+@bp.route('/collection/<string:title>', methods=['GET'])
+def display_collection(title):
+    database = db.Database()
+    collection = database.does_title_exist(title,table='collection')
+    if collection:
+        meta = loads(collection['meta'])
+        author = database.query_user_id(collection['author_id'])
+        author_name = author['full_name']
+        sequence_dictionary = loads(collection['members'])
+        sequence = []
+        for c in sequence_dictionary:
+            comic = database.does_title_exist(c)
+            if comic:
+                content=get_comic_content(comic)
+                comic_listing = {
+                    'internal_title': c,
+                    'title': content['title'],
+                    'author': content['author'],
+                }
+                sequence.append(comic_listing)
+
+        collection_data = {
+            'title': meta['title'],
+            'description': meta['description'],
+            'sequence': sequence,
+            'author': author_name,
+            'time': collection['posted'],
+            'show_tools': auth.is_authorized_to_edit(session['user_id'],collection['collection_id'],table='collection')
+        }
+        return render_template('collection.html',collection=collection_data)
+
+
 
 
 @bp.route('/uploads/<filename>')
@@ -79,6 +111,18 @@ def uploaded_file(filename):
     #return send_from_directory(current_app.config['UPLOAD_FOLDER'], route)
     upload_dir = current_app.config['UPLOAD_FOLDER']
     return send_from_directory(upload_dir, filename)
+
+@bp.route('/getcomics/<int:id>', methods=['GET'])
+def get_comics_for_js(id):
+    comics=get_comics(id)
+    #response_data = jsonify(comics)
+    #print(jsonify(comics))
+    response_data = {
+        'comics':comics,
+    }
+    resp = make_response(jsonify(response_data),200)
+
+    return resp
 
 def get_comics(id="", howmany=0):
     database = db.Database()

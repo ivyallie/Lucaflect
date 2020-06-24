@@ -237,8 +237,11 @@ def modify_comic(id):
 def post_collection():
     post=request.get_json()
     title=post['title']
-    clean_title = get_unique_title(title,table='collection')
     user_id = session['user_id']
+    try:
+        collection_id = int(post['id'])
+    except TypeError:
+        collection_id=False
     meta = {
         'title':title,
         'description':post['description']
@@ -246,12 +249,26 @@ def post_collection():
     sequence = post['sequence']
     meta_json = json.dumps(meta)
     sequence_json = json.dumps(sequence)
-    to_write = '''INSERT INTO collection (author_id,posted,title,meta,members) VALUES (%s,CURRENT_TIMESTAMP(),%s,%s,%s)'''
-    print(user_id,clean_title,meta_json,sequence_json)
-    database.write(to_write,(user_id,clean_title,meta_json,sequence_json))
-    response_text = 'Success'
-    resp = make_response(jsonify(response_text),200)
-    flash('Collection "'+title+'" created successfully!','success')
+    if collection_id:
+        print('updating',title)
+        if auth.authorized('collection', collection_id):
+            to_write = '''UPDATE collection SET meta=%s, members=%s WHERE collection_id=%s;'''
+            record_query = '''SELECT * FROM collection WHERE collection_id=%s;'''
+            record = database.query(record_query,values=collection_id,fetchone=True)
+            return_title=record['title']
+            database.write(to_write,(meta_json,sequence_json,collection_id))
+            flash('Successfully modified collection "'+title+'"!', 'success')
+        else:
+            return render_template('403.html'),403
+    else:
+        print('creating new',title)
+        clean_title = get_unique_title(title, table='collection')
+        return_title = clean_title
+        to_write = '''INSERT INTO collection (author_id,posted,title,meta,members) VALUES (%s,CURRENT_TIMESTAMP(),%s,%s,%s);'''
+        database.write(to_write,(user_id,clean_title,meta_json,sequence_json))
+        flash('Collection "'+title+'" created successfully!','success')
+    response_text = jsonify({'redirect': url_for('content.open_collection_editor', title=return_title)})
+    resp = make_response(response_text, 200)
     return resp
 
 

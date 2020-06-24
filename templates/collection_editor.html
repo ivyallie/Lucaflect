@@ -34,7 +34,7 @@
     </div>
     <button type="submit" onclick="postCollection()"
     {% if content %}data-id="{{ content['collection_id'] }}"{% else %}data-id=""{% endif %}
-    >Post Collection</button>
+    id="submit_button" >Post Collection</button>
 
     <template id="comic_menu_listing">
         <li draggable="true"><span></span><a href="" target="_blank" rel="noopener noreferrer">View</a>
@@ -47,8 +47,8 @@
         let sequence = {{ content.sequence | safe }};
         let sequence_editor = document.getElementById('collection_sequence');
         let listing_template = document.getElementById('comic_menu_listing');
-        console.log(sequence);
-        console.log(typeof(sequence))
+        //console.log(sequence);
+        //console.log(typeof(sequence))
         for (i=0;i<sequence.length;i++) {
             let clone = listing_template.content.cloneNode(deep = true,);
             let name = clone.querySelector('span');
@@ -124,10 +124,16 @@
             let title = document.getElementById('title');
             let description = document.getElementById('description');
             let sequence = getComicSequence();
+            let submit_button = document.getElementById('submit_button');
+            let collection_id = null;
+            if (submit_button.getAttribute('data-id')) {
+                collection_id = submit_button.getAttribute('data-id')
+            };
             let collection = {
                 'title': title.value,
                 'description': description.value,
                 'sequence': sequence,
+                'id':collection_id
             };
             let collection_json = JSON.stringify(collection);
             fetch('/collection/post', {
@@ -142,8 +148,8 @@
                     return response.json();
                 })
                 .then(result => {
-                    //let redirect = result['redirect'];
-                    console.log(result)
+                    let redirect = result['redirect'];
+                    window.location.replace(redirect);
                 })
                 .catch((error) => {
                     alert('Post failed.');

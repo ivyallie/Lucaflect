@@ -13,10 +13,15 @@ class Database:
                                    DictCursor)
         self.cur = self.con.cursor()
 
-    def query(self, querytext):
-        self.cur.execute(querytext)
-        result = self.cur.fetchall()
-
+    def query(self, querytext, values=(), fetchone=False):
+        if not values:
+            self.cur.execute(querytext)
+        else:
+            self.cur.execute(querytext,values)
+        if not fetchone:
+            result = self.cur.fetchall()
+        else:
+            result = self.cur.fetchone()
         return result
 
     def query_user(self,name):

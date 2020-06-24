@@ -153,6 +153,30 @@ def get_comics(id="", howmany=0):
         processed_comics.append(d)
     return processed_comics
 
+def get_collections(id="",howmany=0):
+    database=db.Database()
+    if id:
+        query = '''SELECT * FROM collection WHERE author_id=%s ORDER BY posted DESC;'''
+        collections = database.query(query,values=id)
+    else:
+        query = '''SELECT * FROM collection ORDER BY posted DESC;'''
+        collections = database.query(query)
+    processed = []
+    for collection in collections:
+        internal_title = collection['title']
+        meta_raw = collection['meta']
+        meta = loads(meta_raw)
+        author = database.query_user_id(collection['author_id'])
+        d = {
+            'collection_id': collection['collection_id'],
+            'internal_title': internal_title,
+            'title': meta['title'],
+            'description': meta['description'],
+            'author': author['full_name']
+        }
+        processed.append(d)
+    return processed
+
 def load_weblinks(raw_links):
     for link in raw_links:
         url = str(link['link_url'])
@@ -168,13 +192,14 @@ def user_profile(username):
 
     if user:
         comics = get_comics(id=user['user_id'])
+        collections = get_collections(id=user['user_id'])
         try:
             meta = loads(user['meta'])
             web_links=load_weblinks(meta['web_links'])
         except TypeError:
             meta=""
 
-        return render_template('user_profile.html', user=user, meta=meta, comics=comics, web_links=web_links)
+        return render_template('user_profile.html', user=user, meta=meta, comics=comics, collections=collections, web_links=web_links)
     else:
         return render_template('404.html'), 404
 
@@ -258,7 +283,8 @@ def admin_comics():
 def workspace():
     user=g.user
     comics = get_comics(id=user['user_id'])
-    return render_template('workspace.html', comics=comics)
+    collections = get_collections(id=user['user_id'])
+    return render_template('workspace.html', comics=comics, collections=collections)
 
 @bp.route('/contributors')
 def contributors():

@@ -34,6 +34,14 @@ id="portrait" class="portrait"/>
 
 
     </section>
+    {% if collections %}
+        <h3>Collections by {{ user['full_name'] }}</h3>
+        <ul>
+            {% for collection in collections %}
+            <li><a href="{{ url_for('routes.display_collection', title=collection['internal_title']) }}">{{ collection['title'] }}</a></li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 
     </div>
 {% endblock %}

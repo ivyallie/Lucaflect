@@ -13,6 +13,7 @@
 </ul>
     </section>
 
+    {% if comics %}
     <section>
     <h3>Your Comics</h3>
     <ul>
@@ -23,8 +24,8 @@
             </div>
             <div>
                 <ul>
-                    <li><a href="{{ url_for('content.open_comic_editor',title=comic['internal_title']) }}">Edit</a></li>
-                    <li><a href="{{ url_for('content.delete_comic', title=comic['internal_title']) }}">Delete</a></li>
+                    <li><a href="{{ url_for('content.open_comic_editor',title=comic['internal_title']) }}" class="edit_button">Edit</a></li>
+                    <li><a href="{{ url_for('content.delete_comic', title=comic['internal_title']) }}" class="delete_button">Delete</a></li>
                 </ul>
             </div>
 
@@ -32,6 +33,26 @@
     {% endfor %}
     </ul>
     </section>
+    {% endif %}
+
+    {% if collections %}
+        <h3>Your Collections</h3>
+        <ul>
+        {% for collection in collections %}
+            <li>
+            <div>
+                <a href="{{ url_for('routes.display_collection', title=collection['internal_title']) }}">{{ collection['title'] }}</a>
+            </div>
+            <div>
+                <ul>
+                    <li><a href="{{ url_for('content.open_collection_editor',title=collection['internal_title']) }}" class="edit_button">Edit</a></li>
+                    <li><a href="{{ url_for('content.delete_collection', title=collection['internal_title']) }}" class="delete_button">Delete</a></li>
+                </ul>
+            </div>
+            </li>
+        {% endfor %}
+        </ul>
+    {% endif %}
 
 
 {% endblock %}

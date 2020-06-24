@@ -54,6 +54,12 @@ class Database:
         print('Deleted comic')
         return True
 
+    def delete_collection(self,id):
+        query='''DELETE FROM collection WHERE collection_id=%s;'''
+        self.cur.execute(query,id)
+        self.con.commit()
+        return True
+
     def user_and_post_match(self, user_id, comic_id):
         #deprecating...
         post_query = '''SELECT * FROM comic WHERE comic_id="''' + str(comic_id) + '''";'''

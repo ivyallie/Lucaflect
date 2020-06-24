@@ -5,7 +5,7 @@
     {%  if (collection['show_tools']) %}
         <div id="post-tools">
         <a href="{{ url_for('content.open_collection_editor', title=collection['internal_title']) }}">
-        Edit this</a> &bullet; <a href="{{  url_for('content.delete_comic', title='title') }}">Delete this</a>
+        Edit this</a> &bullet; <a href="{{  url_for('content.delete_collection', title=collection['internal_title']) }}">Delete this</a>
         </div>
     {% endif %}
     {{ collection['description'] }}

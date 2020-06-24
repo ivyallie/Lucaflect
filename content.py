@@ -293,7 +293,29 @@ def delete_comic(title):
 
         return render_template('delete_confirm.html', title=title, display_title=display_title, refer_url=request.referrer)
     else:
-        return render_template('403.html')
+        return render_template('403.html'),403
+
+@bp.route('/collection/delete/<string:title>',methods=['GET','POST'])
+@login_required
+def delete_collection(title):
+    database=db.Database()
+    collection=database.does_title_exist(title,table='collection')
+    id = collection['collection_id']
+    if request.method=='GET':
+        request_url=urlparse(request.referrer).path
+        session['delete_redirect'] = request_url
+        if session.get('delete_redirect') == url_for('routes.display_collection', title=title):
+            session['delete_redirect'] = url_for('routes.workspace')
+    if auth.authorized('collection',id):
+        meta = json.loads(collection['meta'])
+        display_title = meta['title']
+        if request.method == 'POST':
+            database.delete_collection(id)
+            flash('"'+display_title+'" deleted.','success')
+            return redirect(session.get('delete_redirect'))
+        return render_template('delete_confirm.html', title=title, display_title=display_title, refer_url=request.referrer)
+    else:
+        return render_template('403.html'),403
 
 @bp.route('/collection/new', methods=['GET'])
 @login_required

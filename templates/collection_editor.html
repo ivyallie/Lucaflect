@@ -61,7 +61,7 @@
     </script>
 
     <script src="{{ url_for('static',filename='collection_editor.js') }}"></script>
-    
+
     {% if content %}
     <script>
     document.onload = initialize_editor({{ content.sequence | safe }})

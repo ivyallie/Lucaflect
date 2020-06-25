@@ -226,12 +226,17 @@ def post_comic():
 @login_required
 def modify_comic(id):
     post = request.get_json()
+    title = post['title']
     post_json = process_post_content(post)
     if database.user_and_post_match(session['user_id'],id) or is_admin():
         #print(post_json)
         modification = '''UPDATE comic SET body=%s WHERE comic_id=%s'''
         database.write(modification, (post_json, id))
-        response_text = jsonify('Modification successful')
+        record_query = '''SELECT * FROM comic WHERE comic_id=%s;'''
+        record = database.query(record_query, values=id, fetchone=True)
+        return_title = record['title']
+        response_text = jsonify({'redirect': url_for('content.open_comic_editor', title=return_title)})
+        flash('"' + title + '" modified successfully', 'success')
         resp = make_response(response_text, 200)
     else:
         response_text = jsonify('You are not authorized to modify this post.')

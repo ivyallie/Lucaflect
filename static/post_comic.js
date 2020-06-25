@@ -58,7 +58,9 @@ let postComic = function () {
                 return response.json();
             })
             .then(result => {
-                alert("Comic modified successfully.")
+                let redirect = result['redirect'];
+                window.location.replace(redirect);
+                console.log('Modification successful.')
             })
             .catch((error) => {console.log('Modification failed.')})
         ;

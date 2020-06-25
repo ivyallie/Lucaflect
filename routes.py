@@ -142,13 +142,20 @@ def get_comics(id="", howmany=0):
         body = loads(body_rawstr)
         tags = body['tags']
         author = database.query_user_id(comic['author_id'])
+        try:
+            preview_image = body['preview_image']
+        except KeyError:
+            print('No preview image, defaulting.')
+            preview_image = ''
         d = {
             'comic_id': comic['comic_id'],
+            'time': comic['posted'],
             'internal_title': internal_title,
             'title': body['true_title'],
             'body': body['body_text'],
             'tags': tags,
-            'author': author['full_name']
+            'author': author['full_name'],
+            'preview_image': preview_image
         }
         processed_comics.append(d)
     return processed_comics

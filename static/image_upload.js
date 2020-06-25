@@ -1,6 +1,12 @@
 let upload_queue = [];
 let user_files = document.getElementById('files');
+let preview_image_picker = document.getElementById('preview_image_filepicker')
 
+
+    let remove_preview = function() {
+        let img = document.getElementById('preview_image');
+        img.setAttribute('src', '')
+    };
 
 
     let add_to_file_list = function (file,queued) {
@@ -64,9 +70,7 @@ let user_files = document.getElementById('files');
      })
              .then(response => response.json())
              .then(result => {
-              // console.log('Success:', result['path']);
               remove_from_upload_queue(file);
-              console.log(result['path']);
               update_file_list(result['filename'], result['path'])
              })
              .catch(error => {
@@ -82,6 +86,36 @@ let user_files = document.getElementById('files');
         };
     };
 
+    let choose_new_preview = function() {
+        preview_image_picker.click()
+    };
+
+    let upload_preview_image = function() {
+      let file = preview_image_picker.files[0];
+      let formData = new FormData();
+      formData.append('file',file);
+      fetch('/upload',{
+          method: 'PUT',
+          body: formData
+      })
+          .then(response => response.json())
+          .then(result => {
+              set_preview_image(result['internal_filename'])
+          })
+          .catch(error=> {
+              console.log('Error:',error);
+          })
+    };
+
+
+
+    let set_preview_image = function(file) {
+        let img = document.getElementById('preview_image');
+        let img_path = '/uploads/'+file;
+        img.setAttribute('src', img_path);
+    };
+
 
     user_files.addEventListener("change", send_files_to_list);
     document.getElementById('add-images').addEventListener("click", invoke_file_picker);
+    preview_image_picker.addEventListener("change", upload_preview_image);

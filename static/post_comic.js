@@ -4,7 +4,13 @@ let postComic = function () {
     let tags = document.getElementById('tags').value;
     let image_list = getImageList();
     let page_turns = document.getElementById('pageturns');
+    let preview_image = document.getElementById('preview_image');
     let post_button = document.getElementById('post-button');
+    let preview_image_filename = '';
+    let preview_image_src = preview_image.getAttribute('src');
+    if (preview_image_src) {
+        preview_image_filename = preview_image_src.replace(/^.*[\\\/]/, '');
+    }
     let format = 'default';
     if (page_turns.checked) {
         format = 'page_turns'
@@ -14,7 +20,8 @@ let postComic = function () {
         'body_text' : bodytext,
         'tags' : tags.split(','),
         'image_list' : image_list,
-        'format' : format
+        'format' : format,
+        'preview_image' : preview_image_filename
     };
     let post_json = JSON.stringify(post);
     if (!(post_button.getAttribute('data-id'))) {

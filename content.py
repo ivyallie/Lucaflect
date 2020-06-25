@@ -66,13 +66,18 @@ def open_comic_editor(title):
         user_id = session['user_id']
         if database.user_and_post_match(user_id,comic_id) or is_admin():
             body = json.loads(comic['body'])
+            try:
+                preview_image=body['preview_image']
+            except KeyError:
+                preview_image=''
             content = {
                 'id': comic['comic_id'],
                 'title': body['true_title'],
                 'body': body['body_text'],
                 'imagelist': body['imagelist'],
                 'tags': body['tags'],
-                'format': body['format']
+                'format': body['format'],
+                'preview_image': preview_image
             }
             return render_template('comic_editor.html', title=title, content=content)
         else:
@@ -197,7 +202,8 @@ def process_post_content(post):
         'body_text': post['body_text'],
         'tags': post['tags'],
         'imagelist': post['image_list'],
-        'format': post['format']
+        'format': post['format'],
+        'preview_image': post['preview_image']
     }
     return json.dumps(post_content)
 

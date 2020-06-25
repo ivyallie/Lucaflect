@@ -4,62 +4,73 @@
 {% block pageheader %}Comic Editor{% endblock %}
 {% block content %}
     <div class="editor_section">
-    {% if title %}
-    <div>
-        <a href="{{ url_for('routes.get_single_comic', title=title) }}">View comic &raquo;</a>
-    </div>
+        {% if title %}
+            <div>
+                <a href="{{ url_for('routes.get_single_comic', title=title) }}">View comic &raquo;</a>
+            </div>
         {% endif %}
-    <h3>Meta</h3>
-    <form method="post">
-<label for="title">Title</label>
-<input id="title" name="title" value=""/>
-<label for="body">Body:</label>
-<textarea name="body" id="body"></textarea>
-<label for="tags">Tags:</label>
-<input name="tags" id="tags"/>
-<div>
-    <span>Comic type: </span>
-    <input type="radio" id="pageturns" name="comictype" value="pageturns">
-        <label for="pageturns">Page Turns</label>
-        <input type="radio" id="infinitecanvas" name="comictype" value="infinitecanvas" checked>
-        <label for="infinitecanvas">Infinite Canvas</label>
-</div>
+        <h3>Meta</h3>
+        <form method="post">
+            <label for="title">Title</label>
+            <input id="title" name="title" value=""/>
+            <label for="body">Body:</label>
+            <textarea name="body" id="body"></textarea>
+            <label for="tags">Tags:</label>
+            <input name="tags" id="tags"/>
+            <div>
+                <span>Comic type: </span>
+                <input type="radio" id="pageturns" name="comictype" value="pageturns">
+                <label for="pageturns">Page Turns</label>
+                <input type="radio" id="infinitecanvas" name="comictype" value="infinitecanvas" checked>
+                <label for="infinitecanvas">Infinite Canvas</label>
+            </div>
+
+            <div id="preview_image_picker">
+                <h3>Preview Image</h3>
+                <img src="" id="preview_image"/>
+                <button type="button" id="preview_button" onclick="choose_new_preview()">Upload preview image</button>
+                <button type="button" id="delete_preview" onclick="remove_preview()">Delete Preview</button>
+                <input type="file" id="preview_image_filepicker" style="display: none;">
+            </div>
 
 
-<input value="Post" type="button" onclick="postComic()" id="post-button" data-id=""/>
+            <input value="Post" type="button" onclick="postComic()" id="post-button" data-id=""/>
 
-</form>
+        </form>
     </div>
 
     <div class="pages_editor">
-    <h3>Pages</h3>
-        <input type="file" id="files"  multiple style="display: none;">
-    <button type="button" id="add-images">Add images</button>
-<ul id="file_list" class="js-sortable">
+        <h3>Pages</h3>
+        <input type="file" id="files" multiple style="display: none;">
+        <button type="button" id="add-images">Add images</button>
+        <ul id="file_list" class="js-sortable">
 
 
-</ul>
+        </ul>
     </div>
     <template id="listed_file_template">
- <li draggable="true" data-imgurl="" ><span class="display_text"></span><button onclick="remove_from_list(this)">&times;</button> </li>
-</template>
-    {%  if content %}
-    <script src="{{ url_for('static', filename='initialize_editor.js') }}"></script>
-    <script>
-        let content_json = JSON.parse('{{ content | tojson | safe }}');
-        initialize_editor(content_json)</script>
+        <li draggable="true" data-imgurl=""><span class="display_text"></span>
+            <button onclick="remove_from_list(this)">&times;</button>
+        </li>
+    </template>
+    {% if content %}
+        <script src="{{ url_for('static', filename='initialize_editor.js') }}"></script>
+        <script>
+            let content_json = JSON.parse('{{ content | tojson | safe }}');
+            initialize_editor(content_json)</script>
     {% endif %}
-    <script src="{{ url_for('static', filename='html5sortable.js') }}" ></script>
-<script>
-sortable('.js-sortable', {
-        forcePlaceholderSize: true,
-        placeholderClass: 'sort_placeholder',
-        hoverClass: 'sort_hover',
-    });
-</script>
-    <script src="{{ url_for('static', filename='image_upload.js') }}" ></script>
+    <script src="{{ url_for('static', filename='html5sortable.js') }}"></script>
+    <script>
+        sortable('.js-sortable', {
+            forcePlaceholderSize: true,
+            placeholderClass: 'sort_placeholder',
+            hoverClass: 'sort_hover',
+        });
+    </script>
+    <script src="{{ url_for('static', filename='image_upload.js') }}"></script>
     <script src="{{ url_for('static', filename='post_comic.js') }}"></script>
     <script src="{{ url_for('static', filename='common.js') }}"></script>
+
 
 {% endblock %}
 {% block scripts %}

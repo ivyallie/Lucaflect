@@ -95,11 +95,6 @@ class Database:
             self.con.commit()
             return True
 
-    def get_title_from_comic_id(self,id):
-        query = '''SELECT * FROM comic WHERE comic_id=%s'''
-        self.cur.execute(query,id)
-        comic = self.cur.fetchone()
-        return comic['title']
 
     def getSetting(self,settingname):
         setting_query = '''SELECT * FROM lucaflect WHERE name=%s;'''

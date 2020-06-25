@@ -59,6 +59,7 @@ def get_comic_content(comic):
     internal_title = comic['title'].replace("'", "")
     author = database.query_user_id(comic['author_id'])
     author_name = author['full_name']
+    author_username = author['username']
     time = str(comic['posted'])
     content = {
         'internal_title': comic['title'],
@@ -68,6 +69,7 @@ def get_comic_content(comic):
         'imagelist': images,
         'tags': body['tags'],
         'author': author_name,
+        'author_username': author_username,
         'time': time,
         'format': body['format']
     }

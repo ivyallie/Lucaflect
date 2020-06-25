@@ -1,18 +1,25 @@
 {% extends 'basis.html' %}
 {% block title %}Index{% endblock %}
-{% block pageheader %}Index{% endblock %}
+{% block pageheader %}{% endblock %}
 {% block content %}
+    <div id="index">
     {% if comics %}
         {% for comic in comics %}
-            <section>
-                <h3><a href="{{ url_for('routes.get_single_comic', title=comic['internal_title']) }}">{{ comic['title'] }}</a></h3>
-                <h4>{{ comic['author'] }}</h4>
-                <p>{{ comic['body'] }}</p>
+            <section class="comic">
+
                 {% if comic['preview_image'] %}
+                    <a href="{{ url_for('routes.get_single_comic', title=comic['internal_title']) }}">
             <img alt="{{ comic['title'] }} by {{ comic['author'] }}" src="{{ url_for('routes.uploaded_file', filename=comic['preview_image'] ) }}" class="preview_image"/>
+                    </a>
+
                 {% endif %}
-<span>{{ comic['time'] }}</span>
+            <a href="{{ url_for('routes.get_single_comic', title=comic['internal_title']) }}" class="link_block">
+            <h3>{{ comic['title'] }}</h3>
+                <h4>by {{ comic['author'] }}</h4>
+                <p class="description">{{ comic['body'] }}</p>
+<span>{{ comic['time'] }}</a></span>
             </section>
         {% endfor %}
     {% endif %}
+    </div>
 {% endblock %}

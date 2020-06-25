@@ -6,27 +6,22 @@
 {% endblock %}
 </head>
 <body>
-<div>
-    <div><h1><a href="{{ url_for('routes.index') }}">{{ config.SITENAME }}</a></h1></div>
+<div id="header">
+    <div id="sitename"><h1><a href="{{ url_for('routes.index') }}">{{ config.SITENAME }}</a></h1></div>
     <nav>
         <ul>
             {% for link in navlinks %}
             <li><a href="/">{{ link }}</a></li>
             {% endfor %}
         {% if g.user %}
-            <li><a href="{{ url_for('routes.user_profile', username=g.user['username']) }}" >{{ g.user['full_name'] }}</a></li>
+            <li><a href="{{ url_for('routes.user_profile', username=g.user['username']) }}" class="username">{{ g.user['full_name'] }}</a></li>
             <li><a href="{{ url_for('routes.workspace') }}">Workspace</a></li>
             <li><a href="{{ url_for('auth.logout') }}">Log out</a></li>
-        {% else %}
-        <li><a href="{{ url_for('auth.login') }}">Log in</a></li>
-            {% if config['ALLOW_REGISTRATION'] %}
-                <li><a href="{{ url_for('auth.register') }}">Register</a></li>
-                {% endif %}
         {% endif %}
         </ul>
     </nav>
 </div>
-<div class="maincontainer">
+<div id="maincontainer">
 
     {% with messages=get_flashed_messages(with_categories=true) %}
         {% if messages %}

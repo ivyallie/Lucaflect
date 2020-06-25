@@ -151,6 +151,7 @@ section.comic a.link_block .description {
 
 #single_comic_header {
     text-align: center;
+    margin-top:30pt;
 }
 
 #single_comic_header h2 {

@@ -1,9 +1,17 @@
 {% extends 'basis.html' %}
 {% block title %}{{ user['full_name'] }}{% endblock %}
-{% block pageheader %}{{ user['full_name'] }}{% endblock %}
 {% block content %}
     <div id="user_profile">
-    <section>
+<div class="title">
+    {% if g.user['user_id'] == user['user_id'] or g.user['user_group']=='admin' %}
+        <div id="post-tools">
+    <a href="{{ url_for('auth.edit_user', username=user['username']) }}" title="Edit profile"><img src="{{ url_for('static', filename='icons/edit.svg') }}" alt="Edit"/></a>
+    </div>
+    {% endif %}
+
+    <h2>{{ user['full_name'] }}</h2>
+</div>
+    <section id="profile_bio">
         <img
     {% if not meta['portrait'] or meta['portrait']=='default_portrait.jpg' %}
         src="{{ url_for('static', filename='default_portrait.jpg') }}"
@@ -12,36 +20,52 @@
     {% endif %}
 id="portrait" class="portrait"/>
 <p>{{ meta['bio'] }}</p>
+    </section>
+
+    {% if web_links %}
+    <section id="profile_weblinks">
+    <span>Find {{ user['full_name'] }} on:</span>
     <ul>
     {% for link in web_links %}
     <li><a href="{{ link['link_url'] }}">{{ link['link_name'] }}</a></li>
     {% endfor %}
     </ul>
 
-    {% if g.user['user_id'] == user['user_id'] or g.user['user_group']=='admin' %}
-    <span><a href="{{ url_for('auth.edit_user', username=user['username']) }}">Edit profile</a></span>
-    {% endif %}
-    </section>
-    <section>
+</section>
+{% endif %}
+
+
+
+
+    <section id="profile_content">
         {% if comics %}
         <h3>Comics by {{ user['full_name'] }}</h3>
         <ul>
+
             {% for comic in comics %}
-            <li><a href="{{ url_for('routes.get_single_comic', title=comic['internal_title']) }}">{{ comic['title'] }}</a></li>
+            <li class="list_item">
+            <a href="{{ url_for('routes.get_single_comic', title=comic['internal_title']) }}">
+            {% if comic['preview_image'] %}
+            <img alt="{{ comic['title'] }} by {{ comic['author'] }}" src="{{ url_for('routes.uploaded_file', filename=comic['preview_image'] ) }}" class="preview_image"/>
+                {% endif %}
+                <span>{{ comic['title'] }}</span></a></li>
             {% endfor %}
         </ul>
         {% endif %}
 
 
-    </section>
     {% if collections %}
         <h3>Collections by {{ user['full_name'] }}</h3>
         <ul>
             {% for collection in collections %}
-            <li><a href="{{ url_for('routes.display_collection', title=collection['internal_title']) }}">{{ collection['title'] }}</a></li>
+            <li><a href="{{ url_for('routes.display_collection', title=collection['internal_title']) }}">
+                <span>{{ collection['title'] }}</span></a></li>
             {% endfor %}
         </ul>
     {% endif %}
+
+    </section>
+
 
     </div>
 {% endblock %}

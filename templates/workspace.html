@@ -2,21 +2,33 @@
 {% block title %}Workspace{% endblock %}
 {% block pageheader %}Workspace{% endblock %}
 {% block content %}
-    <section>
+
+    <section id="workspace_buttons">
     <ul class="workspace_links">
-<li><a href="{{ url_for('content.new') }}">New Comic</a></li>
-    <li><a href="{{ url_for('content.new_collection') }}">New Collection</a></li>
-<li><a href="{{ url_for('auth.edit_user', username=g.user['username']) }}">Edit profile</a></li>
+<li><a href="{{ url_for('content.new') }}">
+    <img src="{{ url_for('static', filename='icons/delete.svg') }}"/>
+    <div>new comic</div></a></li>
+
+    <li><a href="{{ url_for('content.new_collection') }}">
+        <img src="{{ url_for('static', filename='icons/delete.svg') }}"/>
+        <div>new collection</div></a></li>
+
+
+<li><a href="{{ url_for('auth.edit_user', username=g.user['username']) }}">
+    <img src="{{ url_for('static', filename='icons/delete.svg') }}"/>
+    <div>edit profile</div></a></li>
 {% if g.user['user_group']=='admin' %}
-    <li><a href="{{ url_for('routes.site_settings') }}">Site administration</a></li>
+    <li><a href="{{ url_for('routes.site_settings') }}">
+        <img src="{{ url_for('static', filename='icons/delete.svg') }}"/>
+        <div>site admin</div></a></li>
 {% endif %}
 </ul>
     </section>
 
     {% if comics %}
-    <section>
+    <section class="workspace_list">
     <h3>Your Comics</h3>
-    <ul>
+    <ul class="entry_list">
         {% for comic in comics %}
         <li>
             <div>
@@ -24,8 +36,8 @@
             </div>
             <div>
                 <ul>
-                    <li><a href="{{ url_for('content.open_comic_editor',title=comic['internal_title']) }}" class="edit_button">Edit</a></li>
-                    <li><a href="{{ url_for('content.delete_comic', title=comic['internal_title']) }}" class="delete_button">Delete</a></li>
+                    <li><a href="{{ url_for('content.open_comic_editor',title=comic['internal_title']) }}" class="edit_button" title="Edit &quot;{{ comic['title'] }}&quot;"><img src="{{ url_for('static', filename='icons/edit.svg') }}"/></a></li>
+                    <li><a href="{{ url_for('content.delete_comic', title=comic['internal_title']) }}" class="delete_button" title="Delete &quot;{{ comic['title'] }}&quot;"><img src="{{ url_for('static', filename='icons/delete.svg') }}"/></a></li>
                 </ul>
             </div>
 
@@ -37,7 +49,8 @@
 
     {% if collections %}
         <h3>Your Collections</h3>
-        <ul>
+        <section class="workspace_list">
+        <ul class="entry_list">
         {% for collection in collections %}
             <li>
             <div>
@@ -45,13 +58,14 @@
             </div>
             <div>
                 <ul>
-                    <li><a href="{{ url_for('content.open_collection_editor',title=collection['internal_title']) }}" class="edit_button">Edit</a></li>
-                    <li><a href="{{ url_for('content.delete_collection', title=collection['internal_title']) }}" class="delete_button">Delete</a></li>
+                    <li><a href="{{ url_for('content.open_collection_editor',title=collection['internal_title']) }}" class="edit_button"><img src="{{ url_for('static', filename='icons/edit.svg') }}"/></a></li>
+                    <li><a href="{{ url_for('content.delete_collection', title=collection['internal_title']) }}" class="delete_button"><img src="{{ url_for('static', filename='icons/delete.svg') }}"/></a></li>
                 </ul>
             </div>
             </li>
         {% endfor %}
         </ul>
+        </section>
     {% endif %}
 
 

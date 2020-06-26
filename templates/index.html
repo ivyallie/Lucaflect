@@ -15,9 +15,9 @@
                 {% endif %}
             <a href="{{ url_for('routes.get_single_comic', title=comic['internal_title']) }}" class="link_block">
             <h3>{{ comic['title'] }}</h3>
-                <h4>by {{ comic['author'] }}</h4>
+                <h4>{{ comic['author'] }}</h4>
                 <p class="description">{{ comic['body'] }}</p>
-<span>{{ comic['time'] }}</a></span>
+
             </section>
         {% endfor %}
     {% endif %}

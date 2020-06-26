@@ -6,6 +6,20 @@ html {
     margin:0;
 }
 
+h3 {
+    text-align: center;
+    font-size: 18pt;
+}
+
+a {
+    color:black;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
 /* Header */
 
 #header {
@@ -55,6 +69,10 @@ html {
 
 #header nav ul li a:hover {
     text-decoration: underline;
+}
+
+#header_title {
+    text-align: center;
 }
 
 /* Footer */
@@ -149,13 +167,14 @@ section.comic a.link_block .description {
 
 /* Single Comic */
 
-#single_comic_header {
+div.title {
     text-align: center;
     margin-top:30pt;
 }
 
-#single_comic_header h2 {
+h2 {
     font-size: 24pt;
+    text-align: center;
 }
 
 #single_comic_header span {
@@ -204,14 +223,243 @@ section.comic a.link_block .description {
     background-color: #FE0;
 }
 
-#single_comic_header #post-tools {
+#post-tools {
     border: 1px solid #FE0;
     display: inline-block;
     padding:5pt;
-    margin-bottom: 5pt;
+    margin: 0 auto 5pt auto;
+    border-radius:5pt;
+    text-align: center;
+}
+
+
+#post-tools a {
+    display: inline-block;
+    text-decoration: none;
+    color:black;
+    background-color:#FE0;
+    padding:4pt;
+    font-size:10pt;
+    border-radius:2pt;
+        border:1px solid #FE0;
+
+}
+
+#pageturn_navigation {
+    display: flex;
+    justify-content: space-between;
+}
+
+#pageturn_navigation button {
+    background-color: #FE0;
+    border:2pt solid #FE0;
+    border-radius:5pt;
+    padding:10pt;
+    outline: none;
+    font-size: 14pt;
+}
+
+#pageturn_navigation button:disabled {
+    background-color: #ccc;
+    border-color: #ccc;
+}
+
+#pageturn_navigation button:disabled:hover {
+    background-color: #ccc;
+    cursor: auto;
+}
+
+#pageturn_navigation button:hover {
+    background-color: white;
+    cursor: pointer;
+}
+
+#turnable_page #page_display {
+    width:100%;
+    margin:20pt auto;
+}
+
+
+
+#post-tools a img {
+    height:10pt;
+    margin-right:2pt;
+}
+
+#post-tools a:hover {
+    background-color: white;
+
+}
+
+/* Workspace */
+
+#workspace_buttons ul {
+    margin:20pt;
+    padding-inline-start: 0;
+    display: flex;
+    justify-content: center;
+}
+
+#workspace_buttons ul li {
+    display: inline-block;
+    margin:5pt;
+}
+
+#workspace_buttons ul li a {
+    display: block;
+    height: 100pt;
+    width: 100pt;
+    border: 2pt solid #FE0;
+    background-color: #FE0;
+    color:black;
+    text-decoration: none;
+    text-align: center;
+    border-radius: 10pt;
+}
+
+#workspace_buttons ul li a img {
+    width:70%;
+    padding:5pt;
+}
+
+#workspace_buttons ul li a:hover {
+    background-color: white;
+}
+
+.entry_list li {
+    display: flex;
+    border:1px solid #fe0;
+    justify-content: space-between;
+    align-items: center;
+    padding:5pt;
+    margin:2pt;
+    border-radius: 10pt;
+    height: 20pt;
+}
+
+.entry_list li a {
+    margin-left:10pt;
+    color:black;
+    text-decoration: none;
+}
+
+.entry_list li a:hover {
+    text-decoration: underline;
+}
+
+.entry_list li ul li {
+    display: inline;
+    border:0;
+    margin:0;
+    padding: 0;
+}
+
+.entry_list li ul li a {
+    margin-left: 0;
+    width: 10pt;
+    height:10pt;
+    padding:5pt;
     border-radius:5pt;
 }
 
+.entry_list li ul li a:hover {
+    background-color: #fe0;
+}
+
+.entry_list li ul li a img {
+    width:10pt;
+}
+
+.workspace_list {
+    margin-bottom: 20pt;
+}
+
+/* User Profile */
+#user_profile img.portrait {
+    margin:10pt auto 40pt auto;
+}
+
+#profile_bio p {
+    width:80%;
+    margin:10pt auto;
+    line-height: 150%;
+    display: block;
+    position: relative;
+}
+
+#profile_bio p:before {
+    content: "";
+    position: absolute;
+    margin:auto;
+    right:0;
+    left:0;
+    top: -20pt;
+    height:2pt;
+    width:25%;
+    background-color: #FE0;
+}
+
+#profile_weblinks {
+    text-align: center;
+    margin: 30pt auto;
+}
+
+#profile_weblinks ul {
+    display: inline;
+    padding-inline-start: 0;
+}
+
+#profile_weblinks li {
+    display: inline-block;
+}
+
+#profile_weblinks li a {
+    color:black;
+    text-decoration: none;
+    background-color: #fe0;
+    padding:5pt;
+    border:2pt solid #fe0;
+
+}
+
+#profile_weblinks li a:hover {
+    background-color: white;
+}
+
+#profile_content ul {
+    margin-bottom: 20pt;
+}
+
+#profile_content ul li {
+    display: block;
+}
+
+#profile_content ul li a {
+    display: block;
+    text-align: center;
+    color: black;
+    text-decoration: none;
+    padding:5pt;
+    margin:5pt;
+    border-bottom: 1px solid #fe0;
+}
+
+#profile_content ul li a:hover {
+    text-decoration: underline;
+    background-color: #fe0;
+    border-radius: 10pt;
+}
+
+
+#profile_content ul li a span {
+    margin: 10pt auto;
+    display: block;
+}
+
+#profile_content .preview_image {
+    width:100%;
+    display: block;
+}
 
 .web_link {
     display: inline-block;
@@ -362,6 +610,3 @@ img.portrait {
     color:#888;
 }
 
-#turnable_page #page_display {
-    width:100%;
-}

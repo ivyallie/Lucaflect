@@ -36,6 +36,7 @@
             </div>
             <div>
                 <ul>
+                    <li><a href="{{ url_for('routes.get_single_comic', title=comic['internal_title']) }}" class="edit_button" title="View &quot;{{ comic['title'] }}&quot;"><img src="{{ url_for('static', filename='icons/view.svg') }}"/></a></li>
                     <li><a href="{{ url_for('content.open_comic_editor',title=comic['internal_title']) }}" class="edit_button" title="Edit &quot;{{ comic['title'] }}&quot;"><img src="{{ url_for('static', filename='icons/edit.svg') }}"/></a></li>
                     <li><a href="{{ url_for('content.delete_comic', title=comic['internal_title']) }}" class="delete_button" title="Delete &quot;{{ comic['title'] }}&quot;"><img src="{{ url_for('static', filename='icons/delete.svg') }}"/></a></li>
                 </ul>
@@ -58,8 +59,9 @@
             </div>
             <div>
                 <ul>
-                    <li><a href="{{ url_for('content.open_collection_editor',title=collection['internal_title']) }}" class="edit_button"><img src="{{ url_for('static', filename='icons/edit.svg') }}"/></a></li>
-                    <li><a href="{{ url_for('content.delete_collection', title=collection['internal_title']) }}" class="delete_button"><img src="{{ url_for('static', filename='icons/delete.svg') }}"/></a></li>
+                    <li><a href="{{ url_for('routes.display_collection', title=collection['internal_title']) }}" class="edit_button" title="View &quot;{{ collection['title'] }}&quot;"><img src="{{ url_for('static', filename='icons/view.svg') }}"/></a></li>
+                    <li><a href="{{ url_for('content.open_collection_editor',title=collection['internal_title']) }}" class="edit_button" title="Edit &quot;{{ collection['title'] }}&quot;"><img src="{{ url_for('static', filename='icons/edit.svg') }}"/></a></li>
+                    <li><a href="{{ url_for('content.delete_collection', title=collection['internal_title']) }}" class="delete_button" title="Delete &quot;{{ collection['title'] }}&quot;"><img src="{{ url_for('static', filename='icons/delete.svg') }}"/></a></li>
                 </ul>
             </div>
             </li>

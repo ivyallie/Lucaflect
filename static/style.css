@@ -20,6 +20,25 @@ a:hover {
     text-decoration: underline;
 }
 
+.basic_button {
+    background-color: #fe0;
+    border:2pt solid #fe0;
+    display: inline-flex;
+    align-items: center;
+    padding:10pt;
+    border-radius: 10pt;
+}
+
+.basic_button img {
+    width:15pt;
+    margin-right:10pt;
+}
+
+.basic_button:hover {
+    text-decoration: none;
+    background-color: white;
+}
+
 /* Header */
 
 #header {
@@ -461,6 +480,121 @@ h2 {
     display: block;
 }
 
+/* Editor */
+
+
+
+section.editor {
+    border:2pt solid #fe0;
+    border-radius:15pt;
+    padding:10pt;
+    margin-top: 10pt;
+}
+
+section.editor h3 {
+    text-align: left;
+    color:#666;
+}
+
+section.editor button {
+    background-color:#fe0;
+    border:2pt solid #fe0;
+    cursor: pointer;
+    padding:2pt;
+    border-radius: 5pt;
+    align-items: center;
+    display: inline-flex;
+
+}
+
+section.editor button:hover {
+    background-color: white;
+}
+
+section.editor button img {
+    width:10pt;
+    margin: 2pt 4pt 2pt 2pt;
+}
+
+section.editor div div {
+    margin-bottom: 10pt;
+}
+
+section.editor label {
+    color:#bbb;
+}
+
+section.editor .radio span {
+    color:#bbb;
+}
+
+section.editor .radio label {
+    color:black;
+}
+
+#comic_meta_editor {
+    display: flex;
+    justify-content: space-between;
+}
+
+#comic_meta_editor div:first-of-type {
+    flex-grow: 2;
+    margin-right:10pt;
+}
+
+#comic_meta_editor div:last-of-type {
+    flex-grow: 1;
+}
+
+section.editor #title {
+    border: 0px;
+    border-bottom: 1pt dotted #666;
+    width:80%;
+    font-size: 16pt;
+    background-color: white;
+    outline: 0px;
+}
+
+section.editor #body {
+    display: block;
+    width:80%;
+    font-size: 12pt;
+    border: 1pt dotted #666;
+    resize: none;
+    height:7em;
+    outline: 0;
+    font-family: sans-serif;
+}
+
+#preview_image {
+    width:100%;
+}
+
+#post-button {
+    background-color: #fe0;
+    border:2pt solid #fe0;
+    border-radius: 5pt;
+    cursor: pointer;
+    height: 50pt;
+    font-size: 14pt;
+    padding: 0 20pt;
+}
+
+#post-button img {
+    width:15pt;
+    margin-left:10pt;
+}
+
+#post-button:hover {
+    background-color: white;
+}
+
+section.editor .help {
+    display: block;
+    color:#666;
+    margin-bottom: 10pt;
+}
+
 .web_link {
     display: inline-block;
 }
@@ -556,14 +690,18 @@ h2 {
     flex-direction: row;
 }
 
+#file_list {
+    padding-inline-start: 0;
+}
+
 #file_list li {
     list-style: none;
     display:flex;
     justify-content: space-between;
-    width:80%;
-    border:1px solid #aaa;
+    width:95%;
+    border:1px solid #fe0;
     padding: 10pt;
-    margin-bottom: 5pt;
+    margin-top: 5pt;
     cursor: move;
 }
 

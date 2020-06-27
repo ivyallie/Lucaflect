@@ -3,54 +3,88 @@
 {% block title %}Comic Editor{% endblock %}
 {% block pageheader %}Comic Editor{% endblock %}
 {% block content %}
-    <div class="editor_section">
+
         {% if title %}
             <div>
-                <a href="{{ url_for('routes.get_single_comic', title=title) }}">View comic &raquo;</a>
+                <a href="{{ url_for('routes.get_single_comic', title=title) }}" class="view_comic basic_button">
+                    <img src="{{ url_for('static', filename='/icons/view.svg') }}"/>view comic</a>
             </div>
         {% endif %}
-        <h3>Meta</h3>
-        <form method="post">
+
+    <form method="post">
+
+    <section class="editor">
+        <div id="comic_meta_editor">
+            <div>
+        <div>
             <label for="title">Title</label>
             <input id="title" name="title" value=""/>
-            <label for="body">Body:</label>
+        </div>
+        <div>
+             <label for="body">Description</label>
             <textarea name="body" id="body"></textarea>
+        </div>
+           <div style="display: none;">
+               
+           
             <label for="tags">Tags:</label>
             <input name="tags" id="tags"/>
-            <div>
-                <span>Comic type: </span>
+               </div>
+            <div class="radio">
+
+
+                <span>Display as</span>
+                <div>
                 <input type="radio" id="pageturns" name="comictype" value="pageturns">
                 <label for="pageturns">Page Turns</label>
                 <input type="radio" id="infinitecanvas" name="comictype" value="infinitecanvas" checked>
                 <label for="infinitecanvas">Infinite Canvas</label>
+                    </div>
+                </div>
             </div>
+            <button type="button" onclick="postComic()" id="post-button" data-id="">Post <img src="{{ url_for('static', filename='/icons/post.svg') }}"/></button>
 
+            </div>
+            </section>
+
+    <section class="editor">
             <div id="preview_image_picker">
                 <h3>Preview Image</h3>
+                <span class="help">Add an image that will represent this comic when displayed in a list or collection.</span>
                 <img src="" id="preview_image"/>
-                <button type="button" id="preview_button" onclick="choose_new_preview()">Upload preview image</button>
-                <button type="button" id="delete_preview" onclick="remove_preview()">Delete Preview</button>
+                <button type="button" id="preview_button" onclick="choose_new_preview()">
+                    <img src="{{ url_for('static', filename='/icons/add.svg') }}"/>
+                    add preview image</button>
+                <button type="button" id="delete_preview" onclick="remove_preview()">
+                    <img src="{{ url_for('static', filename='/icons/delete.svg') }}"/>
+                    delete preview image</button>
                 <input type="file" id="preview_image_filepicker" style="display: none;">
             </div>
-
-
-            <input value="Post" type="button" onclick="postComic()" id="post-button" data-id=""/>
-
+</section>
         </form>
-    </div>
 
-    <div class="pages_editor">
+
+    <section class="editor">
         <h3>Pages</h3>
+        <span class="help">Add or remove comic pages here. Drag to rearrange.</span>
         <input type="file" id="files" multiple style="display: none;">
-        <button type="button" id="add-images">Add images</button>
+        <button type="button" id="add-images">
+            <img src="{{ url_for('static', filename='/icons/add.svg') }}"/> add images
+        </button>
         <ul id="file_list" class="js-sortable">
 
 
         </ul>
-    </div>
+    </section>
+
+
+
     <template id="listed_file_template">
         <li draggable="true" data-imgurl=""><span class="display_text"></span>
-            <button onclick="remove_from_list(this)">&times;</button>
+            <div><button title="View" onclick="view_comic_image(this)"><img src="{{ url_for('static', filename='/icons/view.svg') }}"/></button>
+            <button onclick="remove_from_list(this)" title="Delete">
+                    <img src="{{ url_for('static', filename='/icons/delete.svg') }}"/></button></div>
+
         </li>
     </template>
     {% if content %}
@@ -64,7 +98,6 @@
         sortable('.js-sortable', {
             forcePlaceholderSize: true,
             placeholderClass: 'sort_placeholder',
-            hoverClass: 'sort_hover',
         });
     </script>
     <script src="{{ url_for('static', filename='image_upload.js') }}"></script>

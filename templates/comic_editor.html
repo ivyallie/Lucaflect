@@ -4,18 +4,13 @@
 {% block pageheader %}Comic Editor{% endblock %}
 {% block content %}
 
-        {% if title %}
-            <div>
-                <a href="{{ url_for('routes.get_single_comic', title=title) }}" class="view_comic basic_button">
-                    <img src="{{ url_for('static', filename='/icons/view.svg') }}"/>view comic</a>
-            </div>
-        {% endif %}
+
 
     <form method="post">
 
     <section class="editor">
         <div id="comic_meta_editor">
-            <div>
+            <div class="column">
         <div>
             <label for="title">Title</label>
             <input id="title" name="title" value=""/>
@@ -30,19 +25,29 @@
             <label for="tags">Tags:</label>
             <input name="tags" id="tags"/>
                </div>
+
+                <label>Display as</label>
             <div class="radio">
+                    <div>
+                     <input type="radio" id="pageturns" name="comictype" value="pageturns" title="One page will be displayed at a time, with Next and Back buttons."> <label for="pageturns" title="One page will be displayed at a time, with Next and Back buttons.">Page Turns</label>
+                </div>
+               <div>
+                   <input type="radio" id="infinitecanvas" name="comictype" value="infinitecanvas" checked title="All pages will be displayed at once in a vertical column."><label for="infinitecanvas" title="All pages will be displayed at once in a vertical column."> Infinite Canvas</label>
+               </div>
 
 
-                <span>Display as</span>
-                <div>
-                <input type="radio" id="pageturns" name="comictype" value="pageturns">
-                <label for="pageturns">Page Turns</label>
-                <input type="radio" id="infinitecanvas" name="comictype" value="infinitecanvas" checked>
-                <label for="infinitecanvas">Infinite Canvas</label>
-                    </div>
+
                 </div>
             </div>
-            <button type="button" onclick="postComic()" id="post-button" data-id="">Post <img src="{{ url_for('static', filename='/icons/post.svg') }}"/></button>
+        <div class="column">
+                        <button type="button" onclick="postComic()" id="post-button" data-id="">Post <img src="{{ url_for('static', filename='/icons/post.svg') }}"/></button>
+{% if title %}
+
+                <a href="{{ url_for('routes.get_single_comic', title=title) }}" class="view_comic basic_button">
+                    <img src="{{ url_for('static', filename='/icons/view.svg') }}"/>view comic</a>
+
+        {% endif %}
+        </div>
 
             </div>
             </section>

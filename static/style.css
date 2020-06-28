@@ -20,6 +20,10 @@ a:hover {
     text-decoration: underline;
 }
 
+ul {
+    padding-inline-start: 0;
+}
+
 .basic_button {
     background-color: #fe0;
     border:2pt solid #fe0;
@@ -38,6 +42,16 @@ a:hover {
 .basic_button:hover {
     text-decoration: none;
     background-color: white;
+}
+
+.basic_button.small {
+    padding:5pt;
+    border-radius: 5pt;
+    margin:5pt;
+}
+
+.hide {
+    display: none !important;
 }
 
 /* Header */
@@ -506,6 +520,107 @@ h2 {
     display: block;
 }
 
+/* User Editor */
+#user_editor {
+    display: flex;
+    justify-content: space-between;
+}
+
+#user_editor div:first-of-type {
+    margin-right: 10pt;
+}
+
+#portrait_editor {
+    flex-basis: 20%;
+}
+
+#user_info_editor {
+    flex-basis: 70%;
+}
+
+#name_area input {
+    border: 0px;
+    border-bottom: 1pt dotted #666;
+    width:95%;
+    font-size: 16pt;
+    background-color: white;
+    outline: 0px;
+}
+
+#user_info_editor div {
+    margin:10pt;
+}
+
+
+#name_area label {
+    color:#666;
+    display: block;
+}
+
+#username_editor .help {
+    color:#666;
+    margin:10pt;
+}
+
+#user_info_editor #username_editor {
+    margin:0;
+}
+
+#user_info_editor textarea {
+    display: block;
+    width:95%;
+    font-size: 12pt;
+    border: 1pt dotted #666;
+    resize: vertical;
+    height:20em;
+    outline: 0;
+    font-family: sans-serif;
+    padding:10pt;
+    line-height: 18pt;
+}
+
+#user_editor_submit {
+    display: flex;
+    justify-content: flex-end;
+}
+
+#user_editor_submit button {
+    margin-top: 10pt;
+}
+
+#user_editor_submit button img {
+    margin-left:5pt;
+}
+
+.radio {
+    margin:10pt;
+}
+
+.radio label {
+    color:black;
+    display: inline;
+}
+
+.radio input {
+    display: inline;
+    width:auto;
+}
+
+#web_presence_list li {
+    list-style: none;
+    display:flex;
+    justify-content: space-between;
+    border:1px solid #aaa;
+    padding: 10pt;
+    margin-bottom: 5pt;
+    cursor: move;
+}
+
+#user_info_editor #web_presence_list input {
+    font-size: 12pt;
+    width: auto;
+}
+
 /* Editor */
 
 
@@ -547,7 +662,7 @@ section.editor div div {
 }
 
 section.editor label {
-    color:#bbb;
+    color:#666;
 }
 
 section.editor .radio span {
@@ -563,13 +678,14 @@ section.editor .radio label {
     justify-content: space-between;
 }
 
-#comic_meta_editor div:first-of-type {
+#comic_meta_editor div.column:first-of-type {
     flex-grow: 2;
     margin-right:10pt;
 }
 
-#comic_meta_editor div:last-of-type {
-    flex-grow: 1;
+#comic_meta_editor div.column:last-of-type {
+    display: inline-flex;
+    flex-direction: column;
 }
 
 section.editor #title {
@@ -604,6 +720,7 @@ section.editor #body {
     height: 50pt;
     font-size: 14pt;
     padding: 0 20pt;
+    margin-bottom: 10pt;
 }
 
 #post-button img {
@@ -619,6 +736,10 @@ section.editor .help {
     display: block;
     color:#666;
     margin-bottom: 10pt;
+}
+
+.radio input {
+
 }
 
 .web_link {
@@ -735,16 +856,7 @@ section.editor .help {
 
 
 
-#web_presence_list li {
-    list-style: none;
-    display:flex;
-    justify-content: space-between;
-    width:40%;
-    border:1px solid #aaa;
-    padding: 10pt;
-    margin-bottom: 5pt;
-    cursor: move;
-}
+
 
 .sort_placeholder {
     border:1px dashed #ddd !important;

@@ -18,3 +18,12 @@ let get_parent_of_type = function (element,tag) {
     }
     return parent
 }
+
+let show_hidden = function (element_id, button=button) {
+    let element = document.getElementById(element_id);
+    console.log(element);
+    element.classList.remove('hide');
+    if (button) {
+        button.classList.add('hide');
+    }
+}

@@ -547,7 +547,7 @@ h2 {
     outline: 0px;
 }
 
-#user_info_editor div {
+section.editor div {
     margin:10pt;
 }
 
@@ -566,7 +566,7 @@ h2 {
     margin:0;
 }
 
-#user_info_editor textarea {
+#name_area textarea {
     display: block;
     width:95%;
     font-size: 12pt;
@@ -584,11 +584,11 @@ h2 {
     justify-content: flex-end;
 }
 
-#user_editor_submit button {
+button.submit {
     margin-top: 10pt;
 }
 
-#user_editor_submit button img {
+button.submit img {
     margin-left:5pt;
 }
 
@@ -742,6 +742,21 @@ section.editor .help {
 
 }
 
+/* Site Settings */
+#site_settings {
+    display: flex;
+    justify-content: space-between;
+}
+
+#site_settings div:first-of-type {
+    flex-basis: 80%;
+}
+
+#reg_options label {
+    color:black;
+}
+
+
 .web_link {
     display: inline-block;
 }
@@ -759,6 +774,10 @@ section.editor .help {
     border-color:#990;
     background-color: yellow;
     color:#650;
+}
+
+ul.flash {
+    margin-bottom: 10pt;
 }
 
 .flash li.success {

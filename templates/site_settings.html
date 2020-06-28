@@ -1,17 +1,32 @@
 {% extends 'basis.html' %}
-{% block title %}Site Settings{% endblock %}
-{% block pageheader %}Site Settings{% endblock %}
+{% block title %}Site Administration{% endblock %}
+{% block pageheader %}Site Administration{% endblock %}
 {% block content %}
-<form method="post">
-<section>
-    <ul>
-        <li><a href="{{ url_for('routes.admin_users') }}">User administration</a></li>
-        <li><a href="{{ url_for('routes.admin_comics') }}">Comics administration</a></li>
-    </ul>
-</section>
-<section>
+            <section id="workspace_buttons">
+    <ul class="workspace_links">
+<li><a href="{{ url_for('routes.admin_comics') }}">
+    <img src="{{ url_for('static', filename='icons/comic.svg') }}"/>
+    <div>comic admin</div></a></li>
+
+    <li><a href="">
+        <img src="{{ url_for('static', filename='icons/collection.svg') }}"/>
+        <div>collection admin</div></a></li>
+
+
+<li><a href="{{ url_for('routes.admin_users') }}">
+    <img src="{{ url_for('static', filename='icons/user.svg') }}"/>
+    <div>user admin</div></a></li>
+</ul>
+    </section>
+
+<form method="post" id="site_settings">
+    <div>
+
+
+<section class="editor" id="name_area">
+<h3>Site name and description</h3>
 <div>
-    <label for="site_name">Site name:</label>
+    <label for="site_name">Site name</label>
 <input id="site_name" name="site_name" value="{{ settings['name'] }}"/>
 </div>
 <div>
@@ -20,21 +35,30 @@
 
 </div>
 </section>
-   <section>
+   <section class="editor" id="reg_options">
         <h3>Registration options</h3>
-<div>
+<div >
 <input type="checkbox" id="allow_reg" name="allow_reg" {% if settings['registration'] %}checked{% endif %}/>
     <label for="allow_reg">Allow registrations</label>
 </div>
     <div>
 <input type="checkbox" id="use_key" name="use_key" {% if settings['use_key'] %}checked{% endif %}/>
     <label for="use_key">Use key</label>
-    </div><div>
+    <p class="help">If checked, users will be required to know a key, set by you (below), before they can make an account. Otherwise, anyone could sign up.</p>
+    </div>
+       <div>
         <label for="set_key">Set key</label>
         <input id="set_key" name="set_key"/>
-        <p>The key will be stored encrypted and cannot be retrieved, only changed.</p>
+        <p class="help">The key will be stored encrypted and cannot be retrieved, only changed.</p>
         </div>
         </section>
-<button type="submit">Apply changes</button>
+    </div>
+
+    <div>
+    <button type="submit" class="basic_button submit">Apply changes <img src="{{ url_for('static', filename='/icons/post.svg') }}" /></button>
+
+    </div>
+
+
 </form>
 {% endblock %}

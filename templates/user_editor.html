@@ -47,7 +47,10 @@
 <h3>Advanced options</h3>
     <div>
 <label for="username">Username</label>
-<button class="basic_button small" onclick="show_hidden('username_editor', button=this)" type="button">modify username</button>
+        <div>
+            <button class="basic_button small" onclick="show_hidden('username_editor', button=this)" type="button">modify username</button>
+
+        </div>
 
 <div class="username hide" id="username_editor">
 
@@ -101,7 +104,7 @@
 </div>
 <div>
 <section id="user_editor_submit">
-    <button type="button" onclick="applyChanges({{ user.user_id }})" class="basic_button" >Apply changes <img src="{{ url_for('static', filename='/icons/post.svg') }}"/></button>
+    <button type="button" onclick="applyChanges({{ user.user_id }})" class="basic_button submit" >Apply changes <img src="{{ url_for('static', filename='/icons/post.svg') }}"/></button>
 
 </section>
     <section id="portrait_editor" class="editor">

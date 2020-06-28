@@ -1,4 +1,4 @@
-from flask import render_template, Blueprint, session, request, current_app, send_from_directory, g, make_response, jsonify
+from flask import render_template, Blueprint, session, request, current_app, send_from_directory, g, make_response, jsonify, flash
 from . import db
 from . import auth
 from json import loads, dumps
@@ -248,6 +248,7 @@ def site_settings():
                 current_app.config['SITENAME'] = database.getSetting('name')
                 current_app.config['ALLOW_REGISTRATION'] = database.getSetting('registration')
                 current_app.config['USE_REG_KEY'] = database.getSetting('use_key')
+                flash('Site settings changed.','success')
 
 
         settings = {

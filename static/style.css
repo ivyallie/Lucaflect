@@ -27,6 +27,7 @@ a:hover {
     align-items: center;
     padding:10pt;
     border-radius: 10pt;
+    cursor: pointer;
 }
 
 .basic_button img {
@@ -133,6 +134,31 @@ a:hover {
 
 #footer p {
     margin-top:10pt;
+}
+
+/* Login Page */
+#login input {
+    display: block;
+    text-align: center;
+    width: 40%;
+    margin: auto;
+    font-size: 18pt;
+    background-color: white;
+    border: none;
+    border-bottom:1pt dotted #666;
+    outline: none;
+}
+
+#login label {
+    display: block;
+    text-align: center;
+    margin-bottom: 10pt;
+    color:#666;
+}
+
+#login button {
+    margin: auto;
+    display: block;
 }
 
 /* Main Container */

@@ -4,16 +4,16 @@
 {% block pageheader %}Register{% endblock %}
 {% block content %}
 </div>
-    <form method="post" id="registration">
+    <form method="post" id="register">
     <div>
         <label for="username">Username</label>
         <input name="username" id="username">
-        <p>This is the name you will use to log in, and will appear in URLs related to your work.</p>
+        <p class="help">This is the name you will use to log in, and will appear in URLs related to your work.</p>
     </div>
         <div>
         <label for="fullname">Full name</label>
         <input name="fullname" id="fullname" required>
-            <p>Your name as it will be displayed on the site.</p>
+            <p class="help">Your name as it will be displayed on the site.</p>
         </div>
 
 <div>
@@ -25,9 +25,9 @@
             <div>
         <label for="key">Registration key:</label>
         <input name="key" id="key" type="password"/>
-            <p>Enter the registration key given to you by the site administrator.</p>
+            <p class="help">Enter the registration key given to you by the site administrator.</p>
             </div>
         {% endif %}
-        <input type="submit" value="Register">
+        <button type="submit" value="Register" class="basic_button">Register</button>
     </form>
 {% endblock %}

@@ -52,7 +52,9 @@ def register():
                     database.write(
                         '''INSERT INTO user (username,password,full_name,join_date) VALUES (%s,%s,%s,CURRENT_DATE())''',
                         (username, generate_password_hash(password), fullname))
-                    return render_template('message.html', message="Account created for "+username)
+                    log_in_user(username)
+                    flash('Welcome, '+fullname+"! Your account has been created.",'success')
+                    return render_template('workspace.html')
                 else:
                     flash('The name ' + username + ' is already associated with an account.', 'error')
 
@@ -79,15 +81,22 @@ def login():
             error='BadPassword'
 
         if error is None:
-            session.clear()
-            session['user'] = user
-            session['user_id'] = user['user_id']
-            session['user_name'] = user['full_name']
-            load_logged_in_user()
+            log_in_user(username)
             flash('Welcome, '+user['full_name']+'!','success')
             return redirect(url_for('routes.workspace'))
 
     return render_template('login.html')
+
+
+def log_in_user(username):
+    database = db.Database()
+    user = database.query_user(username)
+    session.clear()
+    session['user'] = user
+    session['user_id'] = user['user_id']
+    session['user_name'] = user['full_name']
+    load_logged_in_user()
+
 
 
 

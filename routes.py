@@ -270,9 +270,12 @@ def admin_users():
         users_raw = database.query(query)
         users = []
         for user in users_raw:
+            you = (user == session['user'])
             u = {
                 'username': user['username'],
-                'full_name': user['full_name']
+                'full_name': user['full_name'],
+                'group': user['user_group'],
+                'you': you
             }
             users.append(u)
         return render_template('admin_users.html',users=users)

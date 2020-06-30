@@ -2,6 +2,7 @@
 {% block title %}Deleting {{ user['username'] }}{% endblock %}
 {% block pageheader %}Deleting {{ user['username'] }}{% endblock %}
 {% block content %}
+    <div class="delete_confirm">
     <img
     {% if not meta['portrait'] or meta['portrait']=='default_portrait.jpg' %}
         src="{{ url_for('static', filename='default_portrait.jpg') }}"
@@ -25,8 +26,10 @@ id="portrait" class="portrait"/>
 
 
 
+
+    <p><strong class="warn">This cannot be undone.</strong></p>
+    <form action="" method="post"><button type="submit" class="basic_button"><img src="{{ url_for('static', filename='icons/delete.svg') }}"/> Yes, delete "{{ user['username'] }}"</button></form>
+    <p><a href="{{ url_for('routes.admin_users') }}" class="basic_button">Nevermind.</a></p>
     </div>
-    <p><strong>This cannot be undone.</strong></p>
-    <form action="" method="post"><button type="submit">Yes, delete "{{ user['username'] }}"</button></form>
-    <p><a href="{{ url_for('routes.admin_users') }}">Nevermind.</a></p>
+
 {% endblock %}

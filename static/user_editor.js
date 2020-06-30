@@ -17,6 +17,8 @@ let make_user = function () {
     let portrait_filename = portrait_filepath.replace(/^.*[\\\/]/, '');
     let admin = document.getElementById('admin_user');
     let group = '';
+    let username_input = document.getElementById('username');
+    let username = username_input.value;
     if (admin) {
         if (admin.checked) {
             group='admin'
@@ -38,7 +40,8 @@ let make_user = function () {
         'bio' : bio.value,
         'web_links' : web_presence_links,
         'portrait': portrait_filename,
-        'group': group
+        'group': group,
+        'username':username,
     };
 
     return user
@@ -59,7 +62,9 @@ let applyChanges = function (name) {
             return response.json();
         })
         .then(result => {
-            alert('User updated successfully.')})
+            let redirect = result['redirect'];
+            window.location.replace(redirect);
+        })
         .catch((error) => { alert(error);})
 
 };

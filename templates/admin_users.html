@@ -7,13 +7,19 @@
 
         {% for user in users %}
             <li class="user_record">
-            <div class="username">{{ user['username'] }}</div>
+            <div class="username">{{ user['username'] }}
+            {% if user['group']=='admin' %}
+                <span title="Admin user"> &starf;</span>
+                {% endif %}
+            </div>
             <div class="full_name"><a href="{{ url_for('routes.user_profile', username=user['username']) }}">{{ user['full_name'] }}</a></div>
             <div>
                 <ul>
                     <li><a href="{{ url_for('routes.user_profile', username=user['username']) }}"><img src="{{ url_for('static', filename='icons/view.svg') }}"/></a></li>
                     <li><a href="{{ url_for('auth.edit_user', username=user['username']) }}"><img src="{{ url_for('static', filename='icons/edit.svg') }}"/></a></li>
+                    {% if not user['you'] %}
                     <li><a href="{{ url_for('auth.delete_user', username=user['username']) }}"><img src="{{ url_for('static', filename='icons/delete.svg') }}"/></a> </li>
+                    {% endif %}
                 </ul>
 
             </div>

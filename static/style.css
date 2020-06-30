@@ -784,6 +784,33 @@ section.editor .help {
     font-family: monospace;
 }
 
+.delete_confirm p{
+    text-align: center;
+    margin:10pt auto;
+}
+
+.delete_confirm ul {
+    border:2pt solid #fe0;
+    border-radius: 10pt;
+    width:50%;
+    margin:auto;
+}
+
+.delete_confirm li {
+    text-align: center;
+    margin:5pt auto;
+    list-style: none;
+}
+
+.delete_confirm .warn {
+    color:red;
+}
+
+.delete_confirm button {
+    margin:auto;
+    display: block;
+    font-size: 12pt;
+}
 
 
 .web_link {

@@ -165,6 +165,7 @@ def update_user(id):
         user = {
             'name': post['name'],
             'email': post['email'],
+            'username': post['username'],
         }
         user_meta = {
             'bio': post['bio'],
@@ -182,10 +183,13 @@ def update_user(id):
             query = '''UPDATE user SET full_name=%s, email=%s, meta=%s WHERE user_id="'''+str(id)+'''";'''
             database.write(query, (user['name'], user['email'], user_meta_json))
         else:
-            query = '''UPDATE user SET full_name=%s, email=%s, user_group=%s, meta=%s  WHERE user_id="'''+str(id)+'''";'''
-            database.write(query, (user['name'], user['email'], group, user_meta_json))
-        response_text = jsonify('Modification successful')
+            query = '''UPDATE user SET full_name=%s, email=%s, user_group=%s, meta=%s, username=%s  WHERE user_id="'''+str(id)+'''";'''
+            database.write(query, (user['name'], user['email'], group, user_meta_json, user['username']))
+        redirect_url = url_for('auth.edit_user', username=user['username'])
+        response_text = jsonify({'redirect':redirect_url})
         resp = make_response(response_text, 200)
+        flash(user['name']+' modified successfully.','success')
+
         return resp
     else:
         return render_template('403.html')
@@ -196,6 +200,9 @@ def delete_user(username):
     if is_admin():
         database = db.Database()
         user = database.query_user(username)
+        if user == session['user']:
+            flash('What are you doing? You can\'t delete yourself!','error')
+            return redirect(url_for('routes.admin_users'))
         user_id=user['user_id']
         meta=parse_user_meta(user)
         comics = routes.get_comics(user_id)

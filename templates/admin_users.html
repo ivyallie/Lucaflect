@@ -3,16 +3,17 @@
 {% block pageheader %}User Admin{% endblock %}
 {% block content %}
 
-<ul>
+<ul class="entry_list">
 
         {% for user in users %}
-            <li>
+            <li class="user_record">
             <div class="username">{{ user['username'] }}</div>
             <div class="full_name"><a href="{{ url_for('routes.user_profile', username=user['username']) }}">{{ user['full_name'] }}</a></div>
             <div>
                 <ul>
-                    <li><a href="{{ url_for('auth.edit_user', username=user['username']) }}">Edit</a></li>
-                    <li><a href="{{ url_for('auth.delete_user', username=user['username']) }}">Delete</a> </li>
+                    <li><a href="{{ url_for('routes.user_profile', username=user['username']) }}"><img src="{{ url_for('static', filename='icons/view.svg') }}"/></a></li>
+                    <li><a href="{{ url_for('auth.edit_user', username=user['username']) }}"><img src="{{ url_for('static', filename='icons/edit.svg') }}"/></a></li>
+                    <li><a href="{{ url_for('auth.delete_user', username=user['username']) }}"><img src="{{ url_for('static', filename='icons/delete.svg') }}"/></a> </li>
                 </ul>
 
             </div>

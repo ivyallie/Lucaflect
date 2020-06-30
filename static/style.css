@@ -765,6 +765,26 @@ section.editor .help {
     color:black;
 }
 
+/* User Admin */
+.user_record {
+    border:2pt solid #fe0;
+    border-radius: 10pt;
+    margin-bottom: 5pt;
+    display: flex;
+    justify-content: space-between;
+    padding: 10pt;
+
+}
+
+.user_record li {
+    display: inline;
+}
+
+.user_record .username {
+    font-family: monospace;
+}
+
+
 
 .web_link {
     display: inline-block;

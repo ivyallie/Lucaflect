@@ -24,6 +24,10 @@ ul {
     padding-inline-start: 0;
 }
 
+.mono {
+    font-family: monospace;
+}
+
 .basic_button {
     background-color: #fe0;
     border:2pt solid #fe0;
@@ -780,9 +784,7 @@ section.editor .help {
     display: inline;
 }
 
-.user_record .username {
-    font-family: monospace;
-}
+
 
 .delete_confirm p{
     text-align: center;

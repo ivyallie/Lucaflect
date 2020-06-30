@@ -1,0 +1,22 @@
+{% extends 'basis.html' %}
+{% block title %}Collection Administration{% endblock %}
+{% block pageheader %}Collection Admin{% endblock %}
+{% block content %}
+<ul class="entry_list">
+
+        {% for collection in collections %}
+            <li>
+            <div class="internal_title mono">{{ collection['internal_title'] }}</div>
+                <div class="comic_title"><a href="{{ url_for('routes.display_collection', title=collection['internal_title']) }}">{{ collection['title'] }}</a> by {{ collection['author'] }}</div>
+            <div><ul>
+                <li><a href="{{ url_for('routes.display_collection', title=collection['internal_title']) }}" title="View {{ collection['title'] }}"><img src="{{ url_for('static', filename='icons/view.svg') }}" alt="View {{ collection['title'] }}"/></a> </li>
+                <li><a href="{{ url_for('content.open_collection_editor', title=collection['internal_title']) }}" title="Edit {{ collection['title'] }}"><img src="{{ url_for('static', filename='icons/edit.svg') }}" alt="Edit {{ collection['title'] }}"/></a></li>
+                <li><a href="{{ url_for('content.delete_collection', title=collection['internal_title']) }}" title="Delete {{ collection['title'] }}"><img src="{{ url_for('static', filename='icons/delete.svg') }}" alt="Delete {{ collection['title'] }}"/></a></li>
+            </ul>
+
+            </div>
+            </li>
+        {% endfor %}
+</ul>
+
+{% endblock %}

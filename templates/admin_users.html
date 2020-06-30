@@ -7,7 +7,7 @@
 
         {% for user in users %}
             <li class="user_record">
-            <div class="username">{{ user['username'] }}
+            <div class="username mono">{{ user['username'] }}
             {% if user['group']=='admin' %}
                 <span title="Admin user"> &starf;</span>
                 {% endif %}

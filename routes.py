@@ -291,6 +291,15 @@ def admin_comics():
     else:
         return render_template('403.html'), 403
 
+@bp.route('/admin/collections', methods=['GET'])
+@auth.login_required
+def admin_collections():
+    if auth.is_admin():
+        collections=get_collections()
+        return render_template('admin_collections.html',collections=collections)
+    else:
+        return render_template('403.html'), 403
+
 @bp.route('/workspace')
 @auth.login_required
 def workspace():

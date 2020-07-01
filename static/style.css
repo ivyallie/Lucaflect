@@ -54,6 +54,11 @@ ul {
     margin:5pt;
 }
 
+.basic_button.small img {
+    width:10pt;
+    margin:0;
+}
+
 .hide {
     display: none !important;
 }
@@ -426,7 +431,7 @@ h2 {
     padding: 0;
 }
 
-.entry_list li ul li a {
+.entry_list li ul li a, .tiny_icon {
     margin-left: 0;
     width: 10pt;
     height:10pt;
@@ -434,11 +439,11 @@ h2 {
     border-radius:5pt;
 }
 
-.entry_list li ul li a:hover {
+.entry_list li ul li a:hover, .tiny_icon:hover {
     background-color: #fe0;
 }
 
-.entry_list li ul li a img {
+.entry_list li ul li a img, .tiny_icon img {
     width:10pt;
 }
 
@@ -686,17 +691,17 @@ section.editor .radio label {
     color:black;
 }
 
-#comic_meta_editor {
+.column_area {
     display: flex;
     justify-content: space-between;
 }
 
-#comic_meta_editor div.column:first-of-type {
+.column_area div.column:first-of-type {
     flex-grow: 2;
     margin-right:10pt;
 }
 
-#comic_meta_editor div.column:last-of-type {
+.column_area div.column:last-of-type {
     display: inline-flex;
     flex-direction: column;
 }
@@ -710,7 +715,7 @@ section.editor #title {
     outline: 0px;
 }
 
-section.editor #body {
+section.editor #body, section.editor #description {
     display: block;
     width:80%;
     font-size: 12pt;
@@ -725,7 +730,7 @@ section.editor #body {
     width:100%;
 }
 
-#post-button {
+#post-button, #submit_button {
     background-color: #fe0;
     border:2pt solid #fe0;
     border-radius: 5pt;
@@ -888,30 +893,47 @@ ul.flash {
     flex-grow: 1;
 }
 
+
+/*Collection Editor*/
+
 #collection_sequencer ul.sortable li {
         list-style: none;
     display:flex;
     justify-content: space-between;
-    border:1px solid #aaa;
-    padding: 10pt;
+    border:2pt solid #fe0;
+    padding: 5pt;
     margin-bottom: 5pt;
     cursor: move;
 }
 
 #collection_sequencer ul {
-    flex-grow:1;
     margin:3pt;
     padding: 0;
 }
 
 #collection_sequencer #authors {
-    flex-grow:.1;
+    flex-basis:10%;
     text-align: right;
+}
+
+#collection_sequencer #authors li {
+    list-style: none;
+    margin-bottom: 2pt;
+}
+
+#collection_sequencer #authors li button {
+    outline: 0;
 }
 
 #collection_sequencer {
     display: flex;
     flex-direction: row;
+}
+
+#collection_sequencer #comic_menu, #collection_sequencer #collection_sequence {
+    flex-basis: 45%;
+    border:1px solid #aaa;
+    border-radius: 10pt;
 }
 
 #file_list {

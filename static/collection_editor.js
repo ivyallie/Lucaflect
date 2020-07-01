@@ -39,18 +39,22 @@ let comic_menu = document.getElementById('comic_menu');
             let title = document.getElementById('title');
             let description = document.getElementById('description');
             let sequence = getComicSequence();
+            console.log(sequence);
             let submit_button = document.getElementById('submit_button');
             let collection_id = null;
             if (submit_button.getAttribute('data-id')) {
                 collection_id = submit_button.getAttribute('data-id')
-            };
+            }
+
             let collection = {
                 'title': title.value,
                 'description': description.value,
                 'sequence': sequence,
                 'id':collection_id
             };
+
             let collection_json = JSON.stringify(collection);
+
             fetch('/collection/post', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
@@ -63,11 +67,14 @@ let comic_menu = document.getElementById('comic_menu');
                     return response.json();
                 })
                 .then(result => {
+                    //alert(result['redirect']);
                     let redirect = result['redirect'];
+                    //console.log(redirect);
                     window.location.replace(redirect);
                 })
                 .catch((error) => {
-                    alert('Post failed.');
+
+                    alert(error);
                 })
 
         };

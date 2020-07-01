@@ -260,6 +260,7 @@ def post_collection():
     sequence = post['sequence']
     meta_json = json.dumps(meta)
     sequence_json = json.dumps(sequence)
+    print(collection_id)
     if collection_id:
         print('updating',title)
         if auth.authorized('collection', collection_id):
@@ -278,7 +279,9 @@ def post_collection():
         to_write = '''INSERT INTO collection (author_id,posted,title,meta,members) VALUES (%s,CURRENT_TIMESTAMP(),%s,%s,%s);'''
         database.write(to_write,(user_id,clean_title,meta_json,sequence_json))
         flash('Collection "'+title+'" created successfully!','success')
-    response_text = jsonify({'redirect': url_for('content.open_collection_editor', title=return_title)})
+
+    redirect_url = url_for('content.open_collection_editor', title=return_title)
+    response_text = jsonify({'redirect': redirect_url})
     resp = make_response(response_text, 200)
     return resp
 

@@ -17,23 +17,77 @@ let comic_menu = document.getElementById('comic_menu');
                     console.log('Error:', error);
                 })
 
+        };
+
+        let listCollections = function() {
+            fetch('/getcollections', {
+                method: 'GET',
+                headers: {'Content-Type':'application/json'},
+            })
+            .then(response => response.json())
+                .then(result => {
+                    //console.log(result['comics']);
+                    let collections = result['collections'];
+                    generateCollectionMenu(collections);
+                    //console.log('Comics:', comics);
+                })
+                .catch(error => {
+                    console.log('Error:', error);
+                })
+        };
+
+        let generateCollectionMenu = function(collections) {
+            comic_menu.innerHTML = '';
+            for (i=0;i<collections.length;i++) {
+                let title = collections[i]["title"];
+                let internal_title=collections[i]['internal_title'];
+                let url='/collections/'+internal_title;
+                createMenuEntry(title,internal_title,link=url, extra_class="collection")
+            }
         }
+
+        let createMenuEntry = function(display_title,internal_title,link="",extra_class="") {
+            let listing_template = document.getElementById('comic_menu_listing');
+            let clone = listing_template.content.cloneNode(deep = true,);
+            let name = clone.querySelector('span');
+            let viewlink = clone.querySelector('a');
+            name.innerHTML = display_title;
+            name.setAttribute('title', internal_title);
+            if (link) {
+                viewlink.setAttribute('href', link);
+            } else {
+                viewlink.remove()
+            }
+
+            if (extra_class) {
+                console.log(extra_class)
+                let li = clone.querySelector('li');
+                li.classList.add(extra_class)
+            }
+
+            comic_menu.appendChild(clone)
+
+        };
+
+        let listSmartSections = function() {
+            let types = [
+                {'name':'Recent comics','internal_name':'recent_comics'},
+                {'name':'Recent collections','internal_name':'recent_collections'},
+                {'name':'About','internal_name':'about'},
+            ];
+            comic_menu.innerHTML='';
+            for (i=0; i<types.length; i++) {
+                createMenuEntry(types[i]['name'],types[i]['internal_name'], link="",extra_class="smart")
+            }
+        };
 
         let generateMenu = function (comics) {
             let listing_template = document.getElementById('comic_menu_listing');
             comic_menu.innerHTML = '';
             for (c = 0; c < comics.length; c++) {
-                let clone = listing_template.content.cloneNode(deep = true,);
-                let name = clone.querySelector('span');
-                let viewlink = clone.querySelector('a');
-                name.innerHTML = comics[c]['title'];
-                name.setAttribute('title', comics[c]['internal_title']);
-                viewlink.setAttribute('href', '/comic/' + comics[c]['internal_title']);
-                comic_menu.appendChild(clone)
+                createMenuEntry(comics[c]['title'],comics[c]['internal_title'],link='/comic/'+comics[c]['internal_title']);
             }
-
-
-        }
+        };
 
         let postCollection = function () {
             let title = document.getElementById('title');

@@ -130,6 +130,15 @@ def get_comics_for_js(id):
 
     return resp
 
+@bp.route('/getcollections/', methods=['GET'])
+def get_collections_for_js():
+    collections=get_collections()
+    response_data = {
+        'collections':collections,
+    }
+    resp = make_response(jsonify(response_data),200)
+    return resp
+
 def get_comics(id="", howmany=0):
     database = db.Database()
     if id:
@@ -161,6 +170,7 @@ def get_comics(id="", howmany=0):
         }
         processed_comics.append(d)
     return processed_comics
+
 
 def get_collections(id="",howmany=0):
     database=db.Database()
@@ -299,6 +309,7 @@ def admin_collections():
         return render_template('admin_collections.html',collections=collections)
     else:
         return render_template('403.html'), 403
+
 
 @bp.route('/workspace')
 @auth.login_required

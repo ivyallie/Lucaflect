@@ -1,0 +1,83 @@
+{% extends 'basis.html' %}
+{% block title %}Homepage Admin{% endblock %}
+{% block pageheader %}Homepage Admin{% endblock %}
+{% block content %}
+
+    <form>
+        <section class="editor">
+        <div class="column_area">
+            <div class="column">
+
+        </div>
+            <div class="column"><button type="button" onclick="postCollection()"
+            {% if content %}data-id="{{ content['collection_id'] }}"{% else %}data-id=""{% endif %}
+            id="submit_button">Post <img src="{{ url_for('static', filename='/icons/post.svg') }}"/>
+    </button>
+            </div>
+        </div>
+
+
+        </section>
+    </form>
+    <section class="editor">
+    <h3>Sequence</h3>
+        <p class="help">Click an author name on the left, then drag their content into the right panel to define the contents of the collection.</p>
+
+    <div id="collection_sequencer">
+        <ul id="authors" >
+        <li><button onclick="listSmartSections()">Smart sections</button></li>
+        <li><button onclick="listCollections()">Collections</button></li>
+            {% for author in authors %}
+                <li>
+                    <button onclick="listComicsByAuthor({{ author['user_id'] }})">{{ author['full_name'] }}</button>
+                </li>
+            {% endfor %}
+        </ul>
+        <ul id="comic_menu" class="sortable js-sortable-menu entry_list">
+        </ul>
+        <ul id="collection_sequence" class="sortable js-sortable-sequencer entry_list">
+
+        </ul>
+
+    </div>
+    </section>
+
+
+
+    <template id="comic_menu_listing">
+        <li draggable="true" class=""><span></span>
+            <div>
+                <a href="" target="_blank" rel="noopener noreferrer" class="basic_button small"><img src="{{ url_for('static', filename='/icons/view.svg') }}"/></a>
+                <button type="button" title="delete" class="delete basic_button small" onclick="remove_from_list(this)"><img src="{{ url_for('static', filename='/icons/delete.svg') }}"/></button>
+            </div>
+        </li>
+    </template>
+
+
+    <script src="{{ url_for('static',filename='common.js') }}"></script>
+    <script src="{{ url_for('static', filename='html5sortable.js') }}"></script>
+    <script>
+        sortable('.js-sortable-menu', {
+            acceptFrom: false,
+            copy: true,
+            placeholderClass: 'sort_placeholder',
+            hoverClass: 'sort_hover',
+        });
+        sortable('.js-sortable-sequencer', {
+            acceptFrom: '.js-sortable-menu, .js-sortable-sequencer',
+
+            //forcePlaceholderSize: true,
+            placeholderClass: 'sort_placeholder',
+            hoverClass: 'sort_hover',
+        });
+    </script>
+
+    <script src="{{ url_for('static',filename='collection_editor.js') }}"></script>
+
+    {% if content %}
+        <script>
+            document.onload = initialize_editor({{ content.sequence | safe }})
+        </script>
+    {% endif %}
+
+{% endblock %}

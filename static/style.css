@@ -906,6 +906,14 @@ ul.flash {
     cursor: move;
 }
 
+#collection_sequencer ul.sortable li.smart {
+    border-color: #555;
+}
+
+#collection_sequencer ul.sortable li.collection {
+    border-color:#E90;
+}
+
 #collection_sequencer ul {
     margin:3pt;
     padding: 0;

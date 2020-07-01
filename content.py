@@ -129,7 +129,11 @@ def open_collection_editor(title):
         return render_template('404.html'), 404
 
 
-
+@bp.route('/admin/homepage', methods=['GET'])
+@auth.login_required
+def admin_homepage():
+    database = db.Database();
+    return render_template('homepage_editor.html', authors=get_all_authors())
 
 def validate_destination_dir(path):
     if isdir(path):

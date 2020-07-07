@@ -906,12 +906,31 @@ ul.flash {
     cursor: move;
 }
 
-#collection_sequencer ul.sortable li.smart {
+#collection_sequencer ul.sortable li.smart, #collection_sequencer ul.sortable li.smartlist {
     border-color: #555;
 }
 
 #collection_sequencer ul.sortable li.collection {
     border-color:#E90;
+}
+
+#collection_sequencer ul.sortable li label {
+    color:black;
+    font-size: 10pt;
+}
+
+#collection_sequencer ul.sortable li input {
+    border:0;
+    border-bottom:1px dotted black;
+    font-size:16pt;
+    width:30pt;
+    text-align: center;
+    margin-left:10pt;
+}
+
+#collection_sequencer ul.sortable li input[type=checkbox] {
+    margin-left: 0;
+    width:15pt;
 }
 
 #collection_sequencer ul {
@@ -939,9 +958,17 @@ ul.flash {
 }
 
 #collection_sequencer #comic_menu, #collection_sequencer #collection_sequence {
-    flex-basis: 45%;
+
     border:1px solid #aaa;
     border-radius: 10pt;
+}
+
+#collection_sequence {
+    flex-basis: 60%;
+}
+
+#comic_menu {
+    flex-basis: 20%;
 }
 
 #file_list {
@@ -959,7 +986,7 @@ ul.flash {
     cursor: move;
 }
 
-#comic_menu li .delete {display: none}
+#comic_menu li .delete, #comic_menu div.how_many, #comic_menu div.expand_option {display: none}
 
 
 

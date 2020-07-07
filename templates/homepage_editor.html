@@ -9,9 +9,7 @@
             <div class="column">
 
         </div>
-            <div class="column"><button type="button" onclick="postCollection()"
-            {% if content %}data-id="{{ content['collection_id'] }}"{% else %}data-id=""{% endif %}
-            id="submit_button">Post <img src="{{ url_for('static', filename='/icons/post.svg') }}"/>
+            <div class="column"><button type="button" onclick="postHomepage()" id="submit_button">Post <img src="{{ url_for('static', filename='/icons/post.svg') }}"/>
     </button>
             </div>
         </div>
@@ -46,8 +44,12 @@
 
     <template id="comic_menu_listing">
         <li draggable="true" class=""><span></span>
+            <div class="how_many"><label>How many:</label><input title="The number of posts that will be displayed in this block." id="hm_" value="5" type="number"/></div>
+            <div class="expand_option"><label for="expand">Expand</label><input type="checkbox" value="0" id="expand" title="If checked, the collection will be displayed as a list of all the posts it contains."/></div>
             <div>
-                <a href="" target="_blank" rel="noopener noreferrer" class="basic_button small"><img src="{{ url_for('static', filename='/icons/view.svg') }}"/></a>
+                <a href="" target="_blank" rel="noopener noreferrer" class="basic_button small">
+
+                    <img src="{{ url_for('static', filename='/icons/view.svg') }}"/></a>
                 <button type="button" title="delete" class="delete basic_button small" onclick="remove_from_list(this)"><img src="{{ url_for('static', filename='/icons/delete.svg') }}"/></button>
             </div>
         </li>

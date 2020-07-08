@@ -43,7 +43,7 @@ ul {
     margin-right:10pt;
 }
 
-.basic_button:hover {
+.basic_button:hover, .basic_button.small:hover {
     text-decoration: none;
     background-color: white;
 }
@@ -61,6 +61,11 @@ ul {
 
 .hide {
     display: none !important;
+}
+
+.flex_right {
+    display: flex;
+    justify-content: flex-end;
 }
 
 /* Header */
@@ -731,7 +736,6 @@ section.editor #body, section.editor #description {
 }
 
 #post-button, #submit_button {
-    background-color: #fe0;
     border:2pt solid #fe0;
     border-radius: 5pt;
     cursor: pointer;
@@ -746,9 +750,7 @@ section.editor #body, section.editor #description {
     margin-left:10pt;
 }
 
-#post-button:hover {
-    background-color: white;
-}
+
 
 section.editor .help {
     display: block;
@@ -964,11 +966,11 @@ ul.flash {
 }
 
 #collection_sequence {
-    flex-basis: 60%;
+    flex-grow:2;
 }
 
 #comic_menu {
-    flex-basis: 20%;
+    width:30%;
 }
 
 #file_list {

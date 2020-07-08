@@ -272,25 +272,7 @@ def site_settings():
         return render_template('403.html'), 403
 
 
-@bp.route('/admin/homepage/modify', methods=['POST'])
-@auth.login_required
-def update_homepage():
-    print('Updating homepage!')
-    if auth.is_admin():
-        database = db.Database()
-        if request.method == 'POST':
-            sequence = request.get_json()
-            sequence_json = dumps(sequence)
-            if database.existSetting('homepage_sequence'):
-                query = '''UPDATE lucaflect SET shortvalue=NULL, longvalue=%s WHERE name=%s'''
-                database.write(query, (sequence_json,'homepage_sequence'))
-                flash('Homepage sequence updated.','success')
-            response_text = dumps({'message':'success','status':'ok'})
-            resp = make_response(response_text, 200)
-            return resp
 
-    else:
-        return render_template('403.html'), 403
 
 @bp.route('/admin/users', methods=['GET'])
 @auth.login_required

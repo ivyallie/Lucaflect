@@ -186,7 +186,8 @@ let comic_menu = document.getElementById('comic_menu');
                 .then(result => {
                     //let redirect = result['redirect'];
                     //window.location.replace(redirect);
-                    alert('Successfully updated homepage!')
+                    //alert('Successfully updated homepage!')
+                    window.location.reload()
                 })
                 .catch((error) => {
 
@@ -200,33 +201,40 @@ let comic_menu = document.getElementById('comic_menu');
             let homepage_sequence = [];
             for (i=0; i<list_elements.length; i++) {
                 let classes = list_elements[i].classList;
-                let title = list_elements[i].querySelector('span').getAttribute('title');
+                let titleElement = list_elements[i].querySelector('span');
+                let title = titleElement.getAttribute('title');
+                let display_title = titleElement.innerHTML;
+
 
                 if (classes.contains('collection')) {
-                    let expand = list_elements[i].querySelector('div.expand_option input:checked') !== null;
+                    let expand = list_elements[i].querySelector('div.expand_option input:checked') !== null | 0;
                     let collection = {
-                        'title':title,
+                        'internal_title':title,
+                        'title':display_title,
                         'type':'collection',
-                        'expand':expand
+                        'expand':expand.toString()
                     };
                     homepage_sequence.push(collection)
                 } else if (classes.contains('smartlist')) {
                     let how_many = list_elements[i].querySelector('div.how_many input').value;
                     let smartlist = {
-                        'title':title,
+                        'internal_title':title,
+                        'title':display_title,
                         'type':'smartlist',
                         'how_many':how_many
                     };
                     homepage_sequence.push(smartlist);
                 } else if (classes.contains('smart')) {
                     let smart = {
-                        'title':title,
+                        'internal_title':title,
+                        'title':display_title,
                         'type':'smart'
                     };
                     homepage_sequence.push(smart);
                 } else {
                     let comic = {
-                        'title':title,
+                        'internal_title':title,
+                        'title':display_title,
                         'type':'comic'
                     };
                     homepage_sequence.push(comic);
@@ -269,3 +277,54 @@ let comic_menu = document.getElementById('comic_menu');
 
 
     }
+
+    let initialize_homepage_editor = function (sequence) {
+            //console.log('homepage editor intializing');
+       let sequence_editor = document.getElementById('collection_sequence');
+       let listing_template = document.getElementById('comic_menu_listing');
+       for (i=0;i<sequence.length;i++) {
+           let clone = listing_template.content.cloneNode(deep = true,);
+           let name = clone.querySelector('span');
+           let viewlink = clone.querySelector('a');
+           let how_many = clone.querySelector('div.how_many');
+           let how_many_input = how_many.querySelector('input');
+           let expand_option = clone.querySelector('div.expand_option');
+           let expand_option_input = expand_option.querySelector('input');
+           name.innerHTML = sequence[i]['title'];
+           name.setAttribute('title', sequence[i]['internal_title']);
+           let li = clone.querySelector('li');
+           //console.log(li.classList);
+           let attributes = li.classList;
+           if (sequence[i]['type']==='smartlist') {
+               attributes.add('smart');
+               expand_option.remove();
+               viewlink.remove();
+               how_many_input.value = sequence[i]['how_many'];
+               console.log(sequence[i]['how_many'])
+           } else if  (sequence[i]['type']==='smart') {
+                attributes.add('smart');
+               how_many.remove();
+               expand_option.remove();
+               viewlink.remove();
+           }
+           else if (sequence[i]['type']==='collection') {
+               attributes.add('collection')
+               let expand = parseInt(sequence[i]['expand']);
+               console.log(sequence[i]['expand']);
+               if (expand) {
+                   expand_option_input.checked = true;
+               }
+               viewlink.setAttribute('href','/collection/'+sequence[i]["internal_title"])
+               how_many.remove();
+           } else {
+               how_many.remove()
+               expand_option.remove()
+               viewlink.setAttribute('href','/comic/'+sequence[i]["internal_title"])
+           }
+           sequence_editor.append(clone)
+       }
+    };
+
+        let very_simple_test = function () {
+            console.log('ta-da!')
+        }

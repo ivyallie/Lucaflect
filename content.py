@@ -133,7 +133,32 @@ def open_collection_editor(title):
 @auth.login_required
 def admin_homepage():
     database = db.Database();
-    return render_template('homepage_editor.html', authors=get_all_authors())
+    if database.existSetting('homepage_sequence'):
+        sequence = database.getSetting('homepage_sequence')
+    else:
+        default_sequence = [{'type':'smartlist', 'title': 'Recent comics', 'how_many': 10, 'internal_title': 'recent_comics'}]
+        sequence = json.dumps(default_sequence)
+    return render_template('homepage_editor.html', authors=get_all_authors(), sequence=sequence)
+
+@bp.route('/admin/homepage/modify', methods=['POST'])
+@auth.login_required
+def update_homepage():
+    print('Updating homepage!')
+    if auth.is_admin():
+        database = db.Database()
+        if request.method == 'POST':
+            sequence = request.get_json()
+            sequence_json = json.dumps(sequence)
+            if database.existSetting('homepage_sequence'):
+                query = '''UPDATE lucaflect SET shortvalue=NULL, longvalue=%s WHERE name=%s'''
+                database.write(query, (sequence_json,'homepage_sequence'))
+                flash('Homepage sequence updated.','success')
+            response_text = json.dumps({'message':'success','status':'ok'})
+            resp = make_response(response_text, 200)
+            return resp
+
+    else:
+        return render_template('403.html'), 403
 
 def validate_destination_dir(path):
     if isdir(path):

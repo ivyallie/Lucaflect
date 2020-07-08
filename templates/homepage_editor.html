@@ -3,23 +3,9 @@
 {% block pageheader %}Homepage Admin{% endblock %}
 {% block content %}
 
-    <form>
-        <section class="editor">
-        <div class="column_area">
-            <div class="column">
-
-        </div>
-            <div class="column"><button type="button" onclick="postHomepage()" id="submit_button">Post <img src="{{ url_for('static', filename='/icons/post.svg') }}"/>
-    </button>
-            </div>
-        </div>
-
-
-        </section>
-    </form>
     <section class="editor">
     <h3>Sequence</h3>
-        <p class="help">Click an author name on the left, then drag their content into the right panel to define the contents of the collection.</p>
+        <p class="help">Click an author or category on the left, then drag their content into the right panel to define the contents of the homepage.</p>
 
     <div id="collection_sequencer">
         <ul id="authors" >
@@ -37,6 +23,10 @@
 
         </ul>
 
+    </div>
+    <div class="flex_right">
+        <button type="button" onclick="postHomepage()" id="submit_button">Update <img src="{{ url_for('static', filename='/icons/post.svg') }}"/>
+    </button>
     </div>
     </section>
 
@@ -76,10 +66,9 @@
 
     <script src="{{ url_for('static',filename='collection_editor.js') }}"></script>
 
-    {% if content %}
         <script>
-            document.onload = initialize_editor({{ content.sequence | safe }})
+            document.onload = initialize_homepage_editor({{ sequence | safe }})
+
         </script>
-    {% endif %}
 
 {% endblock %}

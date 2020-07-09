@@ -256,11 +256,21 @@ section.comic a.link_block .description {
 
 section.textblock p {
     text-align: center;
-    font-size: 16pt;
+    width:75%;
+    margin: 10pt auto;
+
+    line-height: 18pt;
 }
 
 section.textblock {
     margin: 20pt auto;
+}
+
+/* Homepage */
+p.about {
+    width:80%;
+    margin:10pt auto;
+    line-height: 16pt;
 }
 
 /* Single Comic */

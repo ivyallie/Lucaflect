@@ -87,6 +87,17 @@ def unexpandedCollectionListing(collection):
             'body': collection['description'],
             'type': 'collection'}
 
+@bp.route('/about/', methods=['GET'])
+def about():
+    database=db.Database()
+
+    if database.existSetting('description'):
+        description = database.getSetting('description')
+    else:
+        description = 'No description set. Write a description in Site Admin.'
+
+    return render_template('about.html',description=description)
+
 
 @bp.route('/comic/<string:title>', methods=['GET'])
 def get_single_comic(title):

@@ -176,6 +176,8 @@ def update_user(id):
         if post['group']:
             if g.user['user_group']=='admin' and g.user['user_id']!=id:
                 group = post['group']
+        else:
+            group=False
 
         user_meta_json = dumps(user_meta)
 

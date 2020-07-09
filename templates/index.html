@@ -5,20 +5,35 @@
     <div id="index">
     {% if comics %}
         {% for comic in comics %}
+            {% if comic['type']=='textblock' %}
+                <section class="textblock">
+                <h3>{{ comic['title'] }}</h3>
+                <p>{{ comic['body'] }}</p>
+                </section>
+            {% else %}
             <section class="comic">
 
-                {% if comic['preview_image'] %}
-                    <a href="{{ url_for('routes.get_single_comic', title=comic['internal_title']) }}">
+
+            <a href="{% if comic['type']=='collection' %}
+            {{ url_for('routes.display_collection', title=comic['internal_title']) }}
+            {% else %}
+{{ url_for('routes.get_single_comic', title=comic['internal_title']) }}
+{% endif %}" class="link_block">
+
+            {% if comic['preview_image'] %}
+
             <img alt="{{ comic['title'] }} by {{ comic['author'] }}" src="{{ url_for('routes.uploaded_file', filename=comic['preview_image'] ) }}" class="preview_image"/>
-                    </a>
+
 
                 {% endif %}
-            <a href="{{ url_for('routes.get_single_comic', title=comic['internal_title']) }}" class="link_block">
-            <h3>{{ comic['title'] }}</h3>
-                <h4>{{ comic['author'] }}</h4>
-                <p class="description">{{ comic['body'] }}</p>
 
+
+            <h3>{% if comic['type']=='collection' %}Collection: {% endif %}{{ comic['title'] }}</h3>
+                <h4>by <strong>{{ comic['author'] }}</strong></h4>
+                <p class="description">{{ comic['body'] }}</p>
+            </a>
             </section>
+            {% endif %}
         {% endfor %}
     {% endif %}
     </div>

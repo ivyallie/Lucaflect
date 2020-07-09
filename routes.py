@@ -10,25 +10,82 @@ bp = Blueprint('routes', __name__)
 
 @bp.route('/')
 def index():
-    #database = db.Database()
-    comics=get_comics()
-    '''
-    comics_raw = database.query("SELECT * FROM comic;")
-    comics=[]
-    for comic in comics_raw:
-        internal_title = comic['title'].replace("'", "")
-        body_rawstr = comic['body']
-        body=loads(body_rawstr)
-        tags = body['tags']
-        d = {
-            'internal_title': comic['title'],
-            'title': body['true_title'],
-            'body': body['body_text'],
-            'tags': tags
-        }
-        comics.append(d)
-    '''
+    comics=assembleHomepage()
     return render_template('index.html', comics=comics)
+
+def assembleHomepage():
+    database = db.Database()
+    homepage_content=[]
+    if database.existSetting('homepage_sequence'):
+        sequence = database.getSetting('homepage_sequence')
+    else:
+        #default sequence
+        sequence = [{'type':'smartlist', 'title': 'Recent comics', 'how_many': 10, 'internal_title': 'recent_comics'}]
+
+    recentComics = get_comics()
+    recentCollections = get_collections()
+
+    comic_index = 0
+    collection_index = 0
+
+    for item in sequence:
+        if item['type']=='comic':
+            comic = database.does_title_exist(item['internal_title'])
+            comic_content = get_comic_content(comic)
+            homepage_content.append(comic_content)
+        elif item['type']=='collection':
+            collection = getCollection(item['internal_title'])
+            if item['expand'] != "0":
+                collection_sequence = collection['sequence']
+                for c in collection_sequence:
+                    comic = database.does_title_exist(c['internal_title'])
+                    comic_content=get_comic_content(comic)
+                    homepage_content.append(comic_content)
+            else:
+                collection_listing = unexpandedCollectionListing(collection)
+                homepage_content.append(collection_listing)
+        elif item['type']=='smart':
+            if database.existSetting('description'):
+                description=database.getSetting('description')
+            else:
+                description='No description set. Write a description in Site Admin.'
+            listing = {
+                'type': 'textblock',
+                'title': item['title'],
+                'body': description
+            }
+            homepage_content.append(listing)
+        elif item['type']=='smartlist':
+            if item['internal_title']=='recent_collections':
+                how_many = int(item['how_many'])
+                i = 0
+                while i < how_many+1:
+                    try:
+                        collection_listing = unexpandedCollectionListing(recentCollections[collection_index])
+                        collection_index += 1
+                        i += 1
+                        homepage_content.append(collection_listing)
+                    except IndexError:
+                        break
+            else:
+                how_many = int(item['how_many'])
+                i = 0
+                while i < how_many+1:
+                    try:
+                        comic=recentComics[comic_index]
+                        comic_index += 1
+                        i += 1
+                        homepage_content.append(comic)
+                    except IndexError:
+                        break
+    return homepage_content
+
+
+def unexpandedCollectionListing(collection):
+    return {'internal_title': collection['internal_title'],
+            'title': collection['title'],
+            'body': collection['description'],
+            'type': 'collection'}
 
 
 @bp.route('/comic/<string:title>', methods=['GET'])
@@ -61,6 +118,11 @@ def get_comic_content(comic):
     author_name = author['full_name']
     author_username = author['username']
     time = str(comic['posted'])
+    try:
+        preview_image = body['preview_image']
+    except KeyError:
+        print('No preview image, defaulting.')
+        preview_image = ''
     content = {
         'internal_title': comic['title'],
         'comic_id': comic['comic_id'],
@@ -71,43 +133,52 @@ def get_comic_content(comic):
         'author': author_name,
         'author_username': author_username,
         'time': time,
-        'format': body['format']
+        'format': body['format'],
+        'preview_image':preview_image
     }
     return content
 
 @bp.route('/collection/<string:title>', methods=['GET'])
 def display_collection(title):
+    collection_data=getCollection(title)
+    return render_template('collection.html',collection=collection_data)
+
+def getCollection(title):
     database = db.Database()
-    collection = database.does_title_exist(title,table='collection')
+    collection = database.does_title_exist(title, table='collection')
     if collection:
         meta = loads(collection['meta'])
         author = database.query_user_id(collection['author_id'])
         author_name = author['full_name']
         sequence_dictionary = loads(collection['members'])
-        sequence = []
-        for c in sequence_dictionary:
-            comic = database.does_title_exist(c)
-            if comic:
-                content=get_comic_content(comic)
-                comic_listing = {
-                    'internal_title': c,
-                    'title': content['title'],
-                    'author': content['author'],
-                }
-                sequence.append(comic_listing)
+        sequence = buildCollectionSequence(sequence_dictionary)
 
         collection_data = {
             'title': meta['title'],
-            'internal_title' : title,
+            'internal_title': title,
             'description': meta['description'],
             'sequence': sequence,
             'author': author_name,
             'time': collection['posted'],
-            'show_tools': auth.authorized('collection',collection['collection_id'])
+            'show_tools': auth.authorized('collection', collection['collection_id'])
         }
-        return render_template('collection.html',collection=collection_data)
+        return collection_data
 
 
+def buildCollectionSequence(sequence_dictionary):
+    database=db.Database()
+    sequence=[]
+    for c in sequence_dictionary:
+        comic = database.does_title_exist(c)
+        if comic:
+            content = get_comic_content(comic)
+            comic_listing = {
+                'internal_title': c,
+                'title': content['title'],
+                'author': content['author'],
+            }
+            sequence.append(comic_listing)
+    return sequence
 
 
 @bp.route('/uploads/<filename>')

@@ -206,9 +206,9 @@ ul {
 /* Index */
 
 section.comic {
-    border:1px solid #FE0;
-    margin:10pt;
-    border-radius:15pt;
+
+    margin:10pt 10pt 20pt 10pt;
+
     overflow: hidden;
 }
 
@@ -219,12 +219,18 @@ section.comic img.preview_image {
 }
 
 section.comic a.link_block {
-    background-color: #FE0;
+    background-color: white;
     display: block;
     text-decoration: none;
     color:black;
     text-align: center;
     padding:10pt;
+    border-radius:15pt;
+    border:1px solid white;
+}
+
+section.comic a.link_block:hover {
+    border:1px solid #FE0;
 }
 
 section.comic a.link_block:hover h3 {
@@ -238,13 +244,23 @@ section.comic a.link_block h3 {
 }
 
 section.comic a.link_block h4 {
-    font-size:20pt;
-    font-weight: normal;
+    margin-top:5pt;
+    font-size:16pt;
+    color:#999;
 }
 
 section.comic a.link_block .description {
     margin: 5pt;
     font-size:14pt;
+}
+
+section.textblock p {
+    text-align: center;
+    font-size: 16pt;
+}
+
+section.textblock {
+    margin: 20pt auto;
 }
 
 /* Single Comic */

@@ -48,7 +48,7 @@
         {% endfor %}
     {% endif %}
 <section class="textblock">
-    <p>Posted by <a href="{{ url_for('routes.user_profile', username='author_username') }}">{{ collection['author'] }}</a> at {{ collection['time'] }}.</p>
+    <p>Posted by <a href="{{ url_for('routes.user_profile', username=collection['author_username']) }}">{{ collection['author'] }}</a> at {{ collection['time'] }}.</p>
 
 </section>
 {% endblock %}

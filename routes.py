@@ -1,6 +1,7 @@
 from flask import render_template, Blueprint, session, request, current_app, send_from_directory, g, make_response, jsonify, flash
 from . import db
 from . import auth
+from .common import reformat_timestamp
 from json import loads, dumps
 from os.path import join, basename
 from werkzeug.security import generate_password_hash
@@ -143,7 +144,7 @@ def get_comic_content(comic):
         'tags': body['tags'],
         'author': author_name,
         'author_username': author_username,
-        'time': time,
+        'time': reformat_timestamp(time),
         'format': body['format'],
         'preview_image':preview_image
     }
@@ -170,7 +171,8 @@ def getCollection(title):
             'description': meta['description'],
             'sequence': sequence,
             'author': author_name,
-            'time': collection['posted'],
+            'author_username': author['username'],
+            'time': reformat_timestamp(str(collection['posted'])),
             'show_tools': auth.authorized('collection', collection['collection_id'])
         }
         return collection_data
@@ -187,6 +189,7 @@ def buildCollectionSequence(sequence_dictionary):
                 'internal_title': c,
                 'title': content['title'],
                 'author': content['author'],
+                'preview_image': content['preview_image']
             }
             sequence.append(comic_listing)
     return sequence
@@ -203,8 +206,6 @@ def uploaded_file(filename):
 @bp.route('/getcomics/<int:id>', methods=['GET'])
 def get_comics_for_js(id):
     comics=get_comics(id)
-    #response_data = jsonify(comics)
-    #print(jsonify(comics))
     response_data = {
         'comics':comics,
     }

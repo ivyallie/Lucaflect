@@ -79,9 +79,12 @@ class Database:
         self.cur.execute(post_query)
         post = self.cur.fetchone()
         post_author = post['author_id']
-        if int(post_author)==int(session['user_id']):
-            return True
-        else:
+        try:
+            if int(post_author)==int(session['user_id']):
+                return True
+            else:
+                return False
+        except KeyError:
             return False
 
     def existSetting(self,settingname):

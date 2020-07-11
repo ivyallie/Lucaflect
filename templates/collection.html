@@ -8,13 +8,47 @@
         Edit this</a> &bullet; <a href="{{  url_for('content.delete_collection', title=collection['internal_title']) }}">Delete this</a>
         </div>
     {% endif %}
-    {{ collection['description'] }}
-    {% if collection['sequence'] %}
-        <ul>
-        {% for comic in collection['sequence'] %}
-            <li><a href="{{ url_for('routes.get_single_comic',title=comic['internal_title']) }}"><span class="author">{{ comic['author'] }}</span><h3>{{ comic['title'] }}</h3></a></li>
-        {% endfor %}
-        </ul>
-<p>Posted by {{ collection['author'] }} at {{ collection['time'] }}.</p>
+    {% if collection['description'] %}
+        <section class="textblock">
+        <p>{{ collection['description'] }}</p>
+        </section>
     {% endif %}
+
+        {% if collection['sequence'] %}
+        {% for comic in collection['sequence'] %}
+            {% if comic['type']=='textblock' %}
+                <section class="textblock">
+                <h3>{{ comic['title'] }}</h3>
+                <p>{{ comic['body'] }}</p>
+                </section>
+            {% else %}
+            <section class="comic">
+
+
+            <a href="{% if comic['type']=='collection' %}
+            {{ url_for('routes.display_collection', title=comic['internal_title']) }}
+            {% else %}
+{{ url_for('routes.get_single_comic', title=comic['internal_title']) }}
+{% endif %}" class="link_block">
+
+            {% if comic['preview_image'] %}
+
+            <img alt="{{ comic['title'] }} by {{ comic['author'] }}" src="{{ url_for('routes.uploaded_file', filename=comic['preview_image'] ) }}" class="preview_image"/>
+
+
+                {% endif %}
+
+
+            <h3>{% if comic['type']=='collection' %}Collection: {% endif %}{{ comic['title'] }}</h3>
+                <h4>by <strong>{{ comic['author'] }}</strong></h4>
+                <p class="description">{{ comic['body'] }}</p>
+            </a>
+            </section>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+<section class="textblock">
+    <p>Posted by <a href="{{ url_for('routes.user_profile', username='author_username') }}">{{ collection['author'] }}</a> at {{ collection['time'] }}.</p>
+
+</section>
 {% endblock %}

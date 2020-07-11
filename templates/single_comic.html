@@ -21,7 +21,9 @@
     </div>
 
         {% if content['body'] %}
-        <div class="description">{{ content['body'] }}</div>
+        <div class="description">
+            <p>{{ content['body'] }}</p>
+        </div>
     {% endif %}
 
     </section>
@@ -52,6 +54,9 @@
     </div>
 
             {% endif %}
+    </section>
+    <section id="copyright">
+    <p>&copy;{{ content['year'] }} by {{ content['author'] }}. All rights reserved.</p>
     </section>
 {% endif %}
 

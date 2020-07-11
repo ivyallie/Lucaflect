@@ -1,7 +1,7 @@
 from flask import render_template, Blueprint, session, request, current_app, send_from_directory, g, make_response, jsonify, flash
 from . import db
 from . import auth
-from .common import reformat_timestamp
+from .common import reformat_timestamp, year
 from json import loads, dumps
 from os.path import join, basename
 from werkzeug.security import generate_password_hash
@@ -145,6 +145,7 @@ def get_comic_content(comic):
         'author': author_name,
         'author_username': author_username,
         'time': reformat_timestamp(time),
+        'year': year(time),
         'format': body['format'],
         'preview_image':preview_image
     }

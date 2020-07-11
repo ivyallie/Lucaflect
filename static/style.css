@@ -612,6 +612,10 @@ section.editor div {
     margin:10pt;
 }
 
+section.editor li.comic_page_listing div {
+    margin:0;
+}
+
 
 #name_area label {
     color:#666;

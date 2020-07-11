@@ -76,7 +76,7 @@
         <button type="button" id="add-images">
             <img src="{{ url_for('static', filename='/icons/add.svg') }}"/> add images
         </button>
-        <ul id="file_list" class="js-sortable">
+        <ul id="file_list" class="js-sortable comic">
 
 
         </ul>
@@ -85,7 +85,7 @@
 
 
     <template id="listed_file_template">
-        <li draggable="true" data-imgurl=""><span class="display_text"></span>
+        <li draggable="true" data-imgurl="" class="comic_page_listing"><span class="display_text"></span>
             <div><button title="View" onclick="view_comic_image(this)"><img src="{{ url_for('static', filename='/icons/view.svg') }}"/></button>
             <button onclick="remove_from_list(this)" title="Delete">
                     <img src="{{ url_for('static', filename='/icons/delete.svg') }}"/></button></div>

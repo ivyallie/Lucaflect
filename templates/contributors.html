@@ -11,7 +11,7 @@
         src="{{ url_for('routes.uploaded_file', filename=user['portrait'])  }}"
     {% endif %}
 id="portrait" class="portrait"/>
-    <div>
+    <div class="column">
         <h3><a href="{{ url_for('routes.user_profile', username=user['username']) }}">{{ user['full_name'] }}</a></h3>
     <p>{{ user['bio'] }}</p>
     {% if user['web_links'] | length > 0 %}

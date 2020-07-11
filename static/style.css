@@ -809,7 +809,7 @@ section.editor .help {
     flex-basis: 80%;
 }
 
-#reg_options label {
+#reg_options label, #display_options label {
     color:black;
 }
 
@@ -920,13 +920,18 @@ ul.flash {
     margin:20pt auto;
 }
 
+.contributor_profile.mini {
+    border:0;
+}
+
 .contributor_profile img.portrait {
     max-width: 20%;
     margin:10pt;
 }
 
-.contributor_profile div {
+.contributor_profile div.column {
     flex-grow: 1;
+    margin-left:10pt;
 }
 
 .contributor_weblinks {
@@ -935,10 +940,12 @@ ul.flash {
 
 .contributor_profile p {
     line-height: 16pt;
-    width: 95%;
     margin: 0 auto;
 }
 
+.contributor_profile h4 {
+    margin-bottom: 8pt;
+}
 
 /*Collection Editor*/
 

@@ -57,6 +57,13 @@
         <p class="help">The key will be stored encrypted and cannot be retrieved, only changed.</p>
         </div>
         </section>
+    <section class="editor" id="display_options">
+        <h3>Display options</h3>
+        <div>
+            <input type="checkbox" id="show_mini_profile" name="show_mini_profile" {% if settings['mini_profile'] %}checked{% endif %}/>
+            <label for="show_mini_profile">Show author profile on comic pages</label>
+        </div>
+    </section>
     </div>
 
     <div>

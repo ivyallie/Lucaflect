@@ -55,10 +55,41 @@
 
             {% endif %}
     </section>
-    <section id="copyright">
-    <p>&copy;{{ content['year'] }} by {{ content['author'] }}. All rights reserved.</p>
+
+{% endif %}
+
+
+{% if user %}
+    <section>
+<div class="contributor_profile mini">
+    <img
+    {% if not user['portrait'] or user['portrait']=='default_portrait.jpg' %}
+        src="{{ url_for('static', filename='default_portrait.jpg') }}"
+    {% else %}
+        src="{{ url_for('routes.uploaded_file', filename=user['portrait'])  }}"
+    {% endif %}
+id="portrait" class="portrait"/>
+    <div class="column">
+        <h4><a href="{{ url_for('routes.user_profile', username=user['username']) }}">About {{ user['full_name'] }}</a></h4>
+    <p>{{ user['bio'] }}</p>
+    {% if user['web_links'] | length > 0 %}
+        <div class="contributor_weblinks">
+        <ul class="weblinks">
+        {% for link in user['web_links'] %}
+            <li class="web_link">
+            <a href="{{ link['link_url'] }}">{{ link['link_name'] }}</a>
+            </li>
+            {% endfor %}
+    </ul>
+        </div>
+        {% endif %}
     </section>
 {% endif %}
+
+            <section id="copyright">
+    <p>&copy;{{ content['year'] }} by {{ content['author'] }}. All rights reserved.</p>
+    </section>
+
 
     <!-- <script src="{{ url_for('static', filename='page_turns.js') }}"></script> -->
     <script>

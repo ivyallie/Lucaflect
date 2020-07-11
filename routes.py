@@ -109,7 +109,21 @@ def get_single_comic(title):
         content = get_comic_content(comic)
         content['show_tools']=auth.is_authorized_to_edit(comic['comic_id'])
 
-        return render_template('single_comic.html', content=content)
+        author=False
+
+        if database.getSetting('mini_profile'):
+            user = database.query_user(content['author_username'])
+            meta = auth.parse_user_meta(user)
+            author = {
+                'full_name': user['full_name'],
+                'username': user['username'],
+                'portrait': meta['portrait'],
+                'bio': meta['bio'],
+                'web_links': load_weblinks(meta['web_links'])
+            }
+
+
+        return render_template('single_comic.html', content=content, user=author)
 
     else:
         return render_template('404.html'),404
@@ -323,7 +337,8 @@ def site_settings():
                     'description': request.form['site_description'],
                     'registration': request.form.get('allow_reg') != None,
                     'use_key': request.form.get('use_key') != None,
-                    'key': key
+                    'key': key,
+                    'mini_profile': request.form.get('show_mini_profile') != None,
                 }
                 for item in form.items():
                     name = item[0]
@@ -349,7 +364,8 @@ def site_settings():
             'name': database.getSetting('name'),
             'registration': database.getSetting('registration'),
             'use_key': database.getSetting('use_key'),
-            'description': database.getSetting('description')
+            'description': database.getSetting('description'),
+            'mini_profile': database.getSetting('mini_profile')
         }
         return render_template('site_settings.html', settings=settings)
     else:

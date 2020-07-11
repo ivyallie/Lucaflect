@@ -40,18 +40,14 @@ class Database:
         return self.cur.fetchone()
 
     def write(self, querybase, values):
-        print("Write called")
-        #print(values)
         self.cur.execute(querybase, values)
         self.con.commit()
-        print("Write finished")
         return True
 
     def delete_comic(self,id):
         query = '''DELETE FROM comic WHERE comic_id="'''+str(id)+'''";'''
         self.cur.execute(query)
         self.con.commit()
-        print('Deleted comic')
         return True
 
     def delete_collection(self,id):

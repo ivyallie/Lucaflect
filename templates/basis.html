@@ -46,10 +46,11 @@
     <ul>
         <li><a href="{{ url_for('routes.about') }}">About</a></li>
         <li><a href="{{ url_for('routes.contributors') }}">Contributors</a></li>
+    <li><a href="{{ url_for('routes.comic_archive') }}">Archive</a></li>
         {% if g.user %}
             <li><a href="{{ url_for('routes.workspace') }}">Workspace</a></li>
             {% if g.user['user_group']=='admin' %}
-    <li><a href="{{ url_for('routes.site_settings') }}">Site administration</a></li>
+    <li><a href="{{ url_for('routes.site_settings') }}">Admin</a></li>
 {% endif %}
             <li><a href="{{ url_for('auth.logout') }}">Log out</a></li>
         {% else %}

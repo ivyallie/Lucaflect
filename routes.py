@@ -147,7 +147,7 @@ def get_comic_content(comic):
     try:
         preview_image = body['preview_image']
     except KeyError:
-        print('No preview image, defaulting.')
+        #print('No preview image, defaulting.')
         preview_image = ''
     content = {
         'internal_title': comic['title'],
@@ -212,9 +212,6 @@ def buildCollectionSequence(sequence_dictionary):
 
 @bp.route('/uploads/<filename>')
 def uploaded_file(filename):
-    print('Getting uploaded file...')
-    #print(route)
-    #return send_from_directory(current_app.config['UPLOAD_FOLDER'], route)
     upload_dir = current_app.config['UPLOAD_FOLDER']
     return send_from_directory(upload_dir, filename)
 
@@ -258,7 +255,7 @@ def get_comics(id="", howmany=0):
             preview_image = ''
         d = {
             'comic_id': comic['comic_id'],
-            'time': comic['posted'],
+            'time': reformat_timestamp(str(comic['posted'])),
             'internal_title': internal_title,
             'title': body['true_title'],
             'body': body['body_text'],
@@ -289,7 +286,8 @@ def get_collections(id="",howmany=0):
             'internal_title': internal_title,
             'title': meta['title'],
             'description': meta['description'],
-            'author': author['full_name']
+            'author': author['full_name'],
+            'time': reformat_timestamp(str(collection['posted']))
         }
         processed.append(d)
     return processed
@@ -352,8 +350,6 @@ def site_settings():
                             else:
                                 query = '''UPDATE lucaflect SET shortvalue=%s, longvalue=NULL WHERE name=%s'''
                                 database.write(query, (value, name))
-                    else:
-                        print(name, 'is null!')
                 current_app.config['SITENAME'] = database.getSetting('name')
                 current_app.config['ALLOW_REGISTRATION'] = database.getSetting('registration')
                 current_app.config['USE_REG_KEY'] = database.getSetting('use_key')
@@ -404,6 +400,7 @@ def admin_comics():
     else:
         return render_template('403.html'), 403
 
+
 @bp.route('/admin/collections', methods=['GET'])
 @auth.login_required
 def admin_collections():
@@ -421,6 +418,7 @@ def workspace():
     comics = get_comics(id=user['user_id'])
     collections = get_collections(id=user['user_id'])
     return render_template('workspace.html', comics=comics, collections=collections)
+
 
 @bp.route('/contributors')
 def contributors():
@@ -441,9 +439,13 @@ def contributors():
     return render_template('contributors.html',users=users)
 
 
-@bp.route('/beepers/')
-def sql_test():
+@bp.route('/archive')
+def comic_archive():
+    comics=get_comics()
+    return render_template('archive.html', list=comics, type='comics')
 
-    beepers = database.query("""SELECT * FROM example;""")
 
-    return render_template('sql_test.html', beepers=beepers)
+@bp.route('/archive/collections')
+def collection_archive():
+    collections=get_collections()
+    return render_template('archive.html',list=collections, type='collections')

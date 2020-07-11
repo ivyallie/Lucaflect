@@ -1,0 +1,22 @@
+{% extends 'basis.html' %}
+{% block title %}Archive{% endblock %}
+{% block pageheader %}Archive{% endblock %}
+{% block content %}
+    <ul class="archive_links">
+    <li><a href="{{ url_for('routes.comic_archive') }}" class="basic_button small">Comics</a> </li>
+    <li><a href="{{ url_for('routes.collection_archive') }}" class="basic_button small">Collections</a></li>
+    </ul>
+<ul class="entry_list">
+{% for i in list %}
+    <li>
+    <div><span>{{ i['author'] }}</span></div>
+        {% if type=='comics' %}
+            <div><a href="{{ url_for('routes.get_single_comic', title=i['internal_title']) }}">{{ i['title'] }}</a></div>
+        {% else %}
+                <div><a href="{{ url_for('routes.display_collection', title=i['internal_title']) }}">{{ i['title'] }}</a></div>
+        {% endif %}
+    <div>{{ i['time'] }}</div>
+    </li>
+{% endfor %}
+</ul>
+{% endblock %}

@@ -551,6 +551,7 @@ ul.weblinks li a:hover {
 
 #profile_content ul li {
     display: block;
+    font-size:16pt;
 }
 
 #profile_content ul li a {
@@ -1043,8 +1044,6 @@ ul.flash {
 
 
 
-
-
 .sort_placeholder {
     border:1px dashed #ddd !important;
 }
@@ -1073,3 +1072,12 @@ img.portrait {
     color:#888;
 }
 
+.archive_links {
+    display: block;
+
+    text-align: center;
+}
+
+.archive_links li {
+display: inline;
+}

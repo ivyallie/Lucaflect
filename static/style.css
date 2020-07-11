@@ -512,16 +512,16 @@ h2 {
     margin: 30pt auto;
 }
 
-#profile_weblinks ul {
+ul.weblinks {
     display: inline;
     padding-inline-start: 0;
 }
 
-#profile_weblinks li {
+ul.weblinks li {
     display: inline-block;
 }
 
-#profile_weblinks li a {
+ul.weblinks li a {
     color:black;
     text-decoration: none;
     background-color: #fe0;
@@ -530,7 +530,7 @@ h2 {
 
 }
 
-#profile_weblinks li a:hover {
+ul.weblinks li a:hover {
     background-color: white;
 }
 
@@ -861,11 +861,6 @@ section.editor .help {
     border-radius:3pt;
 }
 
-.web_link a:hover {
-    border-color:#990;
-    background-color: yellow;
-    color:#650;
-}
 
 ul.flash {
     margin-bottom: 10pt;
@@ -903,13 +898,15 @@ ul.flash {
     color:red;
 }
 
+/* Contributor Page */
+
 .contributor_profile {
     display: flex;
     justify-content: flex-start;
     align-items: flex-start;
-    border-bottom: 1px solid gray;
+    border-bottom: 1px solid #bbb;
     width:80%;
-    margin:auto;
+    margin:20pt auto;
 }
 
 .contributor_profile img.portrait {
@@ -919,6 +916,16 @@ ul.flash {
 
 .contributor_profile div {
     flex-grow: 1;
+}
+
+.contributor_weblinks {
+    margin: 20pt auto;
+}
+
+.contributor_profile p {
+    line-height: 16pt;
+    width: 95%;
+    margin: 0 auto;
 }
 
 

@@ -15,7 +15,8 @@ id="portrait" class="portrait"/>
         <h3><a href="{{ url_for('routes.user_profile', username=user['username']) }}">{{ user['full_name'] }}</a></h3>
     <p>{{ user['bio'] }}</p>
     {% if user['web_links'] | length > 0 %}
-    <ul>
+        <div class="contributor_weblinks">
+        <ul class="weblinks">
         {% for link in user['web_links'] %}
             <li class="web_link">
             <a href="{{ link['link_url'] }}">{{ link['link_name'] }}</a>
@@ -23,6 +24,8 @@ id="portrait" class="portrait"/>
 
     {% endfor %}
     </ul>
+        </div>
+
     {% endif %}
     </div>
     </div>

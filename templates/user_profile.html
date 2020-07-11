@@ -25,7 +25,7 @@ id="portrait" class="portrait"/>
     {% if web_links %}
     <section id="profile_weblinks">
     <span>Find {{ user['full_name'] }} on:</span>
-    <ul>
+    <ul class="weblinks">
     {% for link in web_links %}
     <li><a href="{{ link['link_url'] }}">{{ link['link_name'] }}</a></li>
     {% endfor %}

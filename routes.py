@@ -3,7 +3,7 @@ from . import db
 from . import auth
 from .common import reformat_timestamp, year
 from json import loads, dumps
-from os.path import join, basename
+from os.path import basename
 from werkzeug.security import generate_password_hash
 
 bp = Blueprint('routes', __name__)
@@ -83,10 +83,39 @@ def assembleHomepage():
 
 
 def unexpandedCollectionListing(collection):
+    database = db.Database()
+    sequence = collection['sequence']
+
+    #build montage
+    previews = []
+    for c in sequence:
+        comic = database.does_title_exist(c['internal_title'])
+        comic_content = get_comic_content(comic)
+        previews.append(comic_content['preview_image'])
+    montage = []
+    slot=0
+
+    while slot<3:
+        if slot<len(previews):
+            if previews[slot]!='':
+                montage.append(previews[slot])
+                slot+=1
+            else:
+                slot+=1
+        else:
+            print('need placeholder')
+            montage.append('')
+            slot+=1
+
+    print('Previews:',previews)
+    print('Montage:',montage)
+
+
     return {'internal_title': collection['internal_title'],
             'title': collection['title'],
             'body': collection['description'],
-            'type': 'collection'}
+            'type': 'collection',
+            'montage': montage}
 
 @bp.route('/about/', methods=['GET'])
 def about():
@@ -214,6 +243,8 @@ def buildCollectionSequence(sequence_dictionary):
 def uploaded_file(filename):
     upload_dir = current_app.config['UPLOAD_FOLDER']
     return send_from_directory(upload_dir, filename)
+
+
 
 @bp.route('/getcomics/<int:id>', methods=['GET'])
 def get_comics_for_js(id):

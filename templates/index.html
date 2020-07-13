@@ -13,12 +13,20 @@
             {% else %}
             <section class="comic">
 
-
             <a href="{% if comic['type']=='collection' %}
             {{ url_for('routes.display_collection', title=comic['internal_title']) }}
             {% else %}
 {{ url_for('routes.get_single_comic', title=comic['internal_title']) }}
 {% endif %}" class="link_block">
+
+            {% if comic['montage'] %}
+                <div class="montage">
+                {% for image in comic['montage'] %}
+                <div><img src="{{ url_for('routes.uploaded_file', filename=image) }}"/></div>
+                {% endfor %}
+
+                </div>
+            {% endif %}
 
             {% if comic['preview_image'] %}
 
@@ -29,7 +37,9 @@
 
 
             <h3>{% if comic['type']=='collection' %}Collection: {% endif %}{{ comic['title'] }}</h3>
+            {% if comic['author']    %}
                 <h4>by <strong>{{ comic['author'] }}</strong></h4>
+                {% endif %}
                 <p class="description">{{ comic['body'] }}</p>
             </a>
             </section>

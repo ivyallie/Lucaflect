@@ -273,6 +273,25 @@ p.about {
     line-height: 16pt;
 }
 
+.montage {
+    display: flex;
+}
+
+.montage div {
+    width:33%;
+    overflow: hidden;
+}
+
+/*.montage div:after {
+    content:"";
+    display: block;
+    padding-bottom: 100%;
+}*/
+
+.montage div img {
+    max-width: 200%;
+}
+
 /* Single Comic */
 
 div.title {

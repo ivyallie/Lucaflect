@@ -1,18 +1,31 @@
 {% extends 'basis.html' %}
 {% block title %}{{ collection['title'] }}{% endblock %}
-{% block pageheader %}{{ collection['title'] }}{% endblock %}
 {% block content %}
-    {%  if (collection['show_tools']) %}
+    <section id="single_comic_header">
+    <div class="title">
+
+         {%  if (collection['show_tools']) %}
         <div id="post-tools">
         <a href="{{ url_for('content.open_collection_editor', title=collection['internal_title']) }}">
-        Edit this</a> &bullet; <a href="{{  url_for('content.delete_collection', title=collection['internal_title']) }}">Delete this</a>
+        <img src="{{ url_for('static', filename='icons/edit.svg') }}"/>
+        </a>
+            <a href="{{  url_for('content.delete_collection', title=collection['internal_title']) }}">
+                <img src="{{ url_for('static', filename='icons/delete.svg') }}"/>
+            </a>
         </div>
     {% endif %}
+
+    <h2>{{ collection['title'] }}</h2>
     {% if collection['description'] %}
-        <section class="textblock">
+        <div class="description">
         <p>{{ collection['description'] }}</p>
-        </section>
+        </div>
     {% endif %}
+
+    </div>
+
+    </section>
+
 
         {% if collection['sequence'] %}
         {% for comic in collection['sequence'] %}
@@ -48,7 +61,7 @@
         {% endfor %}
     {% endif %}
 <section class="textblock">
-    <p>Posted by <a href="{{ url_for('routes.user_profile', username=collection['author_username']) }}">{{ collection['author'] }}</a> at {{ collection['time'] }}.</p>
+    <p>Posted by <a href="{{ url_for('routes.user_profile', username=collection['author_username']) }}">{{ collection['author'] }}</a> on {{ collection['time'] }}.</p>
 
 </section>
 {% endblock %}

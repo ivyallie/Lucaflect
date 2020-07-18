@@ -164,6 +164,17 @@ ul {
     margin-top:10pt;
 }
 
+.footer_logo {
+    margin-top: 10pt;
+    width:30pt;
+    height: 30pt;
+    fill:#666;
+}
+
+.footer_logo:hover {
+    fill:#fe0;
+}
+
 /* Login Page */
 #login input, #register input {
     display: block;
@@ -196,6 +207,8 @@ ul {
     margin-bottom:10pt;
     text-align: center;
 }
+
+
 
 
 /* Main Container */

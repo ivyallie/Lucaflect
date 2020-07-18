@@ -42,6 +42,6 @@ with app.app_context():
             app.config['ALLOW_REGISTRATION'] = True
             app.config['USE_REG_KEY'] = False
 
-        app.config['LUCAFLECT_VERSION'] = 'Alpha 0'
+        app.config['LUCAFLECT_VERSION'] = '0.1 Beta'
     except pymysql.err.ProgrammingError:
         pass

@@ -29,56 +29,64 @@ def assembleHomepage():
     comic_index = 0
     collection_index = 0
 
-    for item in sequence:
-        if item['type']=='comic':
-            comic = database.does_title_exist(item['internal_title'])
-            comic_content = get_comic_content(comic)
-            homepage_content.append(comic_content)
-        elif item['type']=='collection':
-            collection = getCollection(item['internal_title'])
-            if item['expand'] != "0":
-                collection_sequence = collection['sequence']
-                for c in collection_sequence:
-                    comic = database.does_title_exist(c['internal_title'])
-                    comic_content=get_comic_content(comic)
-                    homepage_content.append(comic_content)
-            else:
-                collection_listing = unexpandedCollectionListing(collection)
-                homepage_content.append(collection_listing)
-        elif item['type']=='smart':
-            if database.existSetting('description'):
-                description=database.getSetting('description')
-            else:
-                description='No description set. Write a description in Site Admin.'
-            listing = {
-                'type': 'textblock',
-                'title': item['title'],
-                'body': description
-            }
-            homepage_content.append(listing)
-        elif item['type']=='smartlist':
-            if item['internal_title']=='recent_collections':
-                how_many = int(item['how_many'])
-                i = 0
-                while i < how_many+1:
-                    try:
-                        collection_listing = unexpandedCollectionListing(recentCollections[collection_index])
-                        collection_index += 1
-                        i += 1
-                        homepage_content.append(collection_listing)
-                    except IndexError:
-                        break
-            else:
-                how_many = int(item['how_many'])
-                i = 0
-                while i < how_many+1:
-                    try:
-                        comic=recentComics[comic_index]
-                        comic_index += 1
-                        i += 1
-                        homepage_content.append(comic)
-                    except IndexError:
-                        break
+    if sequence:
+        for item in sequence:
+            if item['type']=='comic':
+                comic = database.does_title_exist(item['internal_title'])
+                comic_content = get_comic_content(comic)
+                homepage_content.append(comic_content)
+            elif item['type']=='collection':
+                collection = getCollection(item['internal_title'])
+                if item['expand'] != "0":
+                    collection_sequence = collection['sequence']
+                    for c in collection_sequence:
+                        comic = database.does_title_exist(c['internal_title'])
+                        comic_content=get_comic_content(comic)
+                        homepage_content.append(comic_content)
+                else:
+                    collection_listing = unexpandedCollectionListing(collection)
+                    homepage_content.append(collection_listing)
+            elif item['type']=='smart':
+                if database.existSetting('description'):
+                    description=database.getSetting('description')
+                else:
+                    description='No description set. Write a description in Site Admin.'
+                listing = {
+                    'type': 'textblock',
+                    'title': item['title'],
+                    'body': description
+                }
+                homepage_content.append(listing)
+            elif item['type']=='smartlist':
+                if item['internal_title']=='recent_collections':
+                    how_many = int(item['how_many'])
+                    i = 0
+                    while i < how_many+1:
+                        try:
+                            collection_listing = unexpandedCollectionListing(recentCollections[collection_index])
+                            collection_index += 1
+                            i += 1
+                            homepage_content.append(collection_listing)
+                        except IndexError:
+                            break
+                else:
+                    how_many = int(item['how_many'])
+                    i = 0
+                    while i < how_many+1:
+                        try:
+                            comic=recentComics[comic_index]
+                            comic_index += 1
+                            i += 1
+                            homepage_content.append(comic)
+                        except IndexError:
+                            break
+    else:
+        listing = {
+            'type': 'textblock',
+            'title': 'No comics?!',
+            'body': 'Once there are comics in the database, you\'ll see them here!'
+        }
+        homepage_content.append(listing)
     return homepage_content
 
 
@@ -107,10 +115,6 @@ def unexpandedCollectionListing(collection):
             montage.append('')
             slot+=1
 
-    print('Previews:',previews)
-    print('Montage:',montage)
-
-
     return {'internal_title': collection['internal_title'],
             'title': collection['title'],
             'body': collection['description'],
@@ -136,7 +140,7 @@ def get_single_comic(title):
 
     if comic:
         content = get_comic_content(comic)
-        content['show_tools']=auth.is_authorized_to_edit(comic['comic_id'])
+        content['show_tools']=auth.authorized('comic',comic['comic_id'])
 
         author=False
 
@@ -268,10 +272,11 @@ def get_collections_for_js():
 def get_comics(id="", howmany=0):
     database = db.Database()
     if id:
-        query = '''SELECT * FROM comic WHERE author_id='''+str(id)+''' ORDER BY posted DESC;'''
+        query = '''SELECT * FROM comic WHERE author_id=%s ORDER BY posted DESC;'''
+        comics = database.query(query,(str(id)))
     else:
         query = '''SELECT * FROM comic ORDER BY posted DESC;'''
-    comics = database.query(query)
+        comics = database.query(query)
     processed_comics = []
     for comic in comics:
         internal_title = comic['title']
@@ -282,7 +287,6 @@ def get_comics(id="", howmany=0):
         try:
             preview_image = body['preview_image']
         except KeyError:
-            print('No preview image, defaulting.')
             preview_image = ''
         d = {
             'comic_id': comic['comic_id'],
@@ -356,11 +360,10 @@ def site_settings():
     if auth.is_admin():
         database = db.Database()
         if request.method == 'POST':
-                print('Applying settings')
                 if request.form['set_key']:
                     key=generate_password_hash(request.form['set_key'])
                 else:
-                    key="";
+                    key=""
                 form = {
                     'name': request.form['site_name'],
                     'description': request.form['site_description'],

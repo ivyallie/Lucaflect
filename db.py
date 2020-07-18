@@ -1,6 +1,8 @@
 from flask import current_app, session
 import pymysql
 from json import loads
+import click
+from flask.cli import with_appcontext
 
 class Database:
     def __init__(self):
@@ -25,18 +27,21 @@ class Database:
         return result
 
     def query_user(self,name):
-        user_query = '''SELECT * FROM user WHERE username="''' + name + '";'
-        self.cur.execute(user_query)
+        user_query = '''SELECT * FROM user WHERE username=%s;'''
+        self.cur.execute(user_query, (name))
         return self.cur.fetchone()
 
     def query_user_id(self,id):
-        user_query = '''SELECT * FROM user where user_id="''' + str(id) + '";'
-        self.cur.execute(user_query)
+        user_query = '''SELECT * FROM user where user_id=%s;'''
+        self.cur.execute(user_query, (str(id)))
         return self.cur.fetchone()
 
     def does_title_exist(self,title,table='comic'):
-        title_query = '''SELECT * FROM '''+table+''' WHERE title="''' + title + '''";'''
-        self.cur.execute(title_query)
+        if table=='comic':
+            title_query = '''SELECT * FROM comic WHERE title=%s;'''
+        else:
+            title_query = '''SELECT * FROM collection WHERE title=%s;'''
+        self.cur.execute(title_query, (title))
         return self.cur.fetchone()
 
     def write(self, querybase, values):
@@ -44,9 +49,15 @@ class Database:
         self.con.commit()
         return True
 
-    def delete_comic(self,id):
-        query = '''DELETE FROM comic WHERE comic_id="'''+str(id)+'''";'''
+    def write_simple(self,query):
         self.cur.execute(query)
+        self.con.commit()
+        return True
+
+
+    def delete_comic(self,id):
+        query = '''DELETE FROM comic WHERE comic_id=%s;'''
+        self.cur.execute(query, (str(id)))
         self.con.commit()
         return True
 
@@ -56,23 +67,13 @@ class Database:
         self.con.commit()
         return True
 
-    def user_and_post_match(self, user_id, comic_id):
-        #deprecating...
-        post_query = '''SELECT * FROM comic WHERE comic_id="''' + str(comic_id) + '''";'''
-        self.cur.execute(post_query)
-        post = self.cur.fetchone()
-        post_author = post['author_id']
-        if int(post_author) == int(user_id):
-            return True
-        else:
-            return False
 
     def do_user_and_post_match(self,table,id):
         if table=='comic':
-            post_query = '''SELECT * FROM comic WHERE comic_id="''' + str(id) + '''";'''
+            post_query = '''SELECT * FROM comic WHERE comic_id=%s;'''
         elif table=='collection':
-            post_query = '''SELECT * FROM collection WHERE collection_id="''' + str(id) + '''";'''
-        self.cur.execute(post_query)
+            post_query = '''SELECT * FROM collection WHERE collection_id=%s;'''
+        self.cur.execute(post_query, (str(id)))
         post = self.cur.fetchone()
         post_author = post['author_id']
         try:
@@ -116,4 +117,28 @@ class Database:
         else:
             return False
 
+    def run_script(self,script):
+        self.cur.execute(script)
+        self.cur.close()
 
+
+def initialize_db():
+    database = Database()
+    with current_app.open_resource('schema.sql') as f:
+        schema = f.read().decode('utf8').splitlines()
+        for line in schema:
+            #if line.strip(): print(line)
+            if line.strip(): database.write_simple(line)
+
+def say_something():
+    print("hello")
+
+
+@click.command('initialize_db')
+@with_appcontext
+def init_db_command():
+    initialize_db()
+    click.echo('Database initialized.')
+
+def init_app(app):
+    app.cli.add_command(init_db_command)

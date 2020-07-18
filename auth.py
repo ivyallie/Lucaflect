@@ -46,15 +46,23 @@ def register():
                     error='Wrong key.'
 
             if error is None:
-                user_query = '''SELECT * FROM user WHERE username="''' + username + '";'
-                does_username_exist = database.query(user_query)
-                if not does_username_exist:
-                    database.write(
-                        '''INSERT INTO user (username,password,full_name,join_date) VALUES (%s,%s,%s,CURRENT_DATE())''',
-                        (username, generate_password_hash(password), fullname))
-                    log_in_user(username)
-                    flash('Welcome, '+fullname+"! Your account has been created.",'success')
-                    return render_template('workspace.html')
+                if not database.query_user(username):
+                    if database.getSetting('configured'):
+                        database.write(
+                            '''INSERT INTO user (username,password,full_name,join_date,email) VALUES (%s,%s,%s,CURRENT_DATE(),NULL)''',
+                            (username, generate_password_hash(password), fullname))
+                        log_in_user(username)
+                        flash('Welcome, '+fullname+"! Your account has been created.",'success')
+                        return render_template('workspace.html')
+                    else:
+                        query = '''INSERT INTO user (username,password,full_name,join_date,user_group,email) VALUES (%s,%s,%s,CURRENT_DATE, %s,NULL)'''
+                        database.write(query,(username,generate_password_hash(password),fullname,'admin'))
+                        log_in_user(username)
+                        query = '''INSERT INTO lucaflect (name,shortvalue,longvalue) VALUES (%s,%s,NULL)'''
+                        database.write(query, ('configured',1))
+                        flash('Welcome, '+fullname+"! Your account has been created.",'success')
+                        flash('Please finish setting up the site.','success')
+                        return redirect(url_for('routes.site_settings'))
                 else:
                     flash('The name ' + username + ' is already associated with an account.', 'error')
 
@@ -182,11 +190,11 @@ def update_user(id):
         user_meta_json = dumps(user_meta)
 
         if not group:
-            query = '''UPDATE user SET full_name=%s, email=%s, meta=%s WHERE user_id="'''+str(id)+'''";'''
-            database.write(query, (user['name'], user['email'], user_meta_json))
+            query = '''UPDATE user SET full_name=%s, email=%s, meta=%s WHERE user_id=%s;'''
+            database.write(query, (user['name'], user['email'], user_meta_json, str(id)))
         else:
-            query = '''UPDATE user SET full_name=%s, email=%s, user_group=%s, meta=%s, username=%s  WHERE user_id="'''+str(id)+'''";'''
-            database.write(query, (user['name'], user['email'], group, user_meta_json, user['username']))
+            query = '''UPDATE user SET full_name=%s, email=%s, user_group=%s, meta=%s, username=%s  WHERE user_id=%s;'''
+            database.write(query, (user['name'], user['email'], group, user_meta_json, user['username'], str(id)))
         redirect_url = url_for('auth.edit_user', username=user['username'])
         response_text = jsonify({'redirect':redirect_url})
         resp = make_response(response_text, 200)
@@ -227,12 +235,6 @@ def is_admin():
     except TypeError:
         return False
 
-def is_authorized_to_edit(post):
-    try:
-        match = database.user_and_post_match(session['user_id'],post)
-    except KeyError:
-        match = False
-    return match or is_admin()
 
 def authorized(table,post_id):
     try:

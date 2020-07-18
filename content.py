@@ -6,7 +6,7 @@ from . import routes
 from . import auth
 import json
 from re import sub
-from lucaflect.auth import login_required, is_admin, is_authorized_to_edit, authorized
+from lucaflect.auth import login_required, is_admin, authorized
 from os.path import join, splitext, isdir, isfile, split, dirname, abspath
 from os import makedirs
 import datetime
@@ -64,7 +64,7 @@ def open_comic_editor(title):
     if comic:
         comic_id = comic['comic_id']
         user_id = session['user_id']
-        if database.user_and_post_match(user_id,comic_id) or is_admin():
+        if auth.authorized('comic',comic_id):
             body = json.loads(comic['body'])
             try:
                 preview_image=body['preview_image']
@@ -162,20 +162,10 @@ def update_homepage():
 
 def validate_destination_dir(path):
     if isdir(path):
-        print('Path Exists')
         return path
     else:
-        print('Path exists not.')
         makedirs(path)
         return path
-        '''
-        try:
-            makedirs(path)
-            return path
-        except OSError:
-            print('OSError occurred!')
-            return False
-        '''
 
 
 def get_unique_filename(filename):
@@ -257,7 +247,7 @@ def modify_comic(id):
     post = request.get_json()
     title = post['title']
     post_json = process_post_content(post)
-    if database.user_and_post_match(session['user_id'],id) or is_admin():
+    if auth.authorized('comic',id):
         #print(post_json)
         modification = '''UPDATE comic SET body=%s WHERE comic_id=%s'''
         database.write(modification, (post_json, id))

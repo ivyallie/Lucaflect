@@ -20,6 +20,7 @@ with app.app_context():
 
     from . import db
     database = db.Database()
+    db.init_app(app)
 
     from . import routes
     app.register_blueprint(routes.bp)
@@ -30,7 +31,17 @@ with app.app_context():
     from . import content
     app.register_blueprint(content.bp)
 
-    app.config['SITENAME'] = database.getSetting('name')
-    app.config['ALLOW_REGISTRATION'] = database.getSetting('registration')
-    app.config['USE_REG_KEY'] = database.getSetting('use_key')
-    app.config['LUCAFLECT_VERSION'] = 'Alpha 0'
+    try:
+        if database.getSetting('configured'):
+            app.config['SITENAME'] = database.getSetting('name')
+            app.config['ALLOW_REGISTRATION'] = database.getSetting('registration')
+            app.config['USE_REG_KEY'] = database.getSetting('use_key')
+
+        else:
+            app.config['SITENAME'] = 'Lucaflect Setup'
+            app.config['ALLOW_REGISTRATION'] = True
+            app.config['USE_REG_KEY'] = False
+
+        app.config['LUCAFLECT_VERSION'] = 'Alpha 0'
+    except pymysql.err.ProgrammingError:
+        pass

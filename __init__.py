@@ -6,42 +6,46 @@ import pymysql
 from flask_mysqldb import MySQL
 from MySQLdb.cursors import DictCursor
 
-app = Flask(__name__)
-app.config.from_pyfile('config.py', silent=True)
+def initialize_lucaflect():
+    app = Flask(__name__)
+    app.config.from_pyfile('config.py', silent=True)
 
+    with app.app_context():
 
-with app.app_context():
+        if not isdir(current_app.config['UPLOAD_FOLDER']):
+            try:
+                makedirs(current_app.config['UPLOAD_FOLDER'])
+            except OSError:
+                print('Failed to create upload directory')
 
-    if not isdir(current_app.config['UPLOAD_FOLDER']):
+        from . import db
+        database = db.Database()
+        db.init_app(app)
+
+        from . import routes
+        app.register_blueprint(routes.bp)
+
+        from . import auth
+        app.register_blueprint(auth.bp)
+
+        from . import content
+        app.register_blueprint(content.bp)
+
         try:
-            makedirs(current_app.config['UPLOAD_FOLDER'])
-        except OSError:
-            print('Failed to create upload directory')
+            if database.getSetting('configured'):
+                app.config['SITENAME'] = database.getSetting('name')
+                app.config['ALLOW_REGISTRATION'] = database.getSetting('registration')
+                app.config['USE_REG_KEY'] = database.getSetting('use_key')
 
-    from . import db
-    database = db.Database()
-    db.init_app(app)
+            else:
+                app.config['SITENAME'] = 'Lucaflect Setup'
+                app.config['ALLOW_REGISTRATION'] = True
+                app.config['USE_REG_KEY'] = False
 
-    from . import routes
-    app.register_blueprint(routes.bp)
+            app.config['LUCAFLECT_VERSION'] = '0.1 Beta'
+        except pymysql.err.ProgrammingError:
+            pass
 
-    from . import auth
-    app.register_blueprint(auth.bp)
+    return app
 
-    from . import content
-    app.register_blueprint(content.bp)
-
-    try:
-        if database.getSetting('configured'):
-            app.config['SITENAME'] = database.getSetting('name')
-            app.config['ALLOW_REGISTRATION'] = database.getSetting('registration')
-            app.config['USE_REG_KEY'] = database.getSetting('use_key')
-
-        else:
-            app.config['SITENAME'] = 'Lucaflect Setup'
-            app.config['ALLOW_REGISTRATION'] = True
-            app.config['USE_REG_KEY'] = False
-
-        app.config['LUCAFLECT_VERSION'] = '0.1 Beta'
-    except pymysql.err.ProgrammingError:
-        pass
+app = initialize_lucaflect()

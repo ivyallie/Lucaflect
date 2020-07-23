@@ -3,6 +3,9 @@ MYSQL_HOST = 'localhost'
 MYSQL_USER = 'ivy'
 MYSQL_PASSWORD = ''
 MYSQL_DB = 'lucaflect01'
+MYSQL_INIT = False
+
+SCHEME = 'default'
 
 TEMPLATES_AUTO_RELOAD = True
 

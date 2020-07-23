@@ -12,11 +12,12 @@ def initialize_lucaflect():
 
     with app.app_context():
 
-        if not isdir(current_app.config['UPLOAD_FOLDER']):
-            try:
-                makedirs(current_app.config['UPLOAD_FOLDER'])
-            except OSError:
-                print('Failed to create upload directory')
+        if not current_app.config['SCHEME']=='gcloud':
+            if not isdir(current_app.config['UPLOAD_FOLDER']):
+                try:
+                    makedirs(current_app.config['UPLOAD_FOLDER'])
+                except OSError:
+                    print('Failed to create upload directory')
 
         from . import db
         database = db.Database()

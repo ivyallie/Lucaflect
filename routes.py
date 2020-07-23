@@ -1,10 +1,15 @@
-from flask import render_template, Blueprint, session, request, current_app, send_from_directory, g, make_response, jsonify, flash
+from flask import send_file, render_template, Blueprint, session, request, current_app, send_from_directory, g, make_response, jsonify, flash
 from . import db
 from . import auth
 from .common import reformat_timestamp, year
 from json import loads, dumps
 from os.path import basename
 from werkzeug.security import generate_password_hash
+import tempfile
+
+if current_app.config['SCHEME']=='gcloud':
+    from . import gcloud
+    bucket = current_app.config['UPLOAD_FOLDER']
 
 bp = Blueprint('routes', __name__)
 
@@ -245,8 +250,11 @@ def buildCollectionSequence(sequence_dictionary):
 
 @bp.route('/uploads/<filename>')
 def uploaded_file(filename):
-    upload_dir = current_app.config['UPLOAD_FOLDER']
-    return send_from_directory(upload_dir, filename)
+    if current_app.config['SCHEME']=='gcloud':
+        return gcloud.gcloud_retrieve(bucket,filename,filename)
+    else:
+        upload_dir = current_app.config['UPLOAD_FOLDER']
+        return send_from_directory(upload_dir, filename)
 
 
 
@@ -347,6 +355,7 @@ def user_profile(username):
             meta = loads(user['meta'])
             web_links=load_weblinks(meta['web_links'])
         except TypeError:
+            web_links=""
             meta=""
 
         return render_template('user_profile.html', user=user, meta=meta, comics=comics, collections=collections, web_links=web_links)

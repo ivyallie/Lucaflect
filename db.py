@@ -11,8 +11,22 @@ class Database:
         password = current_app.config['MYSQL_PASSWORD']
         db = current_app.config['MYSQL_DB']
 
-        self.con = pymysql.connect(host=host, user=user, password=password, db=db, cursorclass=pymysql.cursors.
-                                   DictCursor)
+        if current_app.config['SCHEME']=='gcloud':
+            self.con = pymysql.connect(
+                unix_socket='/cloudsql/' + host,
+                user=user,
+                password=password,
+                db=db,
+                cursorclass=pymysql.cursors.DictCursor)
+
+        else:
+            self.con = pymysql.connect(
+                host=host,
+                user=user,
+                password=password,
+                db=db,
+                cursorclass=pymysql.cursors.DictCursor)
+
         self.cur = self.con.cursor()
 
     def query(self, querytext, values=(), fetchone=False):

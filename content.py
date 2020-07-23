@@ -14,6 +14,11 @@ import time
 from flask_dropzone import Dropzone
 from urllib.parse import urlparse
 
+
+if current_app.config['SCHEME']=='gcloud':
+    from . import gcloud
+    bucket = current_app.config['UPLOAD_FOLDER']
+
 bp = Blueprint('content', __name__)
 database=db.Database()
 dropzone=Dropzone(current_app)
@@ -206,8 +211,12 @@ def upload():
     if file_extension in current_app.config["IMGTYPES"]:
         securename = secure_filename(f.filename)
         internal_filename = get_unique_filename(securename)
-        path = get_path(internal_filename)
-        f.save(path)
+        if current_app.config['SCHEME']=='gcloud':
+            gcloud.gcloud_upload(bucket,f,internal_filename)
+            path = url_for('routes.uploaded_file', filename=internal_filename)
+        else:
+            path = get_path(internal_filename)
+            f.save(path)
         response_data = jsonify({'path': path, 'filename': f.filename, 'internal_filename': internal_filename})
         resp = make_response(response_data, 201)
     else:

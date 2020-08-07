@@ -168,6 +168,7 @@ def parse_user_meta(user):
 @bp.route('/update_user/<int:id>', methods=['POST'])
 @login_required
 def update_user(id):
+    database = db.Database()
     if g.user['user_id'] == id or g.user['user_group']=='admin':
         post=request.get_json()
         user = {

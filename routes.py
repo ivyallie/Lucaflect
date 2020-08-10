@@ -466,7 +466,7 @@ def workspace():
 @bp.route('/contributors')
 def contributors():
     database = db.Database()
-    query = '''SELECT * FROM user;'''
+    query = '''SELECT * FROM user ORDER BY full_name;'''
     users_raw = database.query(query)
     users = []
     for user in users_raw:

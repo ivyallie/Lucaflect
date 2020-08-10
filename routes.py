@@ -338,7 +338,7 @@ def get_collections(id="",howmany=0):
 def load_weblinks(raw_links):
     for link in raw_links:
         url = str(link['link_url'])
-        if not url.startswith('http://'):
+        if not (url.startswith('http://') or url.startswith('https://')):
             new_url = "http://" + url
             link['link_url'] = new_url
     return raw_links

@@ -26,6 +26,7 @@ dropzone=Dropzone(current_app)
 @bp.route('/new', methods=('GET', 'POST'))
 @login_required
 def new():
+    database = db.Database()
     if 'uploaded_images' not in session:
         session['uploaded_images'] = []
 
@@ -64,6 +65,7 @@ def new():
 @bp.route('/edit/<string:title>', methods=['GET'])
 @login_required
 def open_comic_editor(title):
+    database = db.Database()
     comic = database.does_title_exist(title)
 
     if comic:
@@ -185,6 +187,7 @@ def get_path(filename):
     return path
 
 def get_unique_title(user_title, table='comic'):
+    database=db.Database()
     title_stripped = sub('[^A-Za-z0-9 ]+', '', user_title)
     title = sub(' ', '_', title_stripped)
     if not database.does_title_exist(title,table):
@@ -238,6 +241,7 @@ def process_post_content(post):
 @bp.route('/post_comic', methods=['POST'])
 @login_required
 def post_comic():
+    database=db.Database()
     post = request.get_json()
     title = post['title']
     clean_title = get_unique_title(title)
@@ -257,6 +261,7 @@ def modify_comic(id):
     title = post['title']
     post_json = process_post_content(post)
     if auth.authorized('comic',id):
+        database=db.Database()
         #print(post_json)
         modification = '''UPDATE comic SET body=%s WHERE comic_id=%s'''
         database.write(modification, (post_json, id))
@@ -274,6 +279,7 @@ def modify_comic(id):
 @bp.route('/collection/post', methods=['POST'])
 @login_required
 def post_collection():
+    database = db.Database()
     post=request.get_json()
     title=post['title']
     user_id = session['user_id']
@@ -325,7 +331,7 @@ def delete_comic(title):
         session['delete_redirect'] = request_url
         if session.get('delete_redirect') == url_for('routes.get_single_comic', title=title):
             session['delete_redirect'] = url_for('routes.workspace')
-    if database.user_and_post_match(session['user_id'], id) or is_admin():
+    if auth.authorized('comic',id):
         comic_body = json.loads(comic['body'])
         display_title = comic_body['true_title']
         if request.method == 'POST':

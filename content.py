@@ -6,7 +6,7 @@ from . import routes
 from . import auth
 import json
 from re import sub
-from Lucaflect.auth import login_required, is_admin, authorized
+from lucaflect.auth import login_required, is_admin, authorized
 from os.path import join, splitext, isdir, isfile, split, dirname, abspath
 from os import makedirs
 import datetime

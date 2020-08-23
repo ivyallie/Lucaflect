@@ -79,6 +79,7 @@
                     delete preview image</button>
                 <input type="file" id="preview_image_filepicker" style="display: none;">
             </div>
+
 </section>
         </form>
 
@@ -94,6 +95,17 @@
 
 
         </ul>
+    </section>
+    <section class="editor">
+    <h3>Image tips</h3>
+            <p class="help">Convert all images to RGB and screen resolution (100DPI or less) prior to upload.
+                Don't upload print-ready images in high resolutions and CMYK colors. </p>
+    <p class="help">Avoid non-alphanumeric characters in filenames (&amp;,%,^,#,etc.)</p>
+    <p class="help">Remember: people will need to download the comic file before they can see it. Some of them may
+    not have high-speed internet access. Avoid uploading files larger than 1MB, especially for comics with multiple
+    pages. </p>
+    <p class="help">The allowed file types are: {% for type in config.IMGTYPES %}{{ type }} {% endfor %}</p>
+    <p class="help">The maximum file size allowed is: {{ (config.MAX_CONTENT_LENGTH / 1024 /1024) }} MB.</p>
     </section>
 
 

@@ -4,7 +4,21 @@
 {% block pageheader %}Comic Editor{% endblock %}
 {% block content %}
 
-
+    {% if admin %}
+<section class="editor">
+<div class="column_area">
+    <h3>Editorial</h3>
+    {% if content['draft'] %}
+        <a href="{{ url_for('content.approve_comic', title=title) }}" title="Approve {{ content['title'] }}" class="view_comic basic_button">
+            <img src="{{ url_for('static', filename='/icons/approve.svg') }}"/>Approve</a>
+    {% else %}
+        {{ draft }}
+        <a href="{{ url_for('content.retract_comic', title=title) }}" class="view_comic basic_button">
+            <img src="{{ url_for('static', filename='/icons/retract.svg') }}"/>Retract</a>
+        {% endif %}
+</div>
+</section>
+    {% endif %}
 
     <form method="post">
 
@@ -40,7 +54,7 @@
                 </div>
             </div>
         <div class="column">
-                        <button type="button" onclick="postComic()" id="post-button" data-id="">Post <img src="{{ url_for('static', filename='/icons/post.svg') }}"/></button>
+                        <button type="button" onclick="postComic()" id="post-button" data-id="">{% if content %}Update{% else %}Submit{% endif %}<img src="{{ url_for('static', filename='/icons/post.svg') }}"/></button>
 {% if title %}
 
                 <a href="{{ url_for('routes.get_single_comic', title=title) }}" class="view_comic basic_button">

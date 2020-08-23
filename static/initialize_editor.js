@@ -34,6 +34,8 @@ let initialize_editor = function(content) {
     //console.log('Comic id:',id);
     post_button.setAttribute('data-id',id);
     post_button.value = 'Update';
+
+
 };
 
 let populate_file_list = function(display_name,real_name) {

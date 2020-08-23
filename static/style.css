@@ -521,6 +521,10 @@ h2 {
     width:10pt;
 }
 
+.pending, .pending a {
+    color: #aaaaaa !important;
+}
+
 .workspace_list {
     margin-bottom: 20pt;
 }
@@ -927,9 +931,9 @@ ul.flash {
 }
 
 .flash li.message {
-    color:#777;
-    border-color: #777;
-    background-color: #CCC;
+    color:black;
+    border-color: #fe0;
+    background-color: #ffa;
 }
 
 .flash li {

@@ -22,12 +22,14 @@ def index():
 def assembleHomepage():
     database = db.Database()
     homepage_content=[]
+    default_sequence = [{'type':'smartlist', 'title': 'Recent comics', 'how_many': 10, 'internal_title': 'recent_comics'}]
     if database.existSetting('homepage_sequence'):
         sequence = database.getSetting('homepage_sequence')
+        if not sequence:
+            sequence = default_sequence
     else:
         #default sequence
-        sequence = [{'type':'smartlist', 'title': 'Recent comics', 'how_many': 10, 'internal_title': 'recent_comics'}]
-
+        sequence = default_sequence
     recentComics = get_comics()
     recentCollections = get_collections()
 
@@ -277,14 +279,36 @@ def get_collections_for_js():
     resp = make_response(jsonify(response_data),200)
     return resp
 
-def get_comics(id="", howmany=0):
+def get_comics(id="", howmany=0, show=''):
     database = db.Database()
-    if id:
-        query = '''SELECT * FROM comic WHERE author_id=%s ORDER BY posted DESC;'''
-        comics = database.query(query,(str(id)))
+    if show in ['drafts','all']:
+
+        if show == 'drafts':
+
+            if id:
+                query = '''SELECT * FROM comic WHERE author_id=%s AND draft=1 ORDER BY posted DESC;'''
+                comics = database.query(query, (str(id)))
+            else:
+                query = '''SELECT * FROM comic WHERE draft=1 ORDER BY posted DESC;'''
+                comics = database.query(query)
+        else:
+
+            if id:
+                query = '''SELECT * FROM comic WHERE author_id=%s ORDER BY posted DESC;'''
+                comics = database.query(query,(str(id)))
+            else:
+                query = '''SELECT * FROM comic ORDER BY posted DESC;'''
+                comics = database.query(query)
+
     else:
-        query = '''SELECT * FROM comic ORDER BY posted DESC;'''
-        comics = database.query(query)
+
+        if id:
+            query = '''SELECT * FROM comic WHERE author_id=%s AND draft=0 ORDER BY posted DESC;'''
+            comics = database.query(query,(str(id)))
+        else:
+            query = '''SELECT * FROM comic WHERE draft=0 ORDER BY posted DESC;'''
+            comics = database.query(query)
+
     processed_comics = []
     for comic in comics:
         internal_title = comic['title']
@@ -304,7 +328,8 @@ def get_comics(id="", howmany=0):
             'body': body['body_text'],
             'tags': tags,
             'author': author['full_name'],
-            'preview_image': preview_image
+            'preview_image': preview_image,
+            'draft': comic['draft']
         }
         processed_comics.append(d)
     return processed_comics
@@ -438,8 +463,17 @@ def admin_users():
 @auth.login_required
 def admin_comics():
     if auth.is_admin():
-        comics=get_comics()
+        comics=get_comics(show='all')
         return render_template('admin_comics.html', comics=comics)
+    else:
+        return render_template('403.html'), 403
+
+@bp.route('/admin/queue', methods=['GET'])
+@auth.login_required
+def editorial_queue():
+    if auth.is_admin():
+        comics=get_comics(show='drafts')
+        return  render_template('editor_queue.html', comics=comics)
     else:
         return render_template('403.html'), 403
 
@@ -458,7 +492,7 @@ def admin_collections():
 @auth.login_required
 def workspace():
     user=g.user
-    comics = get_comics(id=user['user_id'])
+    comics = get_comics(id=user['user_id'], show='all')
     collections = get_collections(id=user['user_id'])
     return render_template('workspace.html', comics=comics, collections=collections)
 

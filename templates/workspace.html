@@ -9,15 +9,22 @@
     <img src="{{ url_for('static', filename='icons/comic.svg') }}"/>
     <div>new comic</div></a></li>
 
-    <li><a href="{{ url_for('content.new_collection') }}">
-        <img src="{{ url_for('static', filename='icons/collection.svg') }}"/>
-        <div>new collection</div></a></li>
+
 
 
 <li><a href="{{ url_for('auth.edit_user', username=g.user['username']) }}">
     <img src="{{ url_for('static', filename='icons/user.svg') }}"/>
     <div>edit profile</div></a></li>
 {% if g.user['user_group']=='admin' %}
+
+        <li><a href="{{ url_for('content.new_collection') }}">
+        <img src="{{ url_for('static', filename='icons/collection.svg') }}"/>
+        <div>new collection</div></a></li>
+
+    <li><a href="{{ url_for('routes.editorial_queue') }}">
+         <img src="{{ url_for('static', filename='icons/queue.svg') }}"/>
+        <div>manage queue</div></a></li>
+
     <li><a href="{{ url_for('routes.site_settings') }}">
         <img src="{{ url_for('static', filename='icons/settings.svg') }}"/>
         <div>site admin</div></a></li>

@@ -68,9 +68,17 @@ def open_comic_editor(title):
     database = db.Database()
     comic = database.does_title_exist(title)
 
+    if auth.is_admin():
+        admin=True
+    else:
+        admin=False
+
     if comic:
         comic_id = comic['comic_id']
         user_id = session['user_id']
+        draft = comic['draft']
+        if draft:
+            flash('This comic is still in editorial queue. It will be visible on the site when an editor approves it.')
         if auth.authorized('comic',comic_id):
             body = json.loads(comic['body'])
             try:
@@ -84,9 +92,10 @@ def open_comic_editor(title):
                 'imagelist': body['imagelist'],
                 'tags': body['tags'],
                 'format': body['format'],
-                'preview_image': preview_image
+                'preview_image': preview_image,
+                'draft': draft
             }
-            return render_template('comic_editor.html', title=title, content=content)
+            return render_template('comic_editor.html', title=title, content=content, admin=admin)
         else:
             return render_template('403.html'), 403
     else:
@@ -247,11 +256,11 @@ def post_comic():
     clean_title = get_unique_title(title)
     user_id = session['user_id']
     post_json = process_post_content(post)
-    to_write = '''INSERT INTO comic (author_id,title,body,posted) VALUES (%s, %s, %s, CURRENT_TIMESTAMP())'''
+    to_write = '''INSERT INTO comic (author_id,title,body,posted,draft) VALUES (%s, %s, %s, CURRENT_TIMESTAMP(),1)'''
     database.write(to_write, (user_id, clean_title, post_json))
     response_text = jsonify({'redirect': url_for('content.open_comic_editor', title=clean_title)})
     resp = make_response(response_text, 200)
-    flash('"'+title+'" posted!','success')
+    flash('"'+title+'" submitted to editorial queue.','success')
     return resp
 
 @bp.route('/modify_comic/<int:id>', methods=['POST'])
@@ -318,6 +327,31 @@ def post_collection():
     response_text = jsonify({'redirect': redirect_url})
     resp = make_response(response_text, 200)
     return resp
+
+@bp.route('/approve/<string:title>', methods=['GET'])
+@login_required
+def approve_comic(title):
+    set_draft_status(title,0)
+    flash(title+' approved!','success')
+    return redirect(request.referrer)
+
+@bp.route('/retract/<string:title>', methods=['GET'])
+@login_required
+def retract_comic(title):
+    set_draft_status(title,1)
+    flash(title+' retracted.', 'success')
+    return redirect(request.referrer)
+
+
+def set_draft_status(title, value):
+    database = db.Database()
+    comic = database.does_title_exist(title)
+    id = comic['comic_id']
+    if auth.is_admin():
+        query = '''UPDATE comic SET draft=%s WHERE comic_id=%s;'''
+        database.write(query,(str(value),str(id)))
+    else:
+        return render_template('403.html'),403
 
 
 @bp.route('/delete/<string:title>', methods=['GET', 'POST'])

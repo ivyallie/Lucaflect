@@ -1,27 +1,27 @@
 {% extends 'basis.html' %}
-{% block title %}Comic Administration{% endblock %}
-{% block pageheader %}Comic Admin{% endblock %}
+{% block title %}Editorial Queue{% endblock %}
+{% block pageheader %}Editorial Queue{% endblock %}
 {% block content %}
 <ul class="entry_list">
 
         {% for comic in comics %}
             <li>
             <div class="internal_title mono">{{ comic['internal_title'] }}</div>
-                <div class="comic_title "><a href="{{ url_for('routes.get_single_comic', title=comic['internal_title']) }}">{{ comic['title'] }}</a> by {{ comic['author'] }} {% if comic['draft'] %}(pending){% endif %}</div>
+                <div class="comic_title"><a href="{{ url_for('routes.get_single_comic', title=comic['internal_title']) }}">{{ comic['title'] }}</a> by {{ comic['author'] }}</div>
             <div><ul>
+                <li><a href="{{ url_for('content.approve_comic', title=comic['internal_title']) }}" title="Approve {{ comic['title'] }}"><img src="{{ url_for('static', filename='icons/approve.svg') }}" alt="Approve {{ comic['title'] }}"/></a> </li>
                 <li><a href="{{ url_for('routes.get_single_comic', title=comic['internal_title']) }}" title="View {{ comic['title'] }}"><img src="{{ url_for('static', filename='icons/view.svg') }}" alt="View {{ comic['title'] }}"/></a> </li>
                 <li><a href="{{ url_for('content.open_comic_editor', title=comic['internal_title']) }}" title="Edit {{ comic['title'] }}"><img src="{{ url_for('static', filename='icons/edit.svg') }}" alt="Edit {{ comic['title'] }}"/></a></li>
-                {% if comic['draft'] %}
-                <li><a href="{{ url_for('content.approve_comic', title=comic['internal_title']) }}" title="Approve {{ comic['title'] }}"><img src="{{ url_for('static', filename='icons/approve.svg') }}" alt="Delete {{ comic['title'] }}"/></a></li>
-                {% else %}
-                <li><a href="{{ url_for('content.retract_comic', title=comic['internal_title']) }}" title="Retract {{ comic['title'] }}"><img src="{{ url_for('static', filename='icons/retract.svg') }}" alt="Delete {{ comic['title'] }}"/></a></li>
-                {% endif %}
                 <li><a href="{{ url_for('content.delete_comic', title=comic['internal_title']) }}" title="Delete {{ comic['title'] }}"><img src="{{ url_for('static', filename='icons/delete.svg') }}" alt="Delete {{ comic['title'] }}"/></a></li>
             </ul>
 
             </div>
             </li>
         {% endfor %}
+{% if not comics %}
+    <p>There are no comics awaiting approval.
+</p>
+{% endif %}
 </ul>
 
 {% endblock %}

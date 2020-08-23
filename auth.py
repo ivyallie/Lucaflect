@@ -238,6 +238,7 @@ def is_admin():
 
 
 def authorized(table,post_id):
+    database = db.Database()
     try:
         match = database.do_user_and_post_match(table,post_id)
     except TypeError:

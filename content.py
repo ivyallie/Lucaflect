@@ -6,12 +6,12 @@ from . import routes
 from . import auth
 import json
 from re import sub
-from lucaflect.auth import login_required, is_admin, authorized
+from Lucaflect.auth import login_required, is_admin, authorized
 from os.path import join, splitext, isdir, isfile, split, dirname, abspath
 from os import makedirs
 import datetime
 import time
-from flask_dropzone import Dropzone
+#from flask_dropzone import Dropzone
 from urllib.parse import urlparse
 
 
@@ -21,7 +21,7 @@ if current_app.config['SCHEME']=='gcloud':
 
 bp = Blueprint('content', __name__)
 database=db.Database()
-dropzone=Dropzone(current_app)
+#dropzone=Dropzone(current_app)
 
 @bp.route('/new', methods=('GET', 'POST'))
 @login_required

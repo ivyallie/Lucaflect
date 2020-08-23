@@ -1090,6 +1090,8 @@ ul.flash {
 
 #infinite_canvas img {
     max-width: 100%;
+    margin: auto;
+    display: block;
 }
 
 .interact {

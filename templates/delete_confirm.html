@@ -2,7 +2,9 @@
 {% block title %}Deleting {{ display_title }}{% endblock %}
 {% block pageheader %}Deleting {{ display_title }}{% endblock %}
 {% block content %}
+    <section class="delete_confirm">
     <p>Are you sure you want to delete <strong>{{ display_title }}</strong>? This cannot be undone.</p>
     <form action="" method="post"><button type="submit">Yes, delete "{{ display_title }}"</button></form>
     <p><a href="{{ refer_url }}">Nevermind.</a></p>
+    </section>
 {% endblock %}

@@ -44,6 +44,7 @@
     {% endfor %}
     </section>
     {% else %}
+    <section>
     <section id="turnable_page">
 
         {% if content['imagelist'] | length > 1 %}
@@ -62,6 +63,7 @@
     </div>
 
             {% endif %}
+    </section>
     </section>
 
 {% endif %}

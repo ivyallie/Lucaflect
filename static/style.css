@@ -425,9 +425,14 @@ h2 {
     cursor: pointer;
 }
 
+#turnable_page {
+}
+
 #turnable_page #page_display {
-    width:100%;
-    margin:20pt auto;
+    max-height:90vh;
+    max-width: 100%;
+    margin:auto;
+    display: block;
 }
 
 
@@ -613,8 +618,9 @@ ul.weblinks li a:hover {
 }
 
 #profile_content .preview_image {
-    width:100%;
+    max-width:100%;
     display: block;
+    margin: auto;
 }
 
 /* User Editor */
@@ -813,7 +819,7 @@ section.editor #body, section.editor #description {
     max-width:100%;
 }
 
-#post-button, #submit_button {
+#post-button, #submit_button, .delete_confirm button {
     border:2pt solid #fe0;
     border-radius: 5pt;
     cursor: pointer;
@@ -897,6 +903,11 @@ section.editor .help {
     margin:auto;
     display: block;
     font-size: 12pt;
+    background-color: #fe0;
+}
+
+.delete_confirm button:hover {
+    background-color: white;
 }
 
 

@@ -7,7 +7,7 @@
     <div class="title">
         {%  if (content['show_tools']) %}
         <div id="post-tools">
-        <a href="{{ url_for('content.open_comic_editor', title=content['internal_title']) }}" title="Edit this">
+        <a href="{{ url_for('content.open_comic_editor', title=content['internal_title']) }}" title="Edit {{ content['title'] }}">
         <img src="{{ url_for('static', filename='icons/edit.svg') }}"/></a>
             {% if (content['user_is_admin']) %}
                 {% if content['draft'] %}
@@ -18,7 +18,7 @@
             <img src="{{ url_for('static', filename='/icons/retract.svg') }}"/></a>
                     {% endif %}
             {% endif %}
-            <a href="{{  url_for('content.delete_comic', title=content['internal_title']) }}" title="Delete this">
+            <a href="{{  url_for('content.delete_comic', title=content['internal_title']) }}" title="Delete {{ content['title'] }}">
                 <img src="{{ url_for('static', filename='icons/delete.svg') }}"/>
                </a>
         </div>
@@ -43,6 +43,7 @@
 
     {% endfor %}
     </section>
+
     {% else %}
     <section>
     <section id="turnable_page">

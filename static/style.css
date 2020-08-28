@@ -227,6 +227,7 @@ section.comic {
 
 section.comic img.preview_image {
     max-width:95%;
+    max-height:40vh;
     margin:10pt auto;
     display: block;
 }
@@ -816,7 +817,8 @@ section.editor #body, section.editor #description {
 }
 
 #preview_image {
-    max-width:100%;
+    max-width:95%;
+    max-height:40vh;
 }
 
 #post-button, #submit_button, .delete_confirm button {
@@ -1100,6 +1102,7 @@ ul.flash {
 }
 
 #infinite_canvas img {
+    max-height: 130vh;
     max-width: 100%;
     margin: auto;
     display: block;

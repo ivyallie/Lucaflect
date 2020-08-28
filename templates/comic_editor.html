@@ -70,14 +70,21 @@
             <div id="preview_image_picker">
                 <h3>Preview Image</h3>
                 <span class="help">Add an image that will represent this comic when displayed in a list or collection.</span>
-                <img src="" id="preview_image"/>
-                <button type="button" id="preview_button" onclick="choose_new_preview()">
+                <div>
+                                    <img src="" id="preview_image"/>
+
+                </div>
+                <div>
+                    <button type="button" id="preview_button" onclick="choose_new_preview()">
                     <img src="{{ url_for('static', filename='/icons/add.svg') }}"/>
                     add preview image</button>
                 <button type="button" id="delete_preview" onclick="remove_preview()">
                     <img src="{{ url_for('static', filename='/icons/delete.svg') }}"/>
                     delete preview image</button>
                 <input type="file" id="preview_image_filepicker" style="display: none;">
+                </div>
+
+
             </div>
 
 </section>

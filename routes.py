@@ -148,6 +148,7 @@ def get_single_comic(title):
     if comic:
         content = get_comic_content(comic)
         content['show_tools']=auth.authorized('comic',comic['comic_id'])
+        content['user_is_admin']=auth.is_admin()
 
         author=False
 
@@ -159,7 +160,7 @@ def get_single_comic(title):
                 'username': user['username'],
                 'portrait': meta['portrait'],
                 'bio': meta['bio'],
-                'web_links': load_weblinks(meta['web_links'])
+                'web_links': load_weblinks(meta['web_links']),
             }
 
 
@@ -201,7 +202,8 @@ def get_comic_content(comic):
         'time': reformat_timestamp(time),
         'year': year(time),
         'format': body['format'],
-        'preview_image':preview_image
+        'preview_image':preview_image,
+        'draft':comic['draft']
     }
     return content
 
